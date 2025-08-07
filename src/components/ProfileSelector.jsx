@@ -8,10 +8,11 @@ const ProfileSelector = () => {
   const [kidName, setKidName] = useState('');
   const [primaryLanguage, setPrimaryLanguage] = useState('English');
   const [secondaryLanguage, setSecondaryLanguage] = useState('Hindi');
+  const [selectedEmoji, setSelectedEmoji] = useState('');
   const navigate = useNavigate();
 
   // Kid-friendly emojis for profile icons
-  const kidEmojis = ['🐶', '🐱', '🐰', '🐼', '🐨', '🐯', '🦁', '🐸', '🐙', '🦄', '🦋', '🐢', '🐬', '🦕', '🦖', '🐳', '🦒', '🦘', '🐨', '🐯'];
+  const kidEmojis = ['🐶', '🐱', '🐰', '🐼', '🐨', '🐯', '🦁', '🐸', '🐙', '🦄', '🦋', '🐢', '🐬', '🦕', '🦖', '🐳', '🦒', '🦘'];
 
   // Load existing profiles on component mount
   useEffect(() => {
@@ -64,7 +65,7 @@ const ProfileSelector = () => {
       primaryLanguage,
       secondaryLanguage,
       createdAt: new Date().toISOString(),
-      emoji: getRandomEmoji(Date.now().toString())
+      emoji: selectedEmoji || getRandomEmoji(Date.now().toString())
     };
 
     const updatedProfiles = [...profiles, newProfile];
@@ -106,11 +107,13 @@ const ProfileSelector = () => {
     setKidName('');
     setPrimaryLanguage('English');
     setSecondaryLanguage('Hindi');
+    setSelectedEmoji('');
   };
 
   const handleCancelNewProfile = () => {
     setShowNewProfileForm(false);
     setKidName('');
+    setSelectedEmoji('');
   };
 
   const handlePrimaryLanguageChange = (language) => {
@@ -128,6 +131,24 @@ const ProfileSelector = () => {
       return;
     }
     setSecondaryLanguage(language);
+  };
+
+  const handleEmojiSelect = (emoji) => {
+    setSelectedEmoji(emoji);
+  };
+
+  const handleScrollLeft = () => {
+    const emojiList = document.querySelector('.emoji-list');
+    if (emojiList) {
+      emojiList.scrollBy({ left: -200, behavior: 'smooth' });
+    }
+  };
+
+  const handleScrollRight = () => {
+    const emojiList = document.querySelector('.emoji-list');
+    if (emojiList) {
+      emojiList.scrollBy({ left: 200, behavior: 'smooth' });
+    }
   };
 
   const isFormValid = () => {
@@ -151,7 +172,17 @@ const ProfileSelector = () => {
                     onClick={() => setShowDeleteMenu(!showDeleteMenu)}
                     className="menu-button"
                   >
-                    {showDeleteMenu ? '✕' : '⚙️'}
+                    {showDeleteMenu ? '✕' : (
+                      <svg 
+                        width="16" 
+                        height="16" 
+                        viewBox="0 0 24 24" 
+                        fill="currentColor"
+                        className="trash-icon"
+                      >
+                        <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
+                      </svg>
+                    )}
                   </button>
                 </div>
                 <div className="profiles-grid">
@@ -216,6 +247,44 @@ const ProfileSelector = () => {
                 className="form-input"
                 maxLength={50}
               />
+            </div>
+
+            <div className="form-group">
+              <label className="form-label">Choose an animal friend (optional)</label>
+              <p className="form-hint">Pick your favorite animal or we'll choose one for you!</p>
+              <div className="emoji-list-container">
+                <button 
+                  className="scroll-arrow scroll-arrow-left" 
+                  onClick={handleScrollLeft}
+                  type="button"
+                >
+                  ‹
+                </button>
+                <div className="emoji-list">
+                  {kidEmojis.map((emoji, index) => (
+                    <button
+                      key={index}
+                      className={`emoji-option ${selectedEmoji === emoji ? 'selected' : ''}`}
+                      onClick={() => handleEmojiSelect(emoji)}
+                      type="button"
+                    >
+                      <span className="emoji-option-icon">{emoji}</span>
+                    </button>
+                  ))}
+                </div>
+                <button 
+                  className="scroll-arrow scroll-arrow-right" 
+                  onClick={handleScrollRight}
+                  type="button"
+                >
+                  ›
+                </button>
+              </div>
+              {selectedEmoji && (
+                <p className="selected-emoji-text">
+                  Selected: <span className="selected-emoji">{selectedEmoji}</span>
+                </p>
+              )}
             </div>
 
             <div className="form-group">

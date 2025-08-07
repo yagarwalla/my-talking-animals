@@ -287,24 +287,34 @@ code {
   gap: 1.5rem;
 }
 
+/* Form Styles */
 .form-group {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
+  margin-bottom: 1.5rem;
 }
 
 .form-label {
+  display: block;
   font-size: 1rem;
   font-weight: 600;
   color: #374151;
+  margin-bottom: 0.5rem;
+}
+
+.form-hint {
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin-bottom: 1rem;
+  font-style: italic;
 }
 
 .form-input {
+  width: 100%;
   padding: 0.75rem 1rem;
   border: 2px solid #e5e7eb;
   border-radius: 0.5rem;
   font-size: 1rem;
-  transition: border-color 0.2s ease;
+  transition: all 0.2s ease;
+  background: white;
 }
 
 .form-input:focus {
@@ -313,25 +323,169 @@ code {
   box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
 }
 
+/* Emoji Selection List */
+.emoji-list-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.scroll-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 32px;
+  height: 32px;
+  background: rgba(255, 255, 255, 0.9);
+  color: #6b7280;
+  border: 1px solid rgba(107, 114, 128, 0.2);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  font-weight: bold;
+  cursor: pointer;
+  z-index: 10;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease;
+  opacity: 0.6;
+}
+
+.scroll-arrow:hover {
+  opacity: 1;
+  transform: translateY(-50%) scale(1.05);
+  background: rgba(255, 255, 255, 0.95);
+  color: #374151;
+  border-color: rgba(107, 114, 128, 0.3);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.scroll-arrow-left {
+  left: -16px;
+}
+
+.scroll-arrow-right {
+  right: -16px;
+}
+
+.emoji-list {
+  display: flex;
+  gap: 0.75rem;
+  overflow-x: auto;
+  padding: 0.5rem 1rem;
+  margin: 0 1rem;
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e1 #f1f5f9;
+  scroll-behavior: smooth;
+}
+
+.emoji-list::-webkit-scrollbar {
+  height: 6px;
+}
+
+.emoji-list::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 3px;
+}
+
+.emoji-list::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 3px;
+}
+
+.emoji-list::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+.emoji-option {
+  background: white;
+  border: 2px solid #e5e7eb;
+  border-radius: 0.75rem;
+  padding: 1rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 60px;
+  min-height: 60px;
+  flex-shrink: 0;
+}
+
+.emoji-option:hover {
+  border-color: #667eea;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
+}
+
+.emoji-option.selected {
+  border-color: #667eea;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  transform: scale(1.05);
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.3);
+}
+
+.emoji-option-icon {
+  font-size: 1.5rem;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.1));
+}
+
+.emoji-option.selected .emoji-option-icon {
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.2));
+}
+
+.selected-emoji-text {
+  text-align: center;
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin-top: 0.5rem;
+}
+
+.selected-emoji {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #667eea;
+}
+
+/* Language Options */
 .language-options {
   display: flex;
   gap: 1rem;
+  margin-bottom: 0.5rem;
 }
 
 .language-option {
+  flex: 1;
+  background: white;
+  border: 2px solid #e5e7eb;
+  border-radius: 0.5rem;
+  padding: 0.75rem 1rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  cursor: pointer;
-  padding: 0.5rem 1rem;
-  border: 2px solid #e5e7eb;
-  border-radius: 0.5rem;
-  transition: all 0.2s ease;
 }
 
 .language-option:hover {
   border-color: #667eea;
-  background-color: #f8fafc;
+  background: #f8fafc;
+}
+
+.language-option input[type="radio"] {
+  margin: 0;
+  width: 1rem;
+  height: 1rem;
+  accent-color: #667eea;
+}
+
+.language-text {
+  font-size: 1rem;
+  font-weight: 500;
+  color: #374151;
 }
 
 .language-option.disabled {
@@ -344,12 +498,6 @@ code {
 .language-option.disabled:hover {
   border-color: #d1d5db;
   background-color: #f3f4f6;
-}
-
-.language-option input[type="radio"] {
-  width: 1.25rem;
-  height: 1.25rem;
-  accent-color: #667eea;
 }
 
 .language-option.disabled input[type="radio"] {
@@ -374,6 +522,13 @@ code {
   font-weight: 500;
 }
 
+/* Form Actions */
+.form-actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
 .start-button {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
@@ -394,13 +549,38 @@ code {
 
 .start-button:hover:not(:disabled) {
   transform: translateY(-2px);
-  box-shadow: 0 10px 25px -5px rgba(102, 126, 234, 0.4);
+  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
 }
 
 .start-button:disabled {
   opacity: 0.6;
   cursor: not-allowed;
   transform: none;
+  box-shadow: none;
+}
+
+.cancel-button {
+  background: #6b7280;
+  color: white;
+  border: none;
+  padding: 1rem 2rem;
+  border-radius: 0.5rem;
+  font-size: 1.125rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex: 0 0 auto;
+  min-width: 120px;
+  height: 56px; /* Match the height of start-button */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cancel-button:hover {
+  background: #4b5563;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(107, 114, 128, 0.3);
 }
 
 /* Profile Selection Styles */
@@ -426,8 +606,8 @@ code {
 }
 
 .menu-button {
-  background: #f3f4f6;
-  border: 2px solid #e5e7eb;
+  background: #fef2f2;
+  border: 2px solid #fecaca;
   border-radius: 50%;
   width: 40px;
   height: 40px;
@@ -437,12 +617,19 @@ code {
   font-size: 1.25rem;
   cursor: pointer;
   transition: all 0.2s ease;
+  color: #ef4444;
 }
 
 .menu-button:hover {
-  background: #e5e7eb;
-  border-color: #d1d5db;
+  background: #fee2e2;
+  border-color: #fca5a5;
   transform: scale(1.1);
+  color: #dc2626;
+}
+
+.trash-icon {
+  width: 16px;
+  height: 16px;
 }
 
 .existing-profiles {
@@ -613,36 +800,6 @@ code {
   font-size: 1.125rem;
   margin: 0;
   font-weight: 500;
-}
-
-/* Form Actions */
-.form-actions {
-  display: flex;
-  gap: 1rem;
-  margin-top: 1rem;
-}
-
-.cancel-button {
-  background: #6b7280;
-  color: white;
-  border: none;
-  padding: 1rem 2rem;
-  border-radius: 0.5rem;
-  font-size: 1.125rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  flex: 0 0 auto;
-  min-width: 120px;
-  height: 56px; /* Match the height of start-button */
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.cancel-button:hover {
-  background: #4b5563;
-  transform: translateY(-1px);
 }
 
 /* Map Styles */
