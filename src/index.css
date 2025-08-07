@@ -334,16 +334,44 @@ code {
   background-color: #f8fafc;
 }
 
+.language-option.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background-color: #f3f4f6;
+  border-color: #d1d5db;
+}
+
+.language-option.disabled:hover {
+  border-color: #d1d5db;
+  background-color: #f3f4f6;
+}
+
 .language-option input[type="radio"] {
   width: 1.25rem;
   height: 1.25rem;
   accent-color: #667eea;
 }
 
+.language-option.disabled input[type="radio"] {
+  accent-color: #9ca3af;
+  cursor: not-allowed;
+}
+
 .language-text {
   font-size: 1rem;
   font-weight: 500;
   color: #374151;
+}
+
+.language-option.disabled .language-text {
+  color: #9ca3af;
+}
+
+.error-message {
+  color: #ef4444;
+  font-size: 0.875rem;
+  margin-top: 0.5rem;
+  font-weight: 500;
 }
 
 .start-button {
@@ -356,7 +384,12 @@ code {
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
-  margin-top: 1rem;
+  flex: 1;
+  min-width: 200px;
+  height: 56px; /* Explicit height for consistency */
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .start-button:hover:not(:disabled) {
@@ -385,6 +418,33 @@ code {
   text-align: center;
 }
 
+.profiles-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.menu-button {
+  background: #f3f4f6;
+  border: 2px solid #e5e7eb;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.menu-button:hover {
+  background: #e5e7eb;
+  border-color: #d1d5db;
+  transform: scale(1.1);
+}
+
 .existing-profiles {
   display: flex;
   flex-direction: column;
@@ -393,28 +453,65 @@ code {
 
 .profiles-grid {
   display: grid;
-  gap: 1rem;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
 }
 
 .profile-card {
-  background: #f8fafc;
-  border: 2px solid #e5e7eb;
-  border-radius: 0.75rem;
+  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+  border: 3px solid #e5e7eb;
+  border-radius: 1rem;
   padding: 1.5rem;
-  transition: all 0.2s ease;
+  transition: all 0.3s ease;
   display: flex;
   flex-direction: column;
+  align-items: center;
   gap: 1rem;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
 }
 
 .profile-card:hover {
   border-color: #667eea;
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.1);
-  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.15);
+  transform: translateY(-4px);
+}
+
+.profile-card.delete-mode {
+  border-color: #ef4444;
+  background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
+}
+
+.profile-card.delete-mode:hover {
+  border-color: #dc2626;
+  box-shadow: 0 8px 25px rgba(239, 68, 68, 0.15);
+}
+
+.profile-icon {
+  width: 80px;
+  height: 80px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+  transition: all 0.3s ease;
+}
+
+.profile-card:hover .profile-icon {
+  transform: scale(1.1);
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+}
+
+.profile-emoji {
+  font-size: 2.5rem;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
 }
 
 .profile-info {
+  text-align: center;
   flex: 1;
 }
 
@@ -431,83 +528,91 @@ code {
   margin-bottom: 0.25rem;
 }
 
-.profile-date {
-  font-size: 0.75rem;
-  color: #9ca3af;
-}
-
-.profile-actions {
+.delete-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(239, 68, 68, 0.9);
   display: flex;
-  gap: 0.5rem;
-}
-
-.select-button {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: 1rem;
   color: white;
-  border: none;
-  padding: 0.5rem 1rem;
-  border-radius: 0.5rem;
-  font-size: 0.875rem;
   font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  flex: 1;
+  opacity: 0;
+  transition: opacity 0.3s ease;
 }
 
-.select-button:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+.profile-card.delete-mode:hover .delete-overlay {
+  opacity: 1;
 }
 
-.delete-button {
-  background: #ef4444;
-  color: white;
-  border: none;
-  padding: 0.5rem 1rem;
-  border-radius: 0.5rem;
-  font-size: 0.875rem;
+.delete-icon {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+}
+
+.delete-text {
+  font-size: 1rem;
+}
+
+.delete-instruction {
+  text-align: center;
+  color: #ef4444;
   font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  flex: 1;
-}
-
-.delete-button:hover {
-  background: #dc2626;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+  font-size: 0.875rem;
+  margin-top: 1rem;
 }
 
 .new-profile-button {
   background: linear-gradient(135deg, #10b981 0%, #059669 100%);
   color: white;
   border: none;
-  padding: 1rem 2rem;
-  border-radius: 0.75rem;
-  font-size: 1.125rem;
+  padding: 1.5rem 2rem;
+  border-radius: 1rem;
+  font-size: 1.25rem;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.3s ease;
   margin-top: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
 }
 
 .new-profile-button:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(16, 185, 129, 0.3);
+  box-shadow: 0 8px 25px rgba(16, 185, 129, 0.4);
+}
+
+.new-profile-icon {
+  font-size: 1.5rem;
 }
 
 .no-profiles {
   text-align: center;
-  padding: 2rem;
-  background: #f8fafc;
+  padding: 3rem 2rem;
+  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
   border: 2px dashed #d1d5db;
-  border-radius: 0.75rem;
+  border-radius: 1rem;
   color: #6b7280;
 }
 
+.no-profiles-icon {
+  font-size: 4rem;
+  margin-bottom: 1rem;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+}
+
 .no-profiles p {
-  font-size: 1rem;
+  font-size: 1.125rem;
   margin: 0;
+  font-weight: 500;
 }
 
 /* Form Actions */
@@ -527,7 +632,12 @@ code {
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
-  flex: 1;
+  flex: 0 0 auto;
+  min-width: 120px;
+  height: 56px; /* Match the height of start-button */
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .cancel-button:hover {

@@ -4,10 +4,14 @@ import { useNavigate } from 'react-router-dom';
 const ProfileSelector = () => {
   const [profiles, setProfiles] = useState([]);
   const [showNewProfileForm, setShowNewProfileForm] = useState(false);
+  const [showDeleteMenu, setShowDeleteMenu] = useState(false);
   const [kidName, setKidName] = useState('');
   const [primaryLanguage, setPrimaryLanguage] = useState('English');
   const [secondaryLanguage, setSecondaryLanguage] = useState('Hindi');
   const navigate = useNavigate();
+
+  // Kid-friendly emojis for profile icons
+  const kidEmojis = ['🐶', '🐱', '🐰', '🐼', '🐨', '🐯', '🦁', '🐸', '🐙', '🦄', '🦋', '🐢', '🐬', '🦕', '🦖', '🐳', '🦒', '🦘', '🐨', '🐯'];
 
   // Load existing profiles on component mount
   useEffect(() => {
@@ -18,12 +22,24 @@ const ProfileSelector = () => {
     const savedProfiles = localStorage.getItem('profiles');
     if (savedProfiles) {
       try {
-        setProfiles(JSON.parse(savedProfiles));
+        const parsedProfiles = JSON.parse(savedProfiles);
+        // Ensure each profile has an emoji
+        const profilesWithEmojis = parsedProfiles.map(profile => ({
+          ...profile,
+          emoji: profile.emoji || getRandomEmoji(profile.id)
+        }));
+        setProfiles(profilesWithEmojis);
       } catch (error) {
         console.error('Error loading profiles:', error);
         setProfiles([]);
       }
     }
+  };
+
+  const getRandomEmoji = (id) => {
+    // Use the profile ID to consistently get the same emoji for each profile
+    const index = parseInt(id) % kidEmojis.length;
+    return kidEmojis[index];
   };
 
   const saveProfiles = (newProfiles) => {
@@ -37,12 +53,18 @@ const ProfileSelector = () => {
       return;
     }
 
+    if (primaryLanguage === secondaryLanguage) {
+      alert('Primary and secondary languages must be different. Please select different languages.');
+      return;
+    }
+
     const newProfile = {
       id: Date.now().toString(),
       kidName: kidName.trim(),
       primaryLanguage,
       secondaryLanguage,
-      createdAt: new Date().toISOString()
+      createdAt: new Date().toISOString(),
+      emoji: getRandomEmoji(Date.now().toString())
     };
 
     const updatedProfiles = [...profiles, newProfile];
@@ -76,6 +98,7 @@ const ProfileSelector = () => {
         }
       }
     }
+    setShowDeleteMenu(false);
   };
 
   const handleStartNewProfile = () => {
@@ -90,51 +113,80 @@ const ProfileSelector = () => {
     setKidName('');
   };
 
+  const handlePrimaryLanguageChange = (language) => {
+    setPrimaryLanguage(language);
+    // If secondary language is the same, change it to the other option
+    if (language === secondaryLanguage) {
+      setSecondaryLanguage(language === 'English' ? 'Hindi' : 'English');
+    }
+  };
+
+  const handleSecondaryLanguageChange = (language) => {
+    // Prevent selecting the same language as primary
+    if (language === primaryLanguage) {
+      alert('Secondary language must be different from primary language.');
+      return;
+    }
+    setSecondaryLanguage(language);
+  };
+
+  const isFormValid = () => {
+    return kidName.trim() && primaryLanguage !== secondaryLanguage;
+  };
+
   return (
     <div className="profile-selector">
       <div className="profile-container">
         <h1 className="profile-title">My Talking Animals</h1>
-        <p className="profile-subtitle">Choose a profile or create a new one</p>
+        <p className="profile-subtitle">Choose your profile or create a new one!</p>
         
         {!showNewProfileForm ? (
           // Profile Selection View
           <div className="profile-selection">
             {profiles.length > 0 ? (
               <div className="existing-profiles">
-                <h2 className="section-title">Existing Profiles</h2>
+                <div className="profiles-header">
+                  <h2 className="section-title">Your Profiles</h2>
+                  <button
+                    onClick={() => setShowDeleteMenu(!showDeleteMenu)}
+                    className="menu-button"
+                  >
+                    {showDeleteMenu ? '✕' : '⚙️'}
+                  </button>
+                </div>
                 <div className="profiles-grid">
                   {profiles.map((profile) => (
-                    <div key={profile.id} className="profile-card">
+                    <div 
+                      key={profile.id} 
+                      className={`profile-card ${showDeleteMenu ? 'delete-mode' : ''}`}
+                      onClick={() => showDeleteMenu ? handleDeleteProfile(profile.id) : handleSelectProfile(profile)}
+                    >
+                      <div className="profile-icon">
+                        <span className="profile-emoji">{profile.emoji}</span>
+                      </div>
                       <div className="profile-info">
                         <h3 className="profile-name">{profile.kidName}</h3>
                         <p className="profile-languages">
                           {profile.primaryLanguage} • {profile.secondaryLanguage}
                         </p>
-                        <p className="profile-date">
-                          Created: {new Date(profile.createdAt).toLocaleDateString()}
-                        </p>
                       </div>
-                      <div className="profile-actions">
-                        <button
-                          onClick={() => handleSelectProfile(profile)}
-                          className="select-button"
-                        >
-                          Select
-                        </button>
-                        <button
-                          onClick={() => handleDeleteProfile(profile.id)}
-                          className="delete-button"
-                        >
-                          Delete
-                        </button>
-                      </div>
+                      {showDeleteMenu && (
+                        <div className="delete-overlay">
+                          <span className="delete-icon">🗑️</span>
+                          <span className="delete-text">Delete</span>
+                        </div>
+                      )}
                     </div>
                   ))}
                 </div>
+                {showDeleteMenu && (
+                  <p className="delete-instruction">Tap any profile to delete it</p>
+                )}
               </div>
             ) : (
               <div className="no-profiles">
-                <p>No profiles found. Create your first profile to get started!</p>
+                <div className="no-profiles-icon">👋</div>
+                <p>No profiles yet! Create your first profile to get started!</p>
               </div>
             )}
             
@@ -142,7 +194,8 @@ const ProfileSelector = () => {
               onClick={handleStartNewProfile}
               className="new-profile-button"
             >
-              + Create New Profile
+              <span className="new-profile-icon">➕</span>
+              Create New Profile
             </button>
           </div>
         ) : (
@@ -174,7 +227,7 @@ const ProfileSelector = () => {
                     name="primaryLanguage"
                     value="English"
                     checked={primaryLanguage === 'English'}
-                    onChange={(e) => setPrimaryLanguage(e.target.value)}
+                    onChange={(e) => handlePrimaryLanguageChange(e.target.value)}
                   />
                   <span className="language-text">English</span>
                 </label>
@@ -184,7 +237,7 @@ const ProfileSelector = () => {
                     name="primaryLanguage"
                     value="Hindi"
                     checked={primaryLanguage === 'Hindi'}
-                    onChange={(e) => setPrimaryLanguage(e.target.value)}
+                    onChange={(e) => handlePrimaryLanguageChange(e.target.value)}
                   />
                   <span className="language-text">Hindi</span>
                 </label>
@@ -194,34 +247,39 @@ const ProfileSelector = () => {
             <div className="form-group">
               <label className="form-label">Secondary Language</label>
               <div className="language-options">
-                <label className="language-option">
+                <label className={`language-option ${secondaryLanguage === primaryLanguage ? 'disabled' : ''}`}>
                   <input
                     type="radio"
                     name="secondaryLanguage"
                     value="English"
                     checked={secondaryLanguage === 'English'}
-                    onChange={(e) => setSecondaryLanguage(e.target.value)}
+                    onChange={(e) => handleSecondaryLanguageChange(e.target.value)}
+                    disabled={primaryLanguage === 'English'}
                   />
                   <span className="language-text">English</span>
                 </label>
-                <label className="language-option">
+                <label className={`language-option ${secondaryLanguage === primaryLanguage ? 'disabled' : ''}`}>
                   <input
                     type="radio"
                     name="secondaryLanguage"
                     value="Hindi"
                     checked={secondaryLanguage === 'Hindi'}
-                    onChange={(e) => setSecondaryLanguage(e.target.value)}
+                    onChange={(e) => handleSecondaryLanguageChange(e.target.value)}
+                    disabled={primaryLanguage === 'Hindi'}
                   />
                   <span className="language-text">Hindi</span>
                 </label>
               </div>
+              {primaryLanguage === secondaryLanguage && (
+                <p className="error-message">Secondary language must be different from primary language.</p>
+              )}
             </div>
 
             <div className="form-actions">
               <button
                 onClick={handleCreateNewProfile}
                 className="start-button"
-                disabled={!kidName.trim()}
+                disabled={!isFormValid()}
               >
                 Create Profile
               </button>
