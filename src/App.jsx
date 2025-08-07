@@ -3,6 +3,8 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import logo from './logo.svg';
 import ProfileSelector from './components/ProfileSelector';
 import Map from './components/Map';
+import MapScreen from './components/MapScreen';
+import AreaScreen from './components/AreaScreen';
 
 // Audio Player Component using Web Audio API
 const AudioPlayer = () => {
@@ -271,7 +273,8 @@ function App() {
     <Router>
       <Routes>
         <Route path="/" element={<ProfileSelector />} />
-        <Route path="/map" element={<Map />} />
+        <Route path="/map" element={<MapScreen />} />
+        <Route path="/area/:areaId" element={<AreaScreen />} />
         <Route path="/demo" element={<DemoHome />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>

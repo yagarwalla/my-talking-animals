@@ -1013,3 +1013,355 @@ code {
     min-width: auto;
   }
 }
+
+/* Map Screen Styles */
+.map-screen {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+}
+
+.map-header {
+  text-align: center;
+  padding: 2rem 1rem 1rem;
+  color: white;
+  z-index: 10;
+}
+
+.map-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.map-subtitle {
+  font-size: 1.125rem;
+  opacity: 0.9;
+  margin: 0;
+}
+
+.map-container {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  position: relative;
+}
+
+.map-image-container {
+  position: relative;
+  max-width: 100%;
+  max-height: 100%;
+  border-radius: 1rem;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+  filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.2));
+  overflow: hidden;
+}
+
+.map-background-image {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 1rem;
+}
+
+.map-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.map-overlay .map-area-group {
+  pointer-events: auto;
+}
+
+.map-svg-fallback {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: white;
+  border-radius: 1rem;
+}
+
+.map-background {
+  transition: all 0.3s ease;
+}
+
+.map-area-group {
+  transition: all 0.2s ease;
+}
+
+.map-area {
+  transition: all 0.3s ease;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+}
+
+.map-area:hover {
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.4));
+  stroke-width: 4;
+}
+
+.area-label {
+  pointer-events: none;
+  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
+}
+
+.decoration {
+  animation: twinkle 2s ease-in-out infinite alternate;
+}
+
+@keyframes twinkle {
+  0% { opacity: 0.6; }
+  100% { opacity: 1; }
+}
+
+.area-info-panel {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  padding: 2rem;
+  border-radius: 1rem;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+  text-align: center;
+  min-width: 300px;
+  z-index: 100;
+}
+
+.area-info-panel h3 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #1f2937;
+  margin-bottom: 0.5rem;
+}
+
+.area-info-panel p {
+  font-size: 1rem;
+  color: #6b7280;
+  margin-bottom: 1.5rem;
+}
+
+.loading-indicator {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.loading-dots {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.loading-dots span {
+  width: 8px;
+  height: 8px;
+  background: #667eea;
+  border-radius: 50%;
+  animation: loading-bounce 1.4s ease-in-out infinite both;
+}
+
+.loading-dots span:nth-child(1) {
+  animation-delay: -0.32s;
+}
+
+.loading-dots span:nth-child(2) {
+  animation-delay: -0.16s;
+}
+
+@keyframes loading-bounce {
+  0%, 80%, 100% {
+    transform: scale(0);
+  }
+  40% {
+    transform: scale(1);
+  }
+}
+
+.back-button {
+  position: absolute;
+  top: 2rem;
+  left: 2rem;
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(10px);
+  color: #1f2937;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transition: all 0.2s ease;
+  z-index: 10;
+}
+
+.back-button:hover {
+  background: rgba(255, 255, 255, 1);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .map-title {
+    font-size: 2rem;
+  }
+  
+  .map-subtitle {
+    font-size: 1rem;
+  }
+  
+  .map-container {
+    padding: 0.5rem;
+  }
+  
+  .area-info-panel {
+    min-width: 250px;
+    padding: 1.5rem;
+  }
+  
+  .back-button {
+    top: 1rem;
+    left: 1rem;
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+  }
+}
+
+/* Area Screen Styles */
+.area-screen {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  color: white;
+  position: relative;
+}
+
+.area-header {
+  padding: 2rem;
+  text-align: center;
+  position: relative;
+}
+
+.area-title {
+  font-size: 3rem;
+  font-weight: 700;
+  margin: 0;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.area-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  text-align: center;
+}
+
+.area-description {
+  max-width: 600px;
+  margin-bottom: 3rem;
+}
+
+.area-description p {
+  font-size: 1.25rem;
+  line-height: 1.6;
+  margin: 0;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.animals-grid {
+  margin-bottom: 3rem;
+}
+
+.animals-grid h2 {
+  font-size: 1.5rem;
+  margin-bottom: 1.5rem;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.animals-list {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.animal-item {
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 1rem;
+  padding: 1rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.animal-item:hover {
+  background: rgba(255, 255, 255, 0.3);
+  border-color: rgba(255, 255, 255, 0.5);
+  transform: translateY(-4px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+}
+
+.animal-emoji {
+  font-size: 2rem;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+}
+
+.coming-soon {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 1rem;
+  padding: 2rem;
+  max-width: 500px;
+}
+
+.coming-soon p {
+  font-size: 1.125rem;
+  margin: 0.5rem 0;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+/* Responsive Design for Area Screen */
+@media (max-width: 768px) {
+  .area-title {
+    font-size: 2rem;
+  }
+  
+  .area-description p {
+    font-size: 1rem;
+  }
+  
+  .animals-grid h2 {
+    font-size: 1.25rem;
+  }
+  
+  .animal-emoji {
+    font-size: 1.5rem;
+  }
+  
+  .coming-soon p {
+    font-size: 1rem;
+  }
+  
+  .area-header,
+  .area-content {
+    padding: 1rem;
+  }
+}
