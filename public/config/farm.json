@@ -1,0 +1,59 @@
+{
+  "background": "maps/farm-background.png",
+  "animals": [
+    {
+      "id": "cow",
+      "name": { "en": "Cow", "hi": "गाय" },
+      "spriteIdle": "animals/cow/cow_idle.png",
+      "spriteTalking": "animals/cow/cow_openmouth.png",
+      "sound": "animals/cow/moo.mp3",
+      "voice": "animals/cow/lines/cow_hi_generic_en_hi.mp3",
+      "position": { "x": "15%", "y": "60%" }
+    },
+    {
+      "id": "pig",
+      "name": { "en": "Pig", "hi": "सूअर" },
+      "spriteIdle": "animals/pig/pig_idle.png",
+      "spriteTalking": "animals/pig/pig_openmouth.png",
+      "sound": "animals/pig/oink.mp3",
+      "voice": "animals/pig/lines/pig_hi_generic_en_hi.mp3",
+      "position": { "x": "25%", "y": "70%" }
+    },
+    {
+      "id": "goat",
+      "name": { "en": "Goat", "hi": "बकरी" },
+      "spriteIdle": "animals/goat/goat_idle.png",
+      "spriteTalking": "animals/goat/goat_openmouth.png",
+      "sound": "animals/goat/baa.mp3",
+      "voice": "animals/goat/lines/goat_hi_generic_en_hi.mp3",
+      "position": { "x": "45%", "y": "65%" }
+    },
+    {
+      "id": "sheep",
+      "name": { "en": "Sheep", "hi": "भेड़" },
+      "spriteIdle": "animals/sheep/sheep_idle.png",
+      "spriteTalking": "animals/sheep/sheep_openmouth.png",
+      "sound": "animals/sheep/baa.mp3",
+      "voice": "animals/sheep/lines/sheep_hi_generic_en_hi.mp3",
+      "position": { "x": "60%", "y": "60%" }
+    },
+    {
+      "id": "hen",
+      "name": { "en": "Hen", "hi": "मुर्गी" },
+      "spriteIdle": "animals/hen/hen_idle.png",
+      "spriteTalking": "animals/hen/hen_openmouth.png",
+      "sound": "animals/hen/cluck.mp3",
+      "voice": "animals/hen/lines/hen_hi_generic_en_hi.mp3",
+      "position": { "x": "75%", "y": "75%" }
+    },
+    {
+      "id": "horse",
+      "name": { "en": "Horse", "hi": "घोड़ा" },
+      "spriteIdle": "animals/horse/horse_idle.png",
+      "spriteTalking": "animals/horse/horse_openmouth.png",
+      "sound": "animals/horse/neigh.mp3",
+      "voice": "animals/horse/lines/horse_hi_generic_en_hi.mp3",
+      "position": { "x": "35%", "y": "35%" }
+    }
+  ]
+}

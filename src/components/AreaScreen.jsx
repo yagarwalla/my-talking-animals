@@ -1,119 +1,232 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import Animal from './Animal';
 
 const AreaScreen = () => {
   const { areaId } = useParams();
   const navigate = useNavigate();
+  const [selectedAnimal, setSelectedAnimal] = useState(null);
+  const [farmConfig, setFarmConfig] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [currentLanguage, setCurrentLanguage] = useState('en');
 
-  // Area information
-  const areaInfo = {
-    farm: {
-      name: 'Farm',
-      description: 'Welcome to the farm! Meet our friendly farm animals.',
-      animals: ['🐄', '🐷', '🐑', '🐔', '🦆'],
-      color: '#8FBC8F'
-    },
-    forest: {
-      name: 'Forest',
-      description: 'Explore the magical forest and discover wild animals.',
-      animals: ['🦊', '🐻', '🦌', '🐰', '🦉'],
-      color: '#228B22'
-    },
-    lake: {
-      name: 'Lake',
-      description: 'Dive into the lake and swim with aquatic creatures.',
-      animals: ['🐟', '🐢', '🦢', '🦆', '🐸'],
-      color: '#4682B4'
-    },
-    mountain: {
-      name: 'Mountain',
-      description: 'Climb the mountain and meet mountain animals.',
-      animals: ['🐐', '🦅', '🐻', '🦊', '🦌'],
-      color: '#696969'
+  // Load farm configuration from JSON
+  useEffect(() => {
+    const loadFarmConfig = async () => {
+      if (areaId === 'farm') {
+        try {
+          setLoading(true);
+          const response = await fetch('/config/farm.json');
+          if (!response.ok) {
+            throw new Error('Failed to load farm configuration');
+          }
+          const config = await response.json();
+          setFarmConfig(config);
+        } catch (err) {
+          console.error('Error loading farm config:', err);
+          setError(err.message);
+        } finally {
+          setLoading(false);
+        }
+      }
+    };
+
+    loadFarmConfig();
+  }, [areaId]);
+
+  // Get current profile language preference
+  useEffect(() => {
+    const currentProfile = localStorage.getItem('currentProfile');
+    if (currentProfile) {
+      try {
+        const profile = JSON.parse(currentProfile);
+        setCurrentLanguage(profile.primaryLanguage === 'Hindi' ? 'hi' : 'en');
+      } catch (err) {
+        console.error('Error parsing profile:', err);
+      }
+    }
+  }, []);
+
+  const handleAnimalClick = (animal) => {
+    setSelectedAnimal(animal);
+    
+    // Auto-hide info panel after 5 seconds
+    setTimeout(() => {
+      setSelectedAnimal(null);
+    }, 5000);
+  };
+
+  const handleBackToMap = () => {
+    navigate('/map');
+  };
+
+  const getAreaInfo = () => {
+    switch (areaId) {
+      case 'farm':
+        return {
+          name: currentLanguage === 'hi' ? 'खेत' : 'Farm',
+          description: currentLanguage === 'hi' 
+            ? 'खेत में आपका स्वागत है! हमारे दोस्ताना जानवरों से मिलें।'
+            : 'Welcome to the farm! Meet our friendly animals.',
+          hasConfig: true
+        };
+      case 'forest':
+        return {
+          name: currentLanguage === 'hi' ? 'जंगल' : 'Forest',
+          description: currentLanguage === 'hi' 
+            ? 'रहस्यमय जंगल का अन्वेषण करें!'
+            : 'Explore the mysterious forest!',
+          hasConfig: false
+        };
+      case 'lake':
+        return {
+          name: currentLanguage === 'hi' ? 'झील' : 'Lake',
+          description: currentLanguage === 'hi' 
+            ? 'ठंडी झील में गोता लगाएं!'
+            : 'Dive into the cool lake!',
+          hasConfig: false
+        };
+      case 'mountain':
+        return {
+          name: currentLanguage === 'hi' ? 'पहाड़' : 'Mountain',
+          description: currentLanguage === 'hi' 
+            ? 'नई ऊंचाइयों पर चढ़ें!'
+            : 'Climb to new heights!',
+          hasConfig: false
+        };
+      default:
+        return {
+          name: currentLanguage === 'hi' ? 'अज्ञात क्षेत्र' : 'Unknown Area',
+          description: currentLanguage === 'hi' 
+            ? 'यह क्षेत्र अभी भी खोजा जा रहा है!'
+            : 'This area is still being explored!',
+          hasConfig: false
+        };
     }
   };
 
-  const currentArea = areaInfo[areaId] || {
-    name: 'Unknown Area',
-    description: 'This area is still being explored.',
-    animals: ['❓'],
-    color: '#999'
-  };
+  const areaInfo = getAreaInfo();
+
+  if (loading) {
+    return (
+      <div className="area-screen">
+        <div className="loading-container">
+          <motion.div
+            className="loading-spinner"
+            animate={{ rotate: 360 }}
+            transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+          />
+          <p>Loading farm...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="area-screen">
+        <div className="error-container">
+          <h2>Error Loading Farm</h2>
+          <p>{error}</p>
+          <button onClick={handleBackToMap}>Back to Map</button>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <motion.div 
-      className="area-screen"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      style={{ backgroundColor: currentArea.color }}
-    >
+    <div className="area-screen">
       <div className="area-header">
-        <motion.button
-          className="back-button"
-          onClick={() => navigate('/map')}
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-        >
-          ← Back to Map
-        </motion.button>
+        <h1 className="area-title">{areaInfo.name}</h1>
+        <p className="area-description">{areaInfo.description}</p>
         
-        <motion.h1 
-          className="area-title"
-          initial={{ y: -20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 0.2 }}
-        >
-          {currentArea.name}
-        </motion.h1>
+        {/* Language Toggle */}
+        <div className="language-toggle">
+          <button
+            className={`lang-btn ${currentLanguage === 'en' ? 'active' : ''}`}
+            onClick={() => setCurrentLanguage('en')}
+          >
+            English
+          </button>
+          <button
+            className={`lang-btn ${currentLanguage === 'hi' ? 'active' : ''}`}
+            onClick={() => setCurrentLanguage('hi')}
+          >
+            हिंदी
+          </button>
+        </div>
       </div>
 
       <div className="area-content">
-        <motion.div 
-          className="area-description"
-          initial={{ y: 20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 0.3 }}
-        >
-          <p>{currentArea.description}</p>
-        </motion.div>
+        {areaInfo.hasConfig && farmConfig ? (
+          <div className="area-scene">
+            {/* Background Image */}
+            <div className="area-background-container">
+              <img
+                src={`/${farmConfig.background}`}
+                alt={`${areaInfo.name} Background`}
+                className="area-background-image"
+                onError={(e) => {
+                  console.error('Failed to load background image:', e.target.src);
+                  e.target.style.display = 'none';
+                }}
+              />
+            </div>
 
-        <motion.div 
-          className="animals-grid"
-          initial={{ y: 20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 0.4 }}
-        >
-          <h2>Animals you can meet:</h2>
-          <div className="animals-list">
-            {currentArea.animals.map((animal, index) => (
-              <motion.div
-                key={index}
-                className="animal-item"
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
-                transition={{ delay: 0.5 + index * 0.1 }}
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.9 }}
-              >
-                <span className="animal-emoji">{animal}</span>
-              </motion.div>
+            {/* Animal Components */}
+            {farmConfig.animals.map((animal) => (
+              <Animal
+                key={animal.id}
+                animal={animal}
+                onAnimalClick={handleAnimalClick}
+                currentLanguage={currentLanguage}
+              />
             ))}
-          </div>
-        </motion.div>
 
-        <motion.div 
-          className="coming-soon"
-          initial={{ y: 20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 0.6 }}
-        >
-          <p>🎮 Interactive features coming soon!</p>
-          <p>Learn animal sounds, names, and more!</p>
-        </motion.div>
+            {/* Animal Info Panel */}
+            {selectedAnimal && (
+              <motion.div
+                className="animal-info-panel"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 20 }}
+                transition={{ duration: 0.3 }}
+              >
+                <h3>{selectedAnimal.name[currentLanguage] || selectedAnimal.name.en}</h3>
+                <div className="animal-sound">
+                  <span className="sound-icon">🔊</span>
+                  <span className="sound-text">
+                    {currentLanguage === 'hi' ? 'ध्वनि चल रही है!' : 'Playing sound!'}
+                  </span>
+                </div>
+              </motion.div>
+            )}
+          </div>
+        ) : (
+          <div className="coming-soon">
+            <div className="coming-soon-icon">🚧</div>
+            <h2>{currentLanguage === 'hi' ? 'जल्द आ रहा है!' : 'Coming Soon!'}</h2>
+            <p>
+              {currentLanguage === 'hi' 
+                ? 'यह क्षेत्र अभी भी निर्माणाधीन है। बाद में वापस जांचें!'
+                : 'This area is still under construction. Check back later!'
+              }
+            </p>
+          </div>
+        )}
       </div>
-    </motion.div>
+
+      <motion.button
+        className="back-button"
+        onClick={handleBackToMap}
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}
+      >
+        ← {currentLanguage === 'hi' ? 'मानचित्र पर वापस जाएं' : 'Back to Map'}
+      </motion.button>
+    </div>
   );
 };
 

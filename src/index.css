@@ -1230,125 +1230,365 @@ code {
 /* Area Screen Styles */
 .area-screen {
   min-height: 100vh;
+  background: linear-gradient(135deg, #87CEEB 0%, #98FB98 100%);
+  padding: 20px;
+  position: relative;
   display: flex;
   flex-direction: column;
-  color: white;
-  position: relative;
 }
 
 .area-header {
-  padding: 2rem;
   text-align: center;
+  margin-bottom: 20px;
+  z-index: 20;
   position: relative;
 }
 
 .area-title {
-  font-size: 3rem;
-  font-weight: 700;
-  margin: 0;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: #2C3E50;
+  margin-bottom: 10px;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.area-description {
+  font-size: 1.2rem;
+  color: #34495E;
+  margin-bottom: 0;
 }
 
 .area-content {
   flex: 1;
   display: flex;
-  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+/* Farm Scene Styles */
+.area-scene {
+  position: relative;
+  width: 100%;
+  max-width: 900px;
+  height: 600px;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.area-background-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+.area-background-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Animal Overlay Styles */
+.animal-overlay {
+  position: absolute;
+  z-index: 10;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.animal-image {
+  width: 300px;
+  height: 225px;
+  object-fit: contain;
+  pointer-events: none;
+  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.3));
+}
+
+/* Animal Info Panel */
+.animal-info-panel {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border-radius: 15px;
+  padding: 20px;
+  text-align: center;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  z-index: 20;
+  min-width: 300px;
+}
+
+.animal-info-panel h3 {
+  font-size: 1.8rem;
+  color: #2C3E50;
+  margin-bottom: 10px;
+  font-weight: bold;
+}
+
+.animal-info-panel p {
+  font-size: 1.1rem;
+  color: #34495E;
+  margin-bottom: 15px;
+  line-height: 1.5;
+}
+
+.animal-sound {
+  display: flex;
   align-items: center;
   justify-content: center;
-  padding: 2rem;
-  text-align: center;
+  gap: 10px;
+  background: linear-gradient(135deg, #3498DB, #2980B9);
+  color: white;
+  padding: 10px 20px;
+  border-radius: 25px;
+  font-weight: bold;
+  font-size: 1.1rem;
 }
 
-.area-description {
-  max-width: 600px;
-  margin-bottom: 3rem;
+.sound-icon {
+  font-size: 1.2rem;
 }
 
-.area-description p {
-  font-size: 1.25rem;
-  line-height: 1.6;
-  margin: 0;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
-}
-
-.animals-grid {
-  margin-bottom: 3rem;
-}
-
-.animals-grid h2 {
-  font-size: 1.5rem;
-  margin-bottom: 1.5rem;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
-}
-
-.animals-list {
-  display: flex;
-  gap: 1rem;
-  flex-wrap: wrap;
-  justify-content: center;
-}
-
-.animal-item {
-  background: rgba(255, 255, 255, 0.2);
-  backdrop-filter: blur(10px);
-  border: 2px solid rgba(255, 255, 255, 0.3);
-  border-radius: 1rem;
-  padding: 1rem;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.animal-item:hover {
-  background: rgba(255, 255, 255, 0.3);
-  border-color: rgba(255, 255, 255, 0.5);
-  transform: translateY(-4px);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
-}
-
-.animal-emoji {
-  font-size: 2rem;
-  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
-}
-
+/* Coming Soon Styles */
 .coming-soon {
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 1rem;
-  padding: 2rem;
-  max-width: 500px;
+  text-align: center;
+  padding: 40px;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 20px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+.coming-soon-icon {
+  font-size: 4rem;
+  margin-bottom: 20px;
+}
+
+.coming-soon h2 {
+  font-size: 2rem;
+  color: #2C3E50;
+  margin-bottom: 15px;
 }
 
 .coming-soon p {
-  font-size: 1.125rem;
-  margin: 0.5rem 0;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  font-size: 1.2rem;
+  color: #34495E;
+  line-height: 1.6;
 }
 
-/* Responsive Design for Area Screen */
+/* Back Button */
+.back-button {
+  background: linear-gradient(135deg, #3498DB, #2980B9);
+  color: white;
+  border: none;
+  padding: 15px 30px;
+  border-radius: 25px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
+  display: block;
+  margin: 0 auto;
+}
+
+.back-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(52, 152, 219, 0.4);
+}
+
+.back-button:active {
+  transform: translateY(0);
+}
+
+/* Responsive Design */
 @media (max-width: 768px) {
   .area-title {
     font-size: 2rem;
   }
   
-  .area-description p {
+  .area-description {
     font-size: 1rem;
   }
   
-  .animals-grid h2 {
-    font-size: 1.25rem;
+  .area-scene {
+    height: 400px;
   }
   
-  .animal-emoji {
+  .animal-image {
+    width: 225px;
+    height: 169px;
+  }
+  
+  .animal-info-panel {
+    min-width: 250px;
+    padding: 15px;
+  }
+  
+  .animal-info-panel h3 {
     font-size: 1.5rem;
   }
   
-  .coming-soon p {
+  .animal-info-panel p {
     font-size: 1rem;
   }
-  
-  .area-header,
-  .area-content {
-    padding: 1rem;
+}
+
+/* Animal Component Styles */
+.animal-container {
+  position: absolute;
+  z-index: 10;
+  /* Remove transform from here since it's handled in the component */
+}
+
+.animal-sprite {
+  cursor: pointer;
+  transition: all 0.3s ease;
+  /* Center the sprite on its position */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.animal-image {
+  width: 200px;
+  height: 150px;
+  object-fit: contain;
+  pointer-events: none;
+  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.3));
+  /* Ensure smooth scaling */
+  transition: all 0.3s ease;
+}
+
+/* Responsive animal sizing */
+@media (max-width: 768px) {
+  .animal-image {
+    width: 150px;
+    height: 112px;
   }
+}
+
+@media (min-width: 1200px) {
+  .animal-image {
+    width: 250px;
+    height: 188px;
+  }
+}
+
+/* Sparkle Effects */
+.sparkle-container {
+  position: absolute;
+  top: -50px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 20;
+  pointer-events: none;
+}
+
+.sparkle {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  background: #FFD700;
+  border-radius: 50%;
+  box-shadow: 0 0 10px rgba(255, 215, 0, 0.8);
+}
+
+/* Language Toggle */
+.language-toggle {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.lang-btn {
+  background: rgba(255, 255, 255, 0.8);
+  border: 2px solid rgba(52, 152, 219, 0.3);
+  border-radius: 20px;
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  color: #34495E;
+}
+
+.lang-btn:hover {
+  background: rgba(255, 255, 255, 0.95);
+  border-color: rgba(52, 152, 219, 0.5);
+  transform: translateY(-2px);
+}
+
+.lang-btn.active {
+  background: #3498DB;
+  color: white;
+  border-color: #2980B9;
+}
+
+/* Loading States */
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 60vh;
+  gap: 20px;
+}
+
+.loading-spinner {
+  width: 50px;
+  height: 50px;
+  border: 4px solid rgba(52, 152, 219, 0.2);
+  border-top: 4px solid #3498DB;
+  border-radius: 50%;
+}
+
+.loading-container p {
+  font-size: 1.2rem;
+  color: #34495E;
+  font-weight: 500;
+}
+
+/* Error States */
+.error-container {
+  text-align: center;
+  padding: 40px;
+  background: rgba(231, 76, 60, 0.1);
+  border: 2px solid rgba(231, 76, 60, 0.3);
+  border-radius: 20px;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.error-container h2 {
+  color: #C0392B;
+  margin-bottom: 15px;
+}
+
+.error-container p {
+  color: #E74C3C;
+  margin-bottom: 20px;
+}
+
+.error-container button {
+  background: #E74C3C;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 15px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.error-container button:hover {
+  background: #C0392B;
+  transform: translateY(-2px);
 }
