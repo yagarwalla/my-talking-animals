@@ -34,7 +34,7 @@
       "spriteIdle": "animals/sheep/sheep_idle.png",
       "spriteTalking": "animals/sheep/sheep_openmouth.png",
       "sound": "animals/sheep/baa.mp3",
-      "voice": "animals/sheep/lines/sheep_hi_generic_en_hi.mp3",
+      "voice": "animals/sheep/voice_en.mp3",
       "position": { "x": "60%", "y": "60%" }
     },
     {
