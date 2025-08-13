@@ -269,3 +269,10 @@ This project is licensed under the MIT License.
 - TailwindCSS for the utility-first CSS approach
 - Howler.js for audio functionality
 - Web Audio API for native browser audio capabilities 
+## 🎙️ Voice Generation
+
+This project includes Azure OpenAI TTS for animal voices. See  for setup instructions.
+
+## 🎙️ Voice Generation
+
+This project includes Azure OpenAI TTS for animal voices. See .env.example for setup instructions.
