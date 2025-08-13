@@ -1300,13 +1300,7 @@ code {
   transition: all 0.3s ease;
 }
 
-.animal-image {
-  width: 300px;
-  height: 225px;
-  object-fit: contain;
-  pointer-events: none;
-  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.3));
-}
+/* Animal images are scaled to 50% and positioned with transform */
 
 /* Animal Info Panel */
 .animal-info-panel {
@@ -1421,10 +1415,7 @@ code {
     height: 400px;
   }
   
-  .animal-image {
-    width: 225px;
-    height: 169px;
-  }
+  /* Animal images are scaled to 50% and positioned with transform */
   
   .animal-info-panel {
     min-width: 250px;
@@ -1450,36 +1441,11 @@ code {
 .animal-sprite {
   cursor: pointer;
   transition: all 0.3s ease;
-  /* Center the sprite on its position */
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  /* Position the sprite absolutely to avoid flexbox scaling issues */
+  position: relative;
 }
 
-.animal-image {
-  width: 200px;
-  height: 150px;
-  object-fit: contain;
-  pointer-events: none;
-  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.3));
-  /* Ensure smooth scaling */
-  transition: all 0.3s ease;
-}
-
-/* Responsive animal sizing */
-@media (max-width: 768px) {
-  .animal-image {
-    width: 150px;
-    height: 112px;
-  }
-}
-
-@media (min-width: 1200px) {
-  .animal-image {
-    width: 250px;
-    height: 188px;
-  }
-}
+/* Animal images are scaled to 50% and positioned with transform */
 
 /* Sparkle Effects */
 .sparkle-container {

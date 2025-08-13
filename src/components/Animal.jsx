@@ -86,14 +86,14 @@ const Animal = ({ animal, onAnimalClick, currentLanguage = 'en' }) => {
       return {
         left: x,
         top: y,
-        transform: 'translate(-50%, -50%)' // Center the animal on its position
+        transform: 'translate(-50%, -50%) scale(0.5)' // Center and scale the animal
       };
     } else {
       // Pixel positioning (fallback)
       return {
         left: `${x}px`,
         top: `${y}px`,
-        transform: 'translate(-50%, -50%)' // Center the animal on its position
+        transform: 'translate(-50%, -50%) scale(0.5)' // Center and scale the animal
       };
     }
   };
@@ -160,7 +160,12 @@ const Animal = ({ animal, onAnimalClick, currentLanguage = 'en' }) => {
         <img
           src={`/${isTalking ? animal.spriteTalking : animal.spriteIdle}`}
           alt={getAnimalName()}
-          className="animal-image"
+          style={{
+            objectFit: 'contain',
+            pointerEvents: 'none',
+            filter: 'drop-shadow(0 4px 12px rgba(0, 0, 0, 0.3))',
+            transition: 'all 0.3s ease'
+          }}
           onError={(e) => {
             console.error('Failed to load animal sprite:', e.target.src);
             // Fallback to idle sprite if talking sprite fails
@@ -179,7 +184,7 @@ const Animal = ({ animal, onAnimalClick, currentLanguage = 'en' }) => {
         transition={{ delay: 0.5 }}
         style={{
           position: 'absolute',
-          top: '-30px',
+          top: '-60px', // Adjusted for scaled animal size
           left: '50%',
           transform: 'translateX(-50%)',
           background: 'rgba(255, 255, 255, 0.9)',
@@ -189,7 +194,8 @@ const Animal = ({ animal, onAnimalClick, currentLanguage = 'en' }) => {
           fontWeight: 'bold',
           color: '#2C3E50',
           whiteSpace: 'nowrap',
-          boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)'
+          boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
+          zIndex: 15 // Ensure it's above the animal
         }}
       >
         {getAnimalName()}
