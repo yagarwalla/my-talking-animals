@@ -142,21 +142,7 @@ const AreaScreen = () => {
         <h1 className="area-title">{areaInfo.name}</h1>
         <p className="area-description">{areaInfo.description}</p>
         
-        {/* Language Toggle */}
-        <div className="language-toggle">
-          <button
-            className={`lang-btn ${currentLanguage === 'en' ? 'active' : ''}`}
-            onClick={() => setCurrentLanguage('en')}
-          >
-            English
-          </button>
-          <button
-            className={`lang-btn ${currentLanguage === 'hi' ? 'active' : ''}`}
-            onClick={() => setCurrentLanguage('hi')}
-          >
-            हिंदी
-          </button>
-        </div>
+
       </div>
 
       <div className="area-content">

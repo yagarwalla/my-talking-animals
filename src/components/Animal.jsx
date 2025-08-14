@@ -199,30 +199,7 @@ const Animal = ({ animal, onAnimalClick, currentLanguage = 'en' }) => {
         />
       </motion.div>
 
-      {/* Animal Name Label */}
-      <motion.div
-        className="animal-name-label"
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.5 }}
-        style={{
-          position: 'absolute',
-          top: '-60px', // Adjusted for scaled animal size
-          left: '50%',
-          transform: 'translateX(-50%)',
-          background: 'rgba(255, 255, 255, 0.9)',
-          padding: '4px 12px',
-          borderRadius: '12px',
-          fontSize: '14px',
-          fontWeight: 'bold',
-          color: '#2C3E50',
-          whiteSpace: 'nowrap',
-          boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
-          zIndex: 15 // Ensure it's above the animal
-        }}
-      >
-        {getAnimalName()}
-      </motion.div>
+
     </div>
   );
 };
