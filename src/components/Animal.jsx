@@ -86,7 +86,14 @@ const Animal = ({ animal, onAnimalClick, currentLanguage = 'en' }) => {
       const style = {
         left: x,
         top: y,
-        transform: 'translate(-50%, -50%) scale(0.5)' // Center and scale the animal
+        transform: 'translate(-50%, -50%) scale(0.5)', // Center and scale the animal
+        position: 'absolute',
+        zIndex: 10,
+        // Force size consistency
+        minWidth: 'auto',
+        minHeight: 'auto',
+        maxWidth: 'none',
+        maxHeight: 'none'
       };
       console.log(`Animal ${animal.id} style:`, style); // Debug log
       return style;
@@ -95,7 +102,14 @@ const Animal = ({ animal, onAnimalClick, currentLanguage = 'en' }) => {
       const style = {
         left: `${x}px`,
         top: `${y}px`,
-        transform: 'translate(-50%, -50%) scale(0.5)' // Center and scale the animal
+        transform: 'translate(-50%, -50%) scale(0.5)', // Center and scale the animal
+        position: 'absolute',
+        zIndex: 10,
+        // Force size consistency
+        minWidth: 'auto',
+        minHeight: 'auto',
+        maxWidth: 'none',
+        maxHeight: 'none'
       };
       console.log(`Animal ${animal.id} style:`, style); // Debug log
       return style;
@@ -168,7 +182,12 @@ const Animal = ({ animal, onAnimalClick, currentLanguage = 'en' }) => {
             objectFit: 'contain',
             pointerEvents: 'none',
             filter: 'drop-shadow(0 4px 12px rgba(0, 0, 0, 0.3))',
-            transition: 'all 0.3s ease'
+            transition: 'all 0.3s ease',
+            // Force consistent sizing
+            width: 'auto',
+            height: 'auto',
+            maxWidth: 'none',
+            maxHeight: 'none'
           }}
           onError={(e) => {
             console.error('Failed to load animal sprite:', e.target.src);

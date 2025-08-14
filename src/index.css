@@ -1436,6 +1436,10 @@ code {
   position: absolute;
   z-index: 10;
   /* Remove transform from here since it's handled in the component */
+  /* Force overflow behavior */
+  overflow: visible !important;
+  clip: auto !important;
+  clip-path: none !important;
 }
 
 .animal-sprite {
