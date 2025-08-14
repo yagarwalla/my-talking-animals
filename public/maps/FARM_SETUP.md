@@ -5,7 +5,7 @@
 Place these files in the `public/maps/` directory:
 
 ### **Background Image:**
-- **`farm-background.png`** - The main farm scene background
+- **`farm-background.jpg`** - The main farm scene background
   - **Size**: 900x600px (or larger, will scale automatically)
   - **Content**: Farm landscape with sky, hills, barn, fence, trees, and ground
   - **Format**: PNG with full color (no transparency needed)

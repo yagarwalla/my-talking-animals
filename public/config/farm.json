@@ -1,5 +1,5 @@
 {
-  "background": "maps/farm-background.png",
+  "background": "maps/farm-background.jpg",
   "animals": [
     {
       "id": "cow",
@@ -17,7 +17,7 @@
       "spriteTalking": "animals/pig/pig_idle.PNG",
       "sound": "animals/pig/oink.mp3",
       "voice": "animals/pig/voice_en.mp3",
-      "position": { "x": "25%", "y": "85%" }
+      "position": { "x": "30%", "y": "85%" }
     },
     {
       "id": "goat",
@@ -26,7 +26,7 @@
       "spriteTalking": "animals/goat/goat_idle.PNG",
       "sound": "animals/goat/baa.mp3",
       "voice": "animals/goat/voice_en.mp3",
-      "position": { "x": "55%", "y": "65%" }
+      "position": { "x": "58%", "y": "65%" }
     },
     {
       "id": "sheep",
@@ -35,7 +35,7 @@
       "spriteTalking": "animals/sheep/sheep_idle.PNG",
       "sound": "animals/sheep/baa.mp3",
       "voice": "animals/sheep/voice_en.mp3",
-      "position": { "x": "50%", "y": "80%" }
+      "position": { "x": "50%", "y": "85%" }
     },
     {
       "id": "hen",
@@ -44,7 +44,7 @@
       "spriteTalking": "animals/hen/hen_idle.PNG",
       "sound": "animals/hen/cluck.mp3",
       "voice": "animals/hen/voice_en.mp3",
-      "position": { "x": "75%", "y": "75%" }
+      "position": { "x": "80%", "y": "75%" }
     },
     {
       "id": "horse",

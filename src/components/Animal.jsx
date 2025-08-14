@@ -83,18 +83,22 @@ const Animal = ({ animal, onAnimalClick, currentLanguage = 'en' }) => {
     const isPercentage = typeof x === 'string' && x.includes('%');
     
     if (isPercentage) {
-      return {
+      const style = {
         left: x,
         top: y,
         transform: 'translate(-50%, -50%) scale(0.5)' // Center and scale the animal
       };
+      console.log(`Animal ${animal.id} style:`, style); // Debug log
+      return style;
     } else {
       // Pixel positioning (fallback)
-      return {
+      const style = {
         left: `${x}px`,
         top: `${y}px`,
         transform: 'translate(-50%, -50%) scale(0.5)' // Center and scale the animal
       };
+      console.log(`Animal ${animal.id} style:`, style); // Debug log
+      return style;
     }
   };
 

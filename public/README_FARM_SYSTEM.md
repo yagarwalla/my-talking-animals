@@ -26,7 +26,7 @@ public/
 ├── config/
 │   └── farm.json                    # Farm configuration
 ├── maps/
-│   └── farm-background.png          # Farm background scene
+│   └── farm-background.jpg         # Farm background scene
 └── animals/
     ├── cow/
     │   ├── cow_idle.png            # Cow idle sprite
@@ -68,13 +68,13 @@ public/
 
 **Note**: Files in the `public/` directory are served at the root URL. For example:
 - `public/config/farm.json` → `/config/farm.json`
-- `public/maps/farm-background.png` → `/maps/farm-background.png`
+- `public/maps/farm-background.jpg` → `/maps/farm-background.jpg`
 - `public/animals/cow/cow_idle.png` → `/animals/cow/cow_idle.png`
 
 ## 🎨 **Image Requirements**
 
 ### **Background Image:**
-- **File**: `farm-background.png`
+- **File**: `farm-background.jpg`
 - **Size**: 900x600px (or larger)
 - **Format**: PNG with full color
 - **Content**: Complete farm scene with sky, hills, barn, fence, trees, grass
