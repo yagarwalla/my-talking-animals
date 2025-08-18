@@ -1,42 +1,41 @@
 # My Talking Animals
 
-A React Progressive Web App (PWA) built with modern web technologies including TailwindCSS, Howler.js, and React Router.
+A React Progressive Web App (PWA) that creates an interactive farm experience where children can learn animal names in multiple languages through AI-generated speech and animations.
 
-## Features
+## 🌟 Features
 
-- **Progressive Web App (PWA)**: Installable on mobile devices with offline capabilities
-- **Profile Selection**: Interactive profile setup for children with language preferences
-- **Responsive Design**: Optimized for both portrait and landscape orientations
-- **Landscape Orientation Check**: Shows a "Rotate Device" overlay in portrait mode
-- **Audio Playback**: Two different audio implementations:
-  - Web Audio API for pure sine wave tones
-  - Howler.js integration for more complex audio features
-- **Smooth Animations**: CSS animations and transitions
-- **Modern Styling**: TailwindCSS for utility-first CSS framework
-- **Client-Side Routing**: React Router for seamless navigation
+- **Interactive Farm Map**: Clickable areas with animated overlays
+- **AI-Powered Animal Voices**: GPT-4o-mini generates bilingual introductions
+- **Azure OpenAI TTS**: High-quality text-to-speech with animal-specific playback rates
+- **Profile Management**: Create, select, and manage multiple child profiles
+- **Bilingual Learning**: Primary and secondary language support (English/Hindi)
+- **Talking Animations**: Realistic mouth movements synchronized with speech
+- **Responsive Design**: Optimized for all device sizes
+- **PWA Ready**: Installable on mobile devices
 
-## Technologies Used
+## 🏗️ Architecture
 
-- **React 19**: Latest version of React with modern features
-- **Create React App**: PWA template for easy setup
-- **React Router**: Client-side routing for navigation
-- **TailwindCSS v3**: Utility-first CSS framework (stable version)
-- **Howler.js**: Audio library for web applications
-- **Web Audio API**: Native browser audio capabilities
-- **Service Workers**: For PWA functionality and offline support
+**Frontend Only**: This is a client-side React application with no separate backend server.
 
-## Getting Started
+- **Frontend**: React.js with modern hooks and components
+- **AI Services**: Azure OpenAI (GPT + TTS) via API calls
+- **Storage**: Browser localStorage for user profiles
+- **Audio**: Web Audio API for effects, HTML5 Audio for playback
+- **Styling**: CSS with Framer Motion animations
+
+## 🚀 Getting Started
 
 ### Prerequisites
 
 - Node.js (v18 or higher)
 - npm or yarn
+- Azure OpenAI Service account
 
 ### Installation
 
 1. Clone the repository:
 ```bash
-git clone <repository-url>
+git clone https://github.com/yagarwalla/my-talking-animals.git
 cd my-talking-animals
 ```
 
@@ -45,212 +44,190 @@ cd my-talking-animals
 npm install
 ```
 
-3. Start the development server:
+3. Set up environment variables:
+```bash
+cp .env.example .env
+# Edit .env with your Azure OpenAI credentials
+```
+
+4. Start the development server:
 ```bash
 npm start
 ```
 
-4. Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+5. Open [http://localhost:3000](http://localhost:3000) in your browser
 
-### Building for Production
-
-```bash
-npm run build
-```
-
-This creates a `build` folder with the production-ready files.
-
-## Project Structure
+## 📁 Project Structure
 
 ```
 my-talking-animals/
 ├── public/
+│   ├── config/
+│   │   └── farm.json              # Animal configurations and positions
+│   ├── maps/
+│   │   └── landscape-map.jpg      # Interactive farm map background
+│   ├── animals/                   # Animal sprites and sounds
+│   │   ├── cow/
+│   │   │   ├── cow_idle.png
+│   │   │   ├── cow_openmouth.png
+│   │   │   ├── moo.mp3
+│   │   │   └── voice_en.mp3
+│   │   ├── pig/
+│   │   ├── goat/
+│   │   ├── sheep/
+│   │   ├── hen/
+│   │   └── horse/
 │   ├── index.html
 │   ├── manifest.json
 │   └── service-worker.js
 ├── src/
 │   ├── components/
-│   │   ├── ProfileSelector.jsx    # Profile setup component
-│   │   └── Map.jsx                # Map screen component
+│   │   ├── ProfileSelector.jsx    # Profile creation and management
+│   │   ├── MapScreen.jsx          # Interactive farm map
+│   │   ├── AreaScreen.jsx         # Farm area with animals
+│   │   ├── Animal.jsx             # Individual animal component
+│   │   ├── AnimalCard.jsx         # Demo animal component
+│   │   └── AnimalDemo.jsx         # Demo page
+│   ├── utils/
+│   │   ├── generateAnimalSpeech.js    # GPT + TTS integration
+│   │   └── audioEffects.js            # Audio playback rate effects
 │   ├── App.jsx                    # Main app with routing
-│   ├── index.css                  # All styles including TailwindCSS
-│   ├── index.js                   # App entry point
-│   └── logo.svg
-├── tailwind.config.js             # TailwindCSS configuration
-├── postcss.config.js              # PostCSS configuration
-└── package.json
+│   ├── index.css                  # Global styles and animations
+│   └── index.js                   # App entry point
+├── .env.example                   # Environment variables template
+├── package.json
+└── README.md
 ```
 
-## Key Features Explained
+## 🎯 Core Features
 
-### Profile Selector Screen
+### 1. Profile Management
+- **Create Profiles**: Set child name, primary/secondary languages
+- **Profile Selection**: Choose from multiple saved profiles
+- **Language Support**: English and Hindi combinations
+- **Persistent Storage**: Profiles saved in browser localStorage
 
-The app starts with a profile setup screen that allows parents to:
-- Enter their child's name
-- Select primary language (English/Hindi)
-- Select secondary language (English/Hindi)
-- Save profile to localStorage
-- Navigate to the map screen
+### 2. Interactive Farm Map
+- **Clickable Areas**: Farm, Forest, Lake, Mountain
+- **Animated Overlays**: Trees, mountains, forest, lake with Framer Motion
+- **Responsive Design**: Adapts to different screen sizes
+- **Navigation**: Seamless routing between areas
 
-### Landscape Orientation Check
+### 3. AI-Powered Animal Voices
+- **GPT-4o-mini**: Generates bilingual animal introductions
+- **Azure TTS**: High-quality speech synthesis
+- **Bilingual Content**: Example: "Hi there, I am a cow, I like eating grass. I am called gaye in Hindi. Can you say gaye in Hindi?"
+- **Language Learning**: Teaches animal names in secondary language
 
-The app automatically detects device orientation and shows a beautiful overlay when in portrait mode, encouraging users to rotate their device for the best experience.
+### 4. Talking Animations
+- **Sprite Cycling**: Alternates between idle and talking sprites
+- **Synchronized Timing**: Animation matches speech duration
+- **Natural Rhythm**: 1.2s talking, 0.8s idle (2s total cycle)
+- **Visual Feedback**: Sparkle effects on click
 
-### Audio Player Components
+### 5. Audio Effects System
+- **Playback Rate Adjustments**: Each animal has unique voice characteristics
+- **Lightweight Processing**: No complex DSP, just HTML5 Audio
+- **Animal Configurations**:
+  - Cow: 0.85x (slower, deeper)
+  - Pig: 0.9x (slightly slower)
+  - Goat: 1.2x (faster, higher)
+  - Sheep: 0.95x (gentle)
+  - Hen: 1.4x (fast, chirpy)
+  - Horse: 0.9x (majestic)
 
-The app includes two different audio implementations within a single file:
+## 🔧 Configuration
 
-#### 1. AudioPlayer (Web Audio API)
-- Uses native Web Audio API
-- Generates pure sine wave tones (440Hz A4 note)
-- 2-second duration with fade-out
-- Real-time volume control
-- No external dependencies
-
-#### 2. HowlerAudioPlayer (Howler.js)
-- Demonstrates Howler.js integration
-- Generates beep sounds (800Hz square wave)
-- 300ms duration for quick feedback
-- Volume control integration
-- Shows Howler.js capabilities
-
-### PWA Features
-
-- **Service Worker**: Enables offline functionality
-- **Web App Manifest**: Makes the app installable
-- **Responsive Design**: Works on all device sizes
-
-## Routing
-
-The app uses React Router for navigation:
-
-- **`/`** - Profile Selector (default route)
-- **`/map`** - Map screen (requires profile setup)
-- **`/demo`** - Demo screen with audio players
-- **`*`** - Redirects to profile selector
-
-## Code Organization
-
-### App.jsx
-Contains all React components and logic:
-- Main App component with React Router setup
-- DemoHome component (original app content)
-- AudioPlayer component (Web Audio API)
-- HowlerAudioPlayer component (Howler.js)
-- Rotate device overlay
-- All event handlers and state management
-
-### ProfileSelector.jsx
-Profile setup component:
-- Name input field
-- Language selection (primary/secondary)
-- Form validation
-- localStorage integration
-- Navigation to map screen
-
-### Map.jsx
-Map screen component:
-- Profile data display
-- Placeholder for interactive map
-- Back navigation functionality
-- Profile validation
-
-### index.css
-Contains all styling:
-- TailwindCSS directives (@tailwind base, components, utilities)
-- Custom CSS for app layout and components
-- Profile selector styles
-- Map screen styles
-- Audio player styles
-- Rotate overlay styles
-- Animation classes
-- Responsive design rules
-
-## Customization
-
-### Adding New Routes
-
-To add new routes, update the Routes in App.jsx:
-
-```javascript
-<Routes>
-  <Route path="/" element={<ProfileSelector />} />
-  <Route path="/map" element={<Map />} />
-  <Route path="/new-route" element={<NewComponent />} />
-  <Route path="*" element={<Navigate to="/" replace />} />
-</Routes>
+### Environment Variables (.env)
+```bash
+REACT_APP_AZURE_AI_FOUNDRY_KEY=your_azure_openai_api_key
+REACT_APP_GPT_ENDPOINT=https://your-resource.openai.azure.com/openai/deployments/gpt-4o-mini
+REACT_APP_TTS_ENDPOINT=https://your-resource.openai.azure.com/openai/deployments/gpt-4o-mini-tts
 ```
 
-### Profile Data Structure
-
-The profile is saved to localStorage with this structure:
-
-```javascript
+### Farm Configuration (public/config/farm.json)
+```json
 {
-  kidName: "Child's Name",
-  primaryLanguage: "English",
-  secondaryLanguage: "Hindi",
-  createdAt: "2024-01-01T00:00:00.000Z"
+  "background": "farm-background.png",
+  "animals": [
+    {
+      "id": "cow",
+      "name": { "en": "Cow", "hi": "गाय" },
+      "spriteIdle": "animals/cow/cow_idle.png",
+      "spriteTalking": "animals/cow/cow_openmouth.png",
+      "sound": "animals/cow/moo.mp3",
+      "voice": "animals/cow/voice_en.mp3",
+      "position": { "x": "15%", "y": "60%" }
+    }
+  ]
 }
 ```
 
-### Adding New Audio Files
+## 🎮 User Experience Flow
 
-To add custom audio files with Howler.js:
+1. **Profile Setup**: Create child profile with language preferences
+2. **Map Navigation**: Explore interactive farm map
+3. **Area Selection**: Click on farm area to enter
+4. **Animal Interaction**: Click animals to hear AI-generated introductions
+5. **Language Learning**: Learn animal names in secondary language
+6. **Visual Feedback**: Watch talking animations and sparkle effects
 
-```javascript
-const sound = new Howl({
-  src: ['path/to/your/audio.mp3'],
-  volume: 0.5,
-});
+## 🛠️ Technical Implementation
+
+### Audio Processing Pipeline
+1. **User Click** → Animal sound plays immediately
+2. **GPT Generation** → Bilingual introduction text
+3. **Azure TTS** → High-quality speech audio
+4. **Playback Rate** → Animal-specific speed adjustment
+5. **Animation Sync** → Talking animation matches audio duration
+
+### State Management
+- **React Hooks**: useState, useEffect for component state
+- **Local Storage**: Profile persistence
+- **React Router**: Navigation and routing
+- **Framer Motion**: Animations and transitions
+
+### Performance Optimizations
+- **Audio Preloading**: Howler.js for sound effects
+- **Image Optimization**: PNG sprites with transparent backgrounds
+- **Lazy Loading**: Components load on demand
+- **Efficient Rendering**: React.memo and optimized re-renders
+
+## 🌐 Browser Support
+
+- **Chrome**: Full support (recommended)
+- **Firefox**: Full support
+- **Safari**: Full support
+- **Edge**: Full support
+
+**Note**: Web Audio API requires user interaction before playing audio.
+
+## 🚀 Deployment
+
+### Build for Production
+```bash
+npm run build
 ```
 
-### Creating Custom Tones
+### PWA Features
+- **Service Worker**: Offline functionality
+- **Web App Manifest**: Installable on mobile devices
+- **Responsive Design**: Works on all screen sizes
 
-To create custom tones with Web Audio API:
+## 🔍 Troubleshooting
 
-```javascript
-const audioContext = new AudioContext();
-const oscillator = audioContext.createOscillator();
-oscillator.frequency.setValueAtTime(440, audioContext.currentTime);
-oscillator.type = 'sine';
-```
+### Common Issues
+1. **Audio Not Playing**: Ensure user interaction before audio
+2. **TTS Errors**: Check Azure OpenAI API credentials
+3. **Profile Issues**: Clear localStorage if profiles become corrupted
+4. **Animation Problems**: Check browser support for Framer Motion
 
-### Styling with TailwindCSS
+### Debug Mode
+- Open browser console for detailed logs
+- Check network tab for API calls
+- Verify environment variables are loaded
 
-The project is configured with TailwindCSS v3. You can customize the design by modifying the `tailwind.config.js` file or adding custom classes in `index.css`.
-
-### Animation Customization
-
-CSS animations can be customized in `index.css`. The app includes fade-in animations and hover effects.
-
-## Browser Support
-
-- Chrome (recommended)
-- Firefox
-- Safari
-- Edge
-
-**Note**: Web Audio API requires user interaction before playing audio in some browsers.
-
-## Troubleshooting
-
-### Audio Issues
-- Ensure user interaction before playing audio
-- Check browser autoplay policies
-- Verify audio context is not suspended
-
-### TailwindCSS Issues
-- This project uses TailwindCSS v3 (stable) instead of v4
-- PostCSS configuration is properly set up
-- All utility classes should work correctly
-
-### Routing Issues
-- Ensure React Router is properly installed
-- Check that all route components are imported
-- Verify that the Router wraps the entire app
-
-## Contributing
+## 🤝 Contributing
 
 1. Fork the repository
 2. Create a feature branch
@@ -258,21 +235,14 @@ CSS animations can be customized in `index.css`. The app includes fade-in animat
 4. Test thoroughly
 5. Submit a pull request
 
-## License
+## 📄 License
 
 This project is licensed under the MIT License.
 
-## Acknowledgments
+## 🙏 Acknowledgments
 
-- React team for the amazing framework
-- React Router for client-side routing
-- TailwindCSS for the utility-first CSS approach
-- Howler.js for audio functionality
-- Web Audio API for native browser audio capabilities 
-## 🎙️ Voice Generation
-
-This project includes Azure OpenAI TTS for animal voices. See  for setup instructions.
-
-## 🎙️ Voice Generation
-
-This project includes Azure OpenAI TTS for animal voices. See .env.example for setup instructions.
+- **React Team**: Amazing framework and ecosystem
+- **Azure OpenAI**: High-quality AI services
+- **Framer Motion**: Smooth animations
+- **Howler.js**: Audio library
+- **Web Audio API**: Browser audio capabilities 
