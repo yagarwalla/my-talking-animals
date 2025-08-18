@@ -1,11 +1,14 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Howl } from 'howler';
+import { generateAnimalVoice } from '../utils/generateAnimalSpeech';
 
 const Animal = ({ animal, onAnimalClick, currentLanguage = 'en' }) => {
   const [isTalking, setIsTalking] = useState(false);
   const [showSparkles, setShowSparkles] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
+  const [generatedText, setGeneratedText] = useState('');
+  const [isGenerating, setIsGenerating] = useState(false);
   
   const soundRef = useRef(null);
   const voiceRef = useRef(null);
@@ -36,28 +39,46 @@ const Animal = ({ animal, onAnimalClick, currentLanguage = 'en' }) => {
   }, [animal.sound, animal.voice]);
 
   const handleAnimalClick = async () => {
-    if (isAnimating) return; // Prevent multiple clicks during animation
+    if (isAnimating || isGenerating) return; // Prevent multiple clicks during animation or generation
     
     setIsAnimating(true);
     setShowSparkles(true);
     setIsTalking(true);
+    setIsGenerating(true);
 
-    // Play voice line first
-    if (voiceRef.current) {
-      voiceRef.current.play();
+    // 1. Play preloaded animal sound immediately
+    if (soundRef.current) {
+      soundRef.current.play();
     }
 
-    // Wait a bit then play animal sound
-    setTimeout(() => {
-      if (soundRef.current) {
-        soundRef.current.play();
-      }
-    }, 500);
-
-    // Stop talking after animation
-    setTimeout(() => {
+    try {
+      // 2. Call generateAnimalSpeech while sound plays
+      const result = await generateAnimalVoice(
+        animal.id,
+        currentLanguage,
+        process.env.REACT_APP_AZURE_AI_FOUNDRY_KEY,
+        process.env.REACT_APP_GPT_ENDPOINT,
+        process.env.REACT_APP_TTS_ENDPOINT
+      );
+      
+      // 3. When Promise resolves, play audio and start talking animation
+      setGeneratedText(result.text);
+      
+      // Play the generated speech audio
+      const speechAudio = new Audio(result.audioUrl);
+      speechAudio.play();
+      
+      // Start talking animation that cycles between sprites
+      startTalkingAnimation(speechAudio.duration || 3000);
+      
+    } catch (error) {
+      console.error('Error generating animal speech:', error);
+      setGeneratedText('Sorry, I couldn\'t speak right now!');
+      // Stop talking animation on error
       setIsTalking(false);
-    }, 2000);
+    } finally {
+      setIsGenerating(false);
+    }
 
     // Hide sparkles after animation
     setTimeout(() => {
@@ -69,6 +90,31 @@ const Animal = ({ animal, onAnimalClick, currentLanguage = 'en' }) => {
     if (onAnimalClick) {
       onAnimalClick(animal);
     }
+  };
+
+  // Function to cycle between idle and talking sprites
+  const startTalkingAnimation = (duration) => {
+    let startTime = Date.now();
+    const cycleInterval = 200; // Switch sprites every 200ms
+    
+    const animationInterval = setInterval(() => {
+      const elapsed = Date.now() - startTime;
+      
+      if (elapsed >= duration) {
+        clearInterval(animationInterval);
+        setIsTalking(false);
+        return;
+      }
+      
+      // Toggle between talking and idle every 200ms
+      setIsTalking(prev => !prev);
+    }, cycleInterval);
+    
+    // Cleanup interval after duration
+    setTimeout(() => {
+      clearInterval(animationInterval);
+      setIsTalking(false);
+    }, duration);
   };
 
   const getAnimalName = () => {
@@ -199,6 +245,33 @@ const Animal = ({ animal, onAnimalClick, currentLanguage = 'en' }) => {
         />
       </motion.div>
 
+
+
+      {/* Loading Indicator */}
+      {isGenerating && (
+        <motion.div
+          className="generating-indicator"
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: 10 }}
+          transition={{ duration: 0.3 }}
+          style={{
+            position: 'absolute',
+            top: '-80px',
+            left: '50%',
+            transform: 'translateX(-50%)',
+            background: 'rgba(52, 152, 219, 0.9)',
+            color: 'white',
+            padding: '6px 12px',
+            borderRadius: '12px',
+            fontSize: '12px',
+            fontWeight: 'bold',
+            zIndex: 20
+          }}
+        >
+          Thinking...
+        </motion.div>
+      )}
 
     </div>
   );

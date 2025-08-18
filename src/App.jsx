@@ -262,6 +262,14 @@ const DemoHome = () => {
           >
             Learn React
           </a>
+          
+          <a
+            className="App-link scale-hover scale-active"
+            href="/animal-demo"
+            style={{ marginTop: '1rem' }}
+          >
+            Try Animal Speech Demo
+          </a>
         </header>
       </div>
     </div>
@@ -276,7 +284,8 @@ function App() {
         <Route path="/" element={<ProfileSelector />} />
         <Route path="/map" element={<MapScreen />} />
         <Route path="/area/:areaId" element={<AreaScreen />} />
-        <Route path="/demo" element={<AnimalDemo />} />
+        <Route path="/demo" element={<DemoHome />} />
+        <Route path="/animal-demo" element={<AnimalDemo />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </Router>
