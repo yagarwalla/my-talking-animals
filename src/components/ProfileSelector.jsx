@@ -1,5 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
+
+// Utility function moved outside component to avoid dependency issues
+const getRandomEmoji = (id, kidEmojis) => {
+  // Use the profile ID to consistently get the same emoji for each profile
+  const index = parseInt(id) % kidEmojis.length;
+  return kidEmojis[index];
+};
 
 const ProfileSelector = () => {
   const [profiles, setProfiles] = useState([]);
@@ -12,37 +19,32 @@ const ProfileSelector = () => {
   const navigate = useNavigate();
 
   // Kid-friendly emojis for profile icons
-  const kidEmojis = ['🐶', '🐱', '🐰', '🐼', '🐨', '🐯', '🦁', '🐸', '🐙', '🦄', '🦋', '🐢', '🐬', '🦕', '🦖', '🐳', '🦒', '🦘'];
+  const kidEmojis = useMemo(() => ['🐶', '🐱', '🐰', '🐼', '🐨', '🐯', '🦁', '🐸', '🐙', '🦄', '🦋', '🐢', '🐬', '🦕', '🦖', '🐳', '🦒', '🦘'], []);
 
   // Load existing profiles on component mount
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
-    loadProfiles();
-  }, []);
-
-  const loadProfiles = () => {
-    const savedProfiles = localStorage.getItem('profiles');
-    if (savedProfiles) {
-      try {
-        const parsedProfiles = JSON.parse(savedProfiles);
-        // Ensure each profile has an emoji
-        const profilesWithEmojis = parsedProfiles.map(profile => ({
-          ...profile,
-          emoji: profile.emoji || getRandomEmoji(profile.id)
-        }));
-        setProfiles(profilesWithEmojis);
-      } catch (error) {
-        console.error('Error loading profiles:', error);
-        setProfiles([]);
+    const loadProfiles = () => {
+      const savedProfiles = localStorage.getItem('profiles');
+      if (savedProfiles) {
+        try {
+          const parsedProfiles = JSON.parse(savedProfiles);
+          // Ensure each profile has an emoji
+          const profilesWithEmojis = parsedProfiles.map(profile => ({
+            ...profile,
+            emoji: profile.emoji || getRandomEmoji(profile.id, kidEmojis)
+          }));
+          setProfiles(profilesWithEmojis);
+        } catch (error) {
+          console.error('Error loading profiles:', error);
+          setProfiles([]);
+        }
       }
-    }
-  };
+    };
+    
+    loadProfiles();
+  }, [kidEmojis]);
 
-  const getRandomEmoji = (id) => {
-    // Use the profile ID to consistently get the same emoji for each profile
-    const index = parseInt(id) % kidEmojis.length;
-    return kidEmojis[index];
-  };
+
 
   const saveProfiles = (newProfiles) => {
     localStorage.setItem('profiles', JSON.stringify(newProfiles));
@@ -66,7 +68,7 @@ const ProfileSelector = () => {
       primaryLanguage,
       secondaryLanguage,
       createdAt: new Date().toISOString(),
-      emoji: selectedEmoji || getRandomEmoji(Date.now().toString())
+      emoji: selectedEmoji || getRandomEmoji(Date.now().toString(), kidEmojis)
     };
 
     const updatedProfiles = [...profiles, newProfile];
