@@ -23,10 +23,17 @@ const generateAnimalVoice = (animalName, languageCode, azureKey, gptEndpoint, tt
   };
 
   const generateText = async () => {
-    const prompt = `Generate one friendly, cheerful, 1–2 sentence line for a ${animalName} speaking to a toddler.
+    const prompt = `Generate a friendly, cheerful introduction for a ${animalName} speaking to a toddler in two languages.
+
+The response should include:
+1. 1-2 sentences about the animal in ${languageCode === 'en' ? 'English' : 'Hindi'} (primary language)
+2. Introduce the animal's name in ${languageCode === 'en' ? 'Hindi' : 'English'} (secondary language)
+3. Encourage the user to repeat the word in the secondary language
+
+Format: "Hi there, I am a cow, I like eating grass. I am called gaye in Hindi. मुझे हिंदी में गाय कहते हैं. Can you say gaye in Hindi?"
+
 Tone: cheerful and warm.
-Example: "Hi, I'm Coco the Cow! I love eating green grass."
-Output only the sentence.`;
+Output only the complete response.`;
 
     const response = await fetch(`${gptEndpoint}/chat/completions?api-version=2024-02-15-preview`, {
       method: 'POST',
