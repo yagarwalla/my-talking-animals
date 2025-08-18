@@ -40,8 +40,15 @@ const Animal = ({ animal, onAnimalClick, currentLanguage = 'en' }) => {
   }, [animal.sound, animal.voice]);
 
   const handleAnimalClick = async () => {
-    if (isAnimating || isGenerating) return; // Prevent multiple clicks during animation or generation
+    // Force rebuild comment - Azure deployment test
+    console.log('🖱️ Animal clicked:', animal.id, 'Current talking state:', isTalking);
     
+    if (isAnimating || isGenerating) {
+      console.log('🚫 Click blocked - already animating or generating');
+      return;
+    }
+    
+    console.log('🎬 Setting animation states...');
     setIsAnimating(true);
     setShowSparkles(true);
     setIsTalking(true);
@@ -53,6 +60,13 @@ const Animal = ({ animal, onAnimalClick, currentLanguage = 'en' }) => {
     }
 
     try {
+      // Debug: Check environment variables
+      console.log('🔍 Environment variables check:', {
+        azureKey: process.env.REACT_APP_AZURE_AI_FOUNDRY_KEY ? '***' : 'MISSING',
+        gptEndpoint: process.env.REACT_APP_GPT_ENDPOINT || 'MISSING',
+        ttsEndpoint: process.env.REACT_APP_TTS_ENDPOINT || 'MISSING'
+      });
+      
       // 2. Call generateAnimalSpeech while sound plays
       const result = await generateAnimalVoice(
         animal.id,
@@ -94,6 +108,7 @@ const Animal = ({ animal, onAnimalClick, currentLanguage = 'en' }) => {
 
   // Function to cycle between idle and talking sprites
   const startTalkingAnimation = (duration) => {
+    console.log('🎬 Starting talking animation for:', duration, 'ms');
     let startTime = Date.now();
     const talkingDuration = 1200; // Talking sprite visible for 1.2 seconds (longer)
     const idleDuration = 800;     // Idle sprite visible for 0.8 seconds
@@ -103,6 +118,7 @@ const Animal = ({ animal, onAnimalClick, currentLanguage = 'en' }) => {
       const elapsed = Date.now() - startTime;
       
       if (elapsed >= duration) {
+        console.log('🎬 Animation completed, clearing interval');
         clearInterval(animationInterval);
         setIsTalking(false);
         return;
@@ -110,13 +126,18 @@ const Animal = ({ animal, onAnimalClick, currentLanguage = 'en' }) => {
       
       // Calculate position in current cycle
       const cyclePosition = elapsed % totalCycle;
+      const newTalkingState = cyclePosition < talkingDuration;
       
       // Show talking sprite for first 1.2 seconds of each cycle, idle for last 0.8 seconds
-      setIsTalking(cyclePosition < talkingDuration);
+      if (newTalkingState !== isTalking) {
+        console.log('🎬 Switching sprite:', newTalkingState ? 'TALKING' : 'IDLE', 'at', elapsed, 'ms');
+        setIsTalking(newTalkingState);
+      }
     }, 100); // Check every 100ms for smooth transitions
     
     // Cleanup interval after duration
     setTimeout(() => {
+      console.log('🎬 Animation cleanup timeout');
       clearInterval(animationInterval);
       setIsTalking(false);
     }, duration);
@@ -240,8 +261,13 @@ const Animal = ({ animal, onAnimalClick, currentLanguage = 'en' }) => {
             maxWidth: 'none',
             maxHeight: 'none'
           }}
+          onLoad={() => {
+            const currentSprite = isTalking ? animal.spriteTalking : animal.spriteIdle;
+            console.log('✅ Image loaded successfully:', currentSprite);
+          }}
           onError={(e) => {
-            console.error('Failed to load animal sprite:', e.target.src);
+            const currentSprite = isTalking ? animal.spriteTalking : animal.spriteIdle;
+            console.error('❌ Image failed to load:', currentSprite, 'URL:', e.target.src);
             // Fallback to idle sprite if talking sprite fails
             if (isTalking) {
               e.target.src = `/${animal.spriteIdle}`;

@@ -1,4 +1,21 @@
 const generateAnimalVoice = (animalName, languageCode, azureKey, gptEndpoint, ttsEndpoint) => {
+  // Debug logging to see what values we're getting
+  console.log('🔍 generateAnimalVoice called with:', {
+    animalName,
+    languageCode,
+    azureKey: azureKey ? '***' : 'MISSING',
+    gptEndpoint: gptEndpoint || 'MISSING',
+    ttsEndpoint: ttsEndpoint || 'MISSING'
+  });
+  
+  if (!gptEndpoint || !ttsEndpoint || !azureKey) {
+    console.error('❌ Missing required environment variables:', {
+      gptEndpoint: !!gptEndpoint,
+      ttsEndpoint: !!ttsEndpoint,
+      azureKey: !!azureKey
+    });
+    throw new Error('Missing required Azure OpenAI configuration');
+  }
   const voices = {
     en: {
       cow: "alloy",
