@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { generateAnimalVoice } from '../utils/generateAnimalSpeech';
+import { playAnimalVoice } from '../utils/audioEffects';
 
 const AnimalCard = ({ animalName, onAnimalClick }) => {
   const [generatedText, setGeneratedText] = useState('');
@@ -40,27 +41,10 @@ const AnimalCard = ({ animalName, onAnimalClick }) => {
       // 3. When Promise resolves, display text and play audio
       setGeneratedText(result.text);
       
-      console.log('🎵 Audio URL received:', result.audioUrl);
+      // Use new audio effects system
+      const audioResult = await playAnimalVoice({ id: animalName.toLowerCase() }, result.text);
       
-      // Play the generated speech audio
-      try {
-        const speechAudio = new Audio(result.audioUrl);
-        
-        speechAudio.onloadstart = () => console.log('🎵 Audio loading started');
-        speechAudio.oncanplay = () => console.log('🎵 Audio can play');
-        speechAudio.onerror = (e) => console.error('🎵 Audio playback error:', e);
-        speechAudio.onended = () => console.log('🎵 Audio playback ended');
-        
-        const playPromise = speechAudio.play();
-        
-        if (playPromise !== undefined) {
-          playPromise
-            .then(() => console.log('🎵 Audio playback started successfully'))
-            .catch(error => console.error('🎵 Audio playback failed:', error));
-        }
-      } catch (error) {
-        console.error('🎵 Audio creation error:', error);
-      }
+      console.log('🎵 Audio with effects played:', audioResult.effects);
       
     } catch (error) {
       console.error('Error generating animal speech:', error);

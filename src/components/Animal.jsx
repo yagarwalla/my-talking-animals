@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Howl } from 'howler';
 import { generateAnimalVoice } from '../utils/generateAnimalSpeech';
+import { playAnimalVoice } from '../utils/audioEffects';
 
 const Animal = ({ animal, onAnimalClick, currentLanguage = 'en' }) => {
   const [isTalking, setIsTalking] = useState(false);
@@ -64,12 +65,12 @@ const Animal = ({ animal, onAnimalClick, currentLanguage = 'en' }) => {
       // 3. When Promise resolves, play audio and start talking animation
       setGeneratedText(result.text);
       
-      // Play the generated speech audio
-      const speechAudio = new Audio(result.audioUrl);
-      speechAudio.play();
+      // Use new audio effects system instead of direct Audio playback
+      const audioResult = await playAnimalVoice(animal, result.text);
       
-      // Start talking animation that cycles between sprites
-      startTalkingAnimation(speechAudio.duration || 3000);
+      // Start talking animation based on processed audio duration
+      const animationDuration = audioResult.duration * 1000;
+      startTalkingAnimation(animationDuration);
       
     } catch (error) {
       console.error('Error generating animal speech:', error);
@@ -95,7 +96,9 @@ const Animal = ({ animal, onAnimalClick, currentLanguage = 'en' }) => {
   // Function to cycle between idle and talking sprites
   const startTalkingAnimation = (duration) => {
     let startTime = Date.now();
-    const cycleInterval = 200; // Switch sprites every 200ms
+    const talkingDuration = 1200; // Talking sprite visible for 1.2 seconds (longer)
+    const idleDuration = 800;     // Idle sprite visible for 0.8 seconds
+    const totalCycle = talkingDuration + idleDuration; // 2 seconds total cycle
     
     const animationInterval = setInterval(() => {
       const elapsed = Date.now() - startTime;
@@ -106,9 +109,12 @@ const Animal = ({ animal, onAnimalClick, currentLanguage = 'en' }) => {
         return;
       }
       
-      // Toggle between talking and idle every 200ms
-      setIsTalking(prev => !prev);
-    }, cycleInterval);
+      // Calculate position in current cycle
+      const cyclePosition = elapsed % totalCycle;
+      
+      // Show talking sprite for first 1.2 seconds of each cycle, idle for last 0.8 seconds
+      setIsTalking(cyclePosition < talkingDuration);
+    }, 100); // Check every 100ms for smooth transitions
     
     // Cleanup interval after duration
     setTimeout(() => {
