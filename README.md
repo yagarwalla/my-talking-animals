@@ -204,15 +204,50 @@ REACT_APP_TTS_ENDPOINT=https://your-resource.openai.azure.com/openai/deployments
 
 ## 🚀 Deployment
 
-### Build for Production
+### Local Build
 ```bash
 npm run build
 ```
+
+### Azure Static Web Apps Deployment
+
+This React PWA is optimized for deployment on Azure Static Web Apps:
+
+1. **Build the project**:
+   ```bash
+   npm run build
+   ```
+
+2. **Deploy to Azure Portal**:
+   - Go to Azure Portal → Static Web Apps
+   - Create new Static Web App
+   - Connect to your GitHub repository
+   - Configure build settings:
+     - **App location**: `/` (root of repository)
+     - **Output location**: `build`
+     - **Build command**: `npm run build`
+
+3. **Environment Variables**:
+   - Add your Azure OpenAI environment variables in Azure Static Web Apps Configuration
+   - Variables will be available as `process.env.REACT_APP_*`
 
 ### PWA Features
 - **Service Worker**: Offline functionality
 - **Web App Manifest**: Installable on mobile devices
 - **Responsive Design**: Works on all screen sizes
+
+### ⚠️ Security Note
+
+**Current Implementation**: API keys are stored in environment variables and bundled with the frontend code. This means:
+- API keys are visible in the browser's source code
+- Anyone can inspect and use your API keys
+- This is **NOT secure for production use**
+
+**Long-term Solution**: Move GPT + TTS API calls to a backend service:
+- Create Azure Functions or API endpoints
+- Handle API calls server-side
+- Keep API keys secure on the server
+- Frontend only calls your secure backend endpoints
 
 ## 🔍 Troubleshooting
 
@@ -221,6 +256,12 @@ npm run build
 2. **TTS Errors**: Check Azure OpenAI API credentials
 3. **Profile Issues**: Clear localStorage if profiles become corrupted
 4. **Animation Problems**: Check browser support for Framer Motion
+
+### Deployment Issues
+1. **Build Failures**: Ensure all dependencies are installed (`npm install`)
+2. **Environment Variables**: Verify all `REACT_APP_*` variables are set in Azure
+3. **API Errors in Production**: Check if API keys are properly configured
+4. **CORS Issues**: Ensure Azure OpenAI endpoints allow your domain
 
 ### Debug Mode
 - Open browser console for detailed logs
