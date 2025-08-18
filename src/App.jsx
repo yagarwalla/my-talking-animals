@@ -5,6 +5,7 @@ import ProfileSelector from './components/ProfileSelector';
 import Map from './components/Map';
 import MapScreen from './components/MapScreen';
 import AreaScreen from './components/AreaScreen';
+import AnimalDemo from './components/AnimalDemo';
 
 // Audio Player Component using Web Audio API
 const AudioPlayer = () => {
@@ -275,7 +276,7 @@ function App() {
         <Route path="/" element={<ProfileSelector />} />
         <Route path="/map" element={<MapScreen />} />
         <Route path="/area/:areaId" element={<AreaScreen />} />
-        <Route path="/demo" element={<DemoHome />} />
+        <Route path="/demo" element={<AnimalDemo />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </Router>
