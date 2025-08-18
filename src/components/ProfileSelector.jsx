@@ -15,6 +15,7 @@ const ProfileSelector = () => {
   const kidEmojis = ['🐶', '🐱', '🐰', '🐼', '🐨', '🐯', '🦁', '🐸', '🐙', '🦄', '🦋', '🐢', '🐬', '🦕', '🦖', '🐳', '🦒', '🦘'];
 
   // Load existing profiles on component mount
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     loadProfiles();
   }, []);

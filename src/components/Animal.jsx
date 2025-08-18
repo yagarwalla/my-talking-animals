@@ -8,7 +8,7 @@ const Animal = ({ animal, onAnimalClick, currentLanguage = 'en' }) => {
   const [isTalking, setIsTalking] = useState(false);
   const [showSparkles, setShowSparkles] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
-  const [generatedText, setGeneratedText] = useState('');
+
   const [isGenerating, setIsGenerating] = useState(false);
   
   const soundRef = useRef(null);
@@ -63,7 +63,6 @@ const Animal = ({ animal, onAnimalClick, currentLanguage = 'en' }) => {
       );
       
       // 3. When Promise resolves, play audio and start talking animation
-      setGeneratedText(result.text);
       
       // Use new audio effects system instead of direct Audio playback
       const audioResult = await playAnimalVoice(animal, result.text);
@@ -74,7 +73,7 @@ const Animal = ({ animal, onAnimalClick, currentLanguage = 'en' }) => {
       
     } catch (error) {
       console.error('Error generating animal speech:', error);
-      setGeneratedText('Sorry, I couldn\'t speak right now!');
+
       // Stop talking animation on error
       setIsTalking(false);
     } finally {

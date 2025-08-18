@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { generateAnimalVoice } from '../utils/generateAnimalSpeech';
 import { playAnimalVoice } from '../utils/audioEffects';
 

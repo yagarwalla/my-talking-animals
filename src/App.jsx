@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import logo from './logo.svg';
 import ProfileSelector from './components/ProfileSelector';
-import Map from './components/Map';
+
 import MapScreen from './components/MapScreen';
 import AreaScreen from './components/AreaScreen';
 import AnimalDemo from './components/AnimalDemo';
