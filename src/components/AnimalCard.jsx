@@ -44,7 +44,7 @@ const AnimalCard = ({ animalName, onAnimalClick }) => {
       // Use new audio effects system
       const audioResult = await playAnimalVoice({ id: animalName.toLowerCase() }, result.text);
       
-      console.log('🎵 Audio with effects played:', audioResult.effects);
+      console.log('🎵 Audio with playback rate:', audioResult.playbackRate);
       
     } catch (error) {
       console.error('Error generating animal speech:', error);
