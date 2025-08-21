@@ -61,11 +61,11 @@ const Animal = ({ animal, onAnimalClick, currentLanguage = 'en' }) => {
 
     try {
       // Debug: Check environment variables
-      console.log('🔍 Environment variables check:', {
-        azureKey: process.env.REACT_APP_AZURE_AI_FOUNDRY_KEY ? '***' : 'MISSING',
-        gptEndpoint: process.env.REACT_APP_GPT_ENDPOINT || 'MISSING',
-        ttsEndpoint: process.env.REACT_APP_TTS_ENDPOINT || 'MISSING'
-      });
+              console.log('🔍 Environment variables check (updated):', {
+          azureKey: process.env.REACT_APP_AZURE_AI_FOUNDRY_KEY ? '***' : 'MISSING',
+          gptEndpoint: process.env.REACT_APP_GPT_ENDPOINT || 'MISSING',
+          ttsEndpoint: process.env.REACT_APP_TTS_ENDPOINT || 'MISSING'
+        });
       
       // 2. Call generateAnimalSpeech while sound plays
       const result = await generateAnimalVoice(
