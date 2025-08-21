@@ -29,6 +29,12 @@ jobs:
           node-version: '18'
           cache: 'npm'
       
+      - name: Set Environment Variables
+        run: |
+          echo "REACT_APP_AZURE_AI_FOUNDRY_KEY=${{ secrets.REACT_APP_AZURE_AI_FOUNDRY_KEY }}" >> $GITHUB_ENV
+          echo "REACT_APP_GPT_ENDPOINT=${{ secrets.REACT_APP_GPT_ENDPOINT }}" >> $GITHUB_ENV
+          echo "REACT_APP_TTS_ENDPOINT=${{ secrets.REACT_APP_TTS_ENDPOINT }}" >> $GITHUB_ENV
+      
       - name: Install dependencies
         run: npm install
       
@@ -38,17 +44,9 @@ jobs:
           echo "REACT_APP_AZURE_AI_FOUNDRY_KEY: ${REACT_APP_AZURE_AI_FOUNDRY_KEY:0:10}..."
           echo "REACT_APP_GPT_ENDPOINT: $REACT_APP_GPT_ENDPOINT"
           echo "REACT_APP_TTS_ENDPOINT: $REACT_APP_TTS_ENDPOINT"
-        env:
-          REACT_APP_AZURE_AI_FOUNDRY_KEY: ${{ secrets.REACT_APP_AZURE_AI_FOUNDRY_KEY }}
-          REACT_APP_GPT_ENDPOINT: ${{ secrets.REACT_APP_GPT_ENDPOINT }}
-          REACT_APP_TTS_ENDPOINT: ${{ secrets.REACT_APP_TTS_ENDPOINT }}
       
       - name: Build
         run: npm run build
-        env:
-          REACT_APP_AZURE_AI_FOUNDRY_KEY: ${{ secrets.REACT_APP_AZURE_AI_FOUNDRY_KEY }}
-          REACT_APP_GPT_ENDPOINT: ${{ secrets.REACT_APP_GPT_ENDPOINT }}
-          REACT_APP_TTS_ENDPOINT: ${{ secrets.REACT_APP_TTS_ENDPOINT }}
       
       - name: Debug Built Files
         run: |
