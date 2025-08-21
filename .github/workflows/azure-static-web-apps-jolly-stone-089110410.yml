@@ -32,12 +32,33 @@ jobs:
       - name: Install dependencies
         run: npm install
       
+      - name: Debug Environment Variables
+        run: |
+          echo "🔍 Checking environment variables during build:"
+          echo "REACT_APP_AZURE_AI_FOUNDRY_KEY: ${REACT_APP_AZURE_AI_FOUNDRY_KEY:0:10}..."
+          echo "REACT_APP_GPT_ENDPOINT: $REACT_APP_GPT_ENDPOINT"
+          echo "REACT_APP_TTS_ENDPOINT: $REACT_APP_TTS_ENDPOINT"
+        env:
+          REACT_APP_AZURE_AI_FOUNDRY_KEY: ${{ secrets.REACT_APP_AZURE_AI_FOUNDRY_KEY }}
+          REACT_APP_GPT_ENDPOINT: ${{ secrets.REACT_APP_GPT_ENDPOINT }}
+          REACT_APP_TTS_ENDPOINT: ${{ secrets.REACT_APP_TTS_ENDPOINT }}
+      
       - name: Build
         run: npm run build
         env:
           REACT_APP_AZURE_AI_FOUNDRY_KEY: ${{ secrets.REACT_APP_AZURE_AI_FOUNDRY_KEY }}
           REACT_APP_GPT_ENDPOINT: ${{ secrets.REACT_APP_GPT_ENDPOINT }}
           REACT_APP_TTS_ENDPOINT: ${{ secrets.REACT_APP_TTS_ENDPOINT }}
+      
+      - name: Debug Built Files
+        run: |
+          echo "🔍 Checking if environment variables are embedded in built files:"
+          if grep -q "REACT_APP_AZURE_AI_FOUNDRY_KEY" build/static/js/*.js; then
+            echo "✅ Found environment variable references in built JS files"
+            grep -o "REACT_APP_[A-Z_]*" build/static/js/*.js | sort | uniq
+          else
+            echo "❌ No environment variable references found in built JS files"
+          fi
       
       - name: Install OIDC Client from Core Package
         run: npm install @actions/core@1.6.0 @actions/http-client
