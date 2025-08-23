@@ -82,7 +82,7 @@ const MapScreen = () => {
           console.error(`❌ ${area.name} PNG file fetch error:`, area.pngSrc, error);
         });
     });
-  }, []);
+  }, [mapAreas]);
 
   const handleAreaClick = (area) => {
     setSelectedArea(area);
