@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion'; // Import motion for animations
 
@@ -29,9 +29,9 @@ const MapScreen = () => {
       id: 'farm',
       name: 'Farm',
       pngSrc: '/maps/farm-overlay.png',
-      // Position: 15% from left, 55% from top (adjusted for no centering)
-      ...getPosition(0, 32),
-      color: 'rgba(255, 0, 0, 0)',
+      // Position: Adjusted to ensure visibility
+      ...getPosition(15, 55),
+      color: 'rgba(255, 0, 0, 0.3)',
       description: 'Visit the farm animals!'
     },
     {
@@ -40,7 +40,7 @@ const MapScreen = () => {
       pngSrc: '/maps/forest-overlay.png',
       // Position: 50% from left, 60% from top (adjusted for no centering)
       ...getPosition(30, 37),
-      color: 'rgba(34, 139, 34, 0)',
+      color: 'rgba(34, 139, 34, 0.3)',
       description: 'Explore the forest!'
     },
     {
@@ -49,7 +49,7 @@ const MapScreen = () => {
       pngSrc: '/maps/lake-overlay.png',
       // Position: 80% from left, 65% from top (adjusted for no centering)
       ...getPosition(70, 35),
-      color: 'rgba(70, 130, 180, 0)',
+      color: 'rgba(70, 130, 180, 0.3)',
       description: 'Swim with the fish!'
     },
     {
@@ -58,10 +58,31 @@ const MapScreen = () => {
       pngSrc: '/maps/mountain-overlay.png',
       // Position: 55% from left, 20% from top (adjusted for no centering)
       ...getPosition(30, 1),
-      color: 'rgba(105, 105, 105, 0)',
+      color: 'rgba(105, 105, 105, 0.3)',
       description: 'Climb the mountain!'
     }
   ];
+
+  // Debug: Log map areas data
+  console.log('🗺️ Map areas data:', mapAreas);
+  console.log('📍 Farm overlay path:', mapAreas.find(a => a.id === 'farm')?.pngSrc);
+
+  // Debug: Test if PNG files can be fetched
+  useEffect(() => {
+    mapAreas.forEach(area => {
+      fetch(area.pngSrc)
+        .then(response => {
+          if (response.ok) {
+            console.log(`✅ ${area.name} PNG file accessible:`, area.pngSrc);
+          } else {
+            console.error(`❌ ${area.name} PNG file not accessible:`, area.pngSrc, 'Status:', response.status);
+          }
+        })
+        .catch(error => {
+          console.error(`❌ ${area.name} PNG file fetch error:`, area.pngSrc, error);
+        });
+    });
+  }, []);
 
   const handleAreaClick = (area) => {
     setSelectedArea(area);
@@ -96,113 +117,110 @@ const MapScreen = () => {
 
           {/* SVG Fallback */}
           <svg
-            viewBox="0 0 700 500"
             className="map-svg-fallback"
-            preserveAspectRatio="xMidYMid meet"
             style={{ display: 'none' }}
+            width="100%"
+            height="100%"
+            viewBox="0 0 800 600"
           >
-            {/* Sky */}
-            <rect width="700" height="500" fill="#87CEEB" />
-
-            {/* Clouds */}
-            <circle cx="150" cy="80" r="20" fill="white" opacity="0.8" />
-            <circle cx="170" cy="80" r="25" fill="white" opacity="0.8" />
-            <circle cx="190" cy="80" r="20" fill="white" opacity="0.8" />
-            <circle cx="550" cy="100" r="15" fill="white" opacity="0.8" />
-            <circle cx="570" cy="100" r="20" fill="white" opacity="0.8" />
-            <circle cx="590" cy="100" r="15" fill="white" opacity="0.8" />
-
-            {/* Mountains */}
-            <polygon points="300,150 350,80 400,150" fill="#696969" />
-            <polygon points="350,150 400,70 450,150" fill="#808080" />
-            <polygon points="400,150 450,90 500,150" fill="#A9A9A9" />
-            <polygon points="350,80 400,70 400,80" fill="white" />
-            <polygon points="400,70 450,90 450,70" fill="white" />
-
-            {/* Hills */}
-            <ellipse cx="350" cy="400" rx="400" ry="100" fill="#90EE90" />
-            <ellipse cx="350" cy="420" rx="350" ry="80" fill="#98FB98" />
-
-            {/* Paths */}
-            <path d="M 100 350 Q 200 320 300 350 Q 400 380 500 350 Q 600 320 650 350"
-                  stroke="#D2B48C" strokeWidth="8" fill="none" />
-
-            {/* Farm (Red Barn) */}
-            <rect x="80" y="280" width="60" height="40" fill="#8B0000" />
-            <polygon points="80,280 110,260 140,280" fill="#A52A2A" />
-            <rect x="95" y="290" width="10" height="10" fill="white" />
-            <rect x="105" y="300" width="20" height="20" fill="white" stroke="#8B0000" strokeWidth="2" />
-
-            {/* Forest (Trees) */}
-            <circle cx="320" cy="320" r="25" fill="#228B22" />
-            <circle cx="340" cy="300" r="20" fill="#32CD32" />
-            <polygon points="350,320 360,280 370,320" fill="#006400" />
-            <rect x="315" y="340" width="10" height="20" fill="#8B4513" />
-            <rect x="335" y="315" width="8" height="15" fill="#8B4513" />
-            <rect x="355" y="315" width="8" height="15" fill="#8B4513" />
-
-            {/* Lake */}
-            <ellipse cx="550" cy="350" rx="80" ry="40" fill="#4682B4" />
-            <ellipse cx="550" cy="350" rx="70" ry="35" fill="#5F9EA0" />
-
-            {/* Bushes */}
-            <circle cx="200" cy="380" r="8" fill="#228B22" />
-            <circle cx="450" cy="390" r="10" fill="#32CD32" />
-            <circle cx="300" cy="400" r="6" fill="#228B22" />
-            <circle cx="600" cy="380" r="7" fill="#32CD32" />
+            <rect width="100%" height="100%" fill="#87CEEB" />
+            <text x="50%" y="50%" textAnchor="middle" fill="white" fontSize="24">
+              Map Loading...
+            </text>
           </svg>
 
-          {/* PNG Overlay Areas */}
-          {mapAreas.map((area) => (
-            <motion.div
-              key={area.id}
-              className="map-area-overlay"
-              style={{
-                position: 'absolute',
-                left: area.left,
-                top: area.top,
-                zIndex: 10,
-                cursor: 'pointer'
-                // Removed transform: translate(-50%, -50%) to prevent movement
-              }}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={() => handleAreaClick(area)}
-            >
-              <motion.img
-                src={area.pngSrc}
-                alt={`${area.name} Overlay`}
-                className="area-png-overlay"
-                animate={{ 
-                  scale: selectedArea?.id === area.id ? 1.2 : 1 
-                }}
-                transition={{ 
-                  type: 'spring', 
-                  stiffness: 300,
-                  damping: 20,
-                  duration: 0.2
-                }}
-                onError={(e) => {
-                  // Fallback to colored rectangle if PNG fails to load
-                  e.target.style.display = 'none';
-                  const fallback = e.target.nextElementSibling;
-                  if (fallback) fallback.style.display = 'block';
-                }}
-              />
-              {/* Fallback colored rectangle if PNG fails to load */}
-              <div
-                className="area-fallback"
+          {/* Map area overlays */}
+          {mapAreas.map((area) => {
+            // Debug: Log each overlay being rendered
+            console.log(`🎯 Rendering overlay: ${area.name} at position:`, area.left, area.top);
+            
+            return (
+              <motion.div
+                key={area.id}
+                className="map-area-overlay"
                 style={{
-                  display: 'none',
+                  position: 'absolute',
+                  left: area.left,
+                  top: area.top,
                   width: '336px',
                   height: '252px',
-                  backgroundColor: area.color,
-                  border: '2px solid rgba(255, 255, 255, 0.3)',
-                  borderRadius: '8px'
+                  zIndex: 10,
+                  cursor: 'pointer'
                 }}
-              />
-            </motion.div>
-          ))}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => handleAreaClick(area)}
+                tabIndex={0}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    handleAreaClick(area);
+                  }
+                }}
+              >
+                {/* Debug: Log before rendering image */}
+                {console.log(`🖼️ About to render image for ${area.name}:`, area.pngSrc)}
+                
+                <motion.img
+                  src={area.pngSrc}
+                  alt={`${area.name} Overlay`}
+                  className="area-png-overlay"
+                  style={{
+                    width: '100%',
+                    height: '100%',
+                    objectFit: 'contain'
+                  }}
+                  animate={{ 
+                    scale: selectedArea?.id === area.id ? 1.2 : 1 
+                  }}
+                  transition={{ 
+                    type: 'spring', 
+                    stiffness: 300,
+                    damping: 20,
+                    duration: 0.2
+                  }}
+                  onLoad={(e) => {
+                    console.log(`✅ ${area.name} overlay loaded successfully:`, area.pngSrc);
+                    console.log('Image dimensions:', e.target.naturalWidth, 'x', e.target.naturalHeight);
+                    console.log('Image element:', e.target);
+                    console.log('Image computed styles:', window.getComputedStyle(e.target));
+                    // Debug: Log the actual image dimensions
+                    console.log(`${area.name} image natural size:`, e.target.naturalWidth, 'x', e.target.naturalHeight);
+                    console.log(`${area.name} image display size:`, e.target.offsetWidth, 'x', e.target.offsetHeight);
+                    
+                    // Special debugging for farm overlay
+                    if (area.id === 'farm') {
+                      console.log('🔍 Farm overlay special debug:');
+                      console.log('Farm image element:', e.target);
+                      console.log('Farm image parent:', e.target.parentElement);
+                      console.log('Farm image parent styles:', window.getComputedStyle(e.target.parentElement));
+                      console.log('Farm image position:', e.target.getBoundingClientRect());
+                    }
+                  }}
+                  onError={(e) => {
+                    console.error(`❌ ${area.name} overlay failed to load:`, area.pngSrc);
+                    // Fallback to colored rectangle if PNG fails to load
+                    e.target.style.display = 'none';
+                    const fallback = e.target.nextElementSibling;
+                    if (fallback) fallback.style.display = 'block';
+                  }}
+                />
+                {/* Fallback colored rectangle if PNG fails to load */}
+                <div
+                  className="area-fallback"
+                  style={{
+                    display: 'none',
+                    width: '100%',
+                    height: '100%',
+                    backgroundColor: area.color,
+                    border: '2px solid rgba(255, 255, 255, 0.3)',
+                    borderRadius: '8px'
+                  }}
+                >
+                  {area.name}
+                </div>
+              </motion.div>
+            );
+          })}
         </div>
       </div>
 

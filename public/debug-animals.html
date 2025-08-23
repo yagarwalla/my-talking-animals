@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Animal Debug Tool</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .debug-section { margin: 20px 0; padding: 15px; border: 1px solid #ccc; border-radius: 5px; }
+        .debug-button { background: #007bff; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; margin: 5px; }
+        .debug-button:hover { background: #0056b3; }
+        .debug-output { background: #f8f9fa; padding: 10px; border-radius: 5px; margin: 10px 0; white-space: pre-wrap; font-family: monospace; }
+    </style>
+</head>
+<body>
+    <h1>🐾 Animal Debug Tool</h1>
+    
+    <div class="debug-section">
+        <h3>Step 1: Check Console for Errors</h3>
+        <p>Open your browser's Developer Tools (F12) and go to the Console tab. Look for any red error messages.</p>
+        <button class="debug-button" onclick="checkConsoleErrors()">Check Console Errors</button>
+        <div id="console-output" class="debug-output"></div>
+    </div>
+    
+    <div class="debug-section">
+        <h3>Step 2: Inspect Animal Elements</h3>
+        <p>Right-click on any animal image and select "Inspect Element". Look for these CSS properties:</p>
+        <ul>
+            <li><strong>position:</strong> Should be "absolute"</li>
+            <li><strong>z-index:</strong> Should be a positive number</li>
+            <li><strong>pointer-events:</strong> Should be "auto"</li>
+            <li><strong>cursor:</strong> Should be "pointer"</li>
+        </ul>
+        <button class="debug-button" onclick="inspectAnimalStyles()">Inspect Animal Styles</button>
+        <div id="style-output" class="debug-output"></div>
+    </div>
+    
+    <div class="debug-section">
+        <h3>Step 3: Check CSS Conflicts</h3>
+        <p>Look for CSS rules that might be overriding animal styles:</p>
+        <ul>
+            <li>Landscape enforcement CSS</li>
+            <li>Responsive CSS rules</li>
+            <li>Transform properties</li>
+            <li>Z-index conflicts</li>
+        </ul>
+        <button class="debug-button" onclick="checkCSSConflicts()">Check CSS Conflicts</button>
+        <div id="conflict-output" class="debug-output"></div>
+    </div>
+    
+    <div class="debug-section">
+        <h3>Step 4: Test Click Events</h3>
+        <p>Check if click events are being registered:</p>
+        <button class="debug-button" onclick="testClickEvents()">Test Click Events</button>
+        <div id="click-output" class="debug-output"></div>
+    </div>
+
+    <script>
+        function checkConsoleErrors() {
+            const output = document.getElementById('console-output');
+            output.textContent = 'Check your browser console for errors. Look for:\n' +
+                '- Red error messages\n' +
+                '- JavaScript exceptions\n' +
+                '- CSS loading issues\n' +
+                '- Network errors';
+        }
+        
+        function inspectAnimalStyles() {
+            const output = document.getElementById('style-output');
+            output.textContent = 'To inspect animal styles:\n\n' +
+                '1. Right-click on any animal image\n' +
+                '2. Select "Inspect Element"\n' +
+                '3. In the Elements tab, look at the computed styles\n' +
+                '4. Check these properties:\n' +
+                '   - position: absolute\n' +
+                '   - z-index: 10 or higher\n' +
+                '   - pointer-events: auto\n' +
+                '   - cursor: pointer\n' +
+                '   - transform: none (or specific values)\n\n' +
+                '5. Look for any CSS rules that might be overriding these';
+        }
+        
+        function checkCSSConflicts() {
+            const output = document.getElementById('conflict-output');
+            output.textContent = 'Common CSS conflicts to check:\n\n' +
+                '1. Landscape enforcement CSS:\n' +
+                '   - Look for transform: rotate(0deg)\n' +
+                '   - Check for overflow: hidden\n' +
+                '   - Look for position: fixed\n\n' +
+                '2. Responsive CSS:\n' +
+                '   - Check @media queries\n' +
+                '   - Look for conflicting positioning\n' +
+                '   - Check for z-index conflicts\n\n' +
+                '3. Global CSS:\n' +
+                '   - Look for * { } selectors\n' +
+                '   - Check for conflicting transforms\n' +
+                '   - Look for pointer-events: none';
+        }
+        
+        function testClickEvents() {
+            const output = document.getElementById('click-output');
+            output.textContent = 'To test click events:\n\n' +
+                '1. Open browser console\n' +
+                '2. Add this code to test:\n\n' +
+                'document.addEventListener("click", (e) => {\n' +
+                '  console.log("Click detected on:", e.target);\n' +
+                '  console.log("Element classes:", e.target.className);\n' +
+                '  console.log("Element styles:", window.getComputedStyle(e.target));\n' +
+                '});\n\n' +
+                '3. Click on animals and check console output\n' +
+                '4. Look for click events being registered';
+        }
+    </script>
+</body>
+</html>

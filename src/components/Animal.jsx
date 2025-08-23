@@ -39,9 +39,12 @@ const Animal = ({ animal, onAnimalClick, currentLanguage = 'en' }) => {
     };
   }, [animal.sound, animal.voice]);
 
-  const handleAnimalClick = async () => {
-    // Force rebuild comment - Azure deployment test
+  const handleAnimalClick = async (event) => {
+    // Debug: Log click event details
     console.log('🖱️ Animal clicked:', animal.id, 'Current talking state:', isTalking);
+    console.log('🖱️ Click event target:', event?.target);
+    console.log('🖱️ Click event currentTarget:', event?.currentTarget);
+    console.log('🖱️ Animal container element:', document.querySelector(`[data-animal-id="${animal.id}"]`));
     
     if (isAnimating || isGenerating) {
       console.log('🚫 Click blocked - already animating or generating');
@@ -189,7 +192,13 @@ const Animal = ({ animal, onAnimalClick, currentLanguage = 'en' }) => {
   };
 
   return (
-    <div className="animal-container" style={getPositionStyle()}>
+    <div 
+      className="animal-container" 
+      style={getPositionStyle()}
+      data-animal-id={animal.id}
+      data-debug="true"
+      onClick={handleAnimalClick}
+    >
       {/* Sparkle Effect */}
       <AnimatePresence>
         {showSparkles && (
@@ -234,7 +243,6 @@ const Animal = ({ animal, onAnimalClick, currentLanguage = 'en' }) => {
       {/* Animal Sprite */}
       <motion.div
         className="animal-sprite"
-        onClick={handleAnimalClick}
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.95 }}
         animate={{

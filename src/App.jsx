@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import logo from './logo.svg';
 import ProfileSelector from './components/ProfileSelector';
@@ -202,35 +202,9 @@ const HowlerAudioPlayer = () => {
 
 // Demo Home Component (original app content)
 const DemoHome = () => {
-  const [isLandscape, setIsLandscape] = useState(window.innerWidth > window.innerHeight);
-
-  useEffect(() => {
-    const handleResize = () => {
-      setIsLandscape(window.innerWidth > window.innerHeight);
-    };
-
-    window.addEventListener('resize', handleResize);
-    window.addEventListener('orientationchange', handleResize);
-
-    return () => {
-      window.removeEventListener('resize', handleResize);
-      window.removeEventListener('orientationchange', handleResize);
-    };
-  }, []);
 
   return (
     <div className="App">
-      {/* Rotate Device Overlay */}
-      {!isLandscape && (
-        <div className="rotate-overlay">
-          <div className="rotate-content">
-            <div className="rotate-icon">📱</div>
-            <h1 className="rotate-title">Please Rotate Your Device</h1>
-            <p className="rotate-subtitle">This app works best in landscape mode</p>
-          </div>
-        </div>
-      )}
-
       {/* Main Content */}
       <div className="App-content fade-in">
         <header className="App-header">

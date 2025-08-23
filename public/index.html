@@ -3,9 +3,21 @@
   <head>
     <meta charset="utf-8" />
     <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#000000" />
-    <meta name="description" content="Web site created using create-react-app" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+    <meta name="theme-color" content="#667eea" />
+    <meta name="description" content="My Talking Animals - Interactive learning app for kids with AI-powered animal voices" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="My Talking Animals" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="msapplication-tap-highlight" content="no" />
+    <meta name="orientation" content="landscape" />
+    <meta name="screen-orientation" content="landscape" />
+    <meta name="x5-orientation" content="landscape" />
+    <meta name="full-screen" content="yes" />
+    <meta name="x5-fullscreen" content="true" />
+    <meta name="360-fullscreen" content="true" />
     <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
     <!--
       manifest.json provides metadata used when your web app is installed on a
@@ -21,7 +33,41 @@
       work correctly both with client-side routing and a non-root public URL.
       Learn how to configure a non-root public URL by running `npm run build`.
     -->
-    <title>React App</title>
+    <title>My Talking Animals</title>
+    <script>
+      // Force landscape orientation on mobile/tablet devices
+      function forceLandscape() {
+        if (window.innerWidth <= 1024) {
+          // Force landscape dimensions
+          document.documentElement.style.height = '100vw';
+          document.documentElement.style.minHeight = '100vw';
+          document.body.style.height = '100vw';
+          document.body.style.minHeight = '100vw';
+          
+          // Prevent rotation
+          document.documentElement.style.transform = 'rotate(0deg)';
+          document.body.style.transform = 'rotate(0deg)';
+          
+          // Set viewport to landscape
+          const viewport = document.querySelector('meta[name="viewport"]');
+          if (viewport) {
+            viewport.setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, height=device-width');
+          }
+        }
+      }
+      
+      // Run on load and orientation change
+      window.addEventListener('load', forceLandscape);
+      window.addEventListener('orientationchange', forceLandscape);
+      window.addEventListener('resize', forceLandscape);
+      
+      // Also run immediately if DOM is already loaded
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', forceLandscape);
+      } else {
+        forceLandscape();
+      }
+    </script>
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
