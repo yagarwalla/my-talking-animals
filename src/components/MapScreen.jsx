@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion'; // Import motion for animations
 
@@ -24,7 +24,7 @@ const MapScreen = () => {
   // 2. Refresh the page to see changes
   // 3. Fine-tune until overlays align with your map features
   //
-  const mapAreas = [
+  const mapAreas = useMemo(() => [
     {
       id: 'farm',
       name: 'Farm',
@@ -61,7 +61,7 @@ const MapScreen = () => {
       color: 'rgba(105, 105, 105, 0.3)',
       description: 'Climb the mountain!'
     }
-  ];
+  ], []);
 
   // Debug: Log map areas data
   console.log('🗺️ Map areas data:', mapAreas);
