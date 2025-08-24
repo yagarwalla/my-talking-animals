@@ -34,40 +34,7 @@
       Learn how to configure a non-root public URL by running `npm run build`.
     -->
     <title>My Talking Animals</title>
-    <script>
-      // Force landscape orientation on mobile/tablet devices
-      function forceLandscape() {
-        if (window.innerWidth <= 1024) {
-          // Force landscape dimensions
-          document.documentElement.style.height = '100vw';
-          document.documentElement.style.minHeight = '100vw';
-          document.body.style.height = '100vw';
-          document.body.style.minHeight = '100vw';
-          
-          // Prevent rotation
-          document.documentElement.style.transform = 'rotate(0deg)';
-          document.body.style.transform = 'rotate(0deg)';
-          
-          // Set viewport to landscape
-          const viewport = document.querySelector('meta[name="viewport"]');
-          if (viewport) {
-            viewport.setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, height=device-width');
-          }
-        }
-      }
-      
-      // Run on load and orientation change
-      window.addEventListener('load', forceLandscape);
-      window.addEventListener('orientationchange', forceLandscape);
-      window.addEventListener('resize', forceLandscape);
-      
-      // Also run immediately if DOM is already loaded
-      if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', forceLandscape);
-      } else {
-        forceLandscape();
-      }
-    </script>
+
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>

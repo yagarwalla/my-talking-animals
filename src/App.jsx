@@ -2,6 +2,7 @@ import React, { useState, useRef } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import logo from './logo.svg';
 import ProfileSelector from './components/ProfileSelector';
+import LandscapeEnforcer from './components/LandscapeEnforcer';
 
 import MapScreen from './components/MapScreen';
 import AreaScreen from './components/AreaScreen';
@@ -262,6 +263,7 @@ function App() {
         <Route path="/animal-demo" element={<AnimalDemo />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
+      <LandscapeEnforcer />
     </Router>
   );
 }
