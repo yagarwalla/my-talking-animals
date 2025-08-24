@@ -497,16 +497,16 @@ html {
     overflow: visible;
   }
   
-  /* Preserve original map container styles */
-  .map-container {
+  /* Map scene styles for mobile/tablet */
+  .map-scene {
     position: relative;
     width: 100%;
-    height: calc(100vh - 120px);
-    max-width: 1200px;
-    margin: 0 auto;
-    border-radius: 1rem;
-    overflow: hidden;
+    max-width: 900px;
+    height: 600px;
+    border-radius: 20px;
+    overflow: visible;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    margin: 0 auto;
   }
   
   .area-container {
@@ -1056,6 +1056,26 @@ code {
   .landscape-enforcer {
     display: none;
   }
+}
+
+/* Remove all visible boundaries from map overlays */
+.map-area-overlay {
+  background: transparent !important;
+  border: none !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+
+.area-png-overlay {
+  border: none !important;
+  background-color: transparent !important;
+}
+
+/* Remove hover effects that show boundaries */
+.map-area-overlay:hover {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
 }
 
 /* Profile Selector Styles */
@@ -1843,10 +1863,10 @@ code {
 /* Map Screen Styles */
 .map-screen {
   min-height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #87CEEB 0%, #98FB98 100%);
   padding: 1rem;
   position: relative;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .map-header {
@@ -1871,22 +1891,9 @@ code {
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
 }
 
-.map-container {
-  position: relative;
-  width: 100%;
-  height: calc(100vh - 120px);
-  max-width: 1200px;
-  margin: 0 auto;
-  border-radius: 1rem;
-  overflow: hidden;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-}
 
-.map-image-container {
-  position: relative;
-  width: 100%;
-  height: 100%;
-}
+
+
 
 .map-background-image {
   width: 100%;
@@ -1930,16 +1937,14 @@ code {
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(255, 255, 255, 0.1);
-  border: 2px solid rgba(255, 255, 255, 0.3);
-  border-radius: 0.5rem;
-  opacity: 0;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  opacity: 1;
   transition: opacity 0.3s ease;
 }
 
-.map-area:hover .map-area-overlay {
-  opacity: 1;
-}
+
 
 /* Responsive Map Styles */
 @media (max-width: 768px) {
@@ -2006,8 +2011,10 @@ code {
   z-index: 10;
   cursor: pointer;
   transition: all 0.3s ease;
-  /* Make overlays visible by default */
+  /* Make overlays invisible but clickable */
   opacity: 1;
+  background: transparent;
+  border: none;
 }
 
 .area-png-overlay {
@@ -2170,40 +2177,43 @@ img.area-png-overlay {
 /* Area Screen Styles */
 .area-screen {
   min-height: 100vh;
+  width: 100vw;
   background: linear-gradient(135deg, #87CEEB 0%, #98FB98 100%);
-  padding: 20px;
+  padding: 0;
   position: relative;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
 }
 
-.area-header {
-  text-align: center;
-  margin-bottom: 20px;
-  z-index: 20;
-  position: relative;
-}
+
 
 .area-title {
   font-size: 2.5rem;
-  font-weight: bold;
-  color: #2C3E50;
-  margin-bottom: 10px;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+  font-weight: 700;
+  margin-bottom: 1rem;
+  color: white;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 .area-description {
-  font-size: 1.2rem;
-  color: #34495E;
-  margin-bottom: 0;
+  font-size: 1.125rem;
+  margin-bottom: 0.5rem;
+  opacity: 0.9;
+  color: white;
 }
 
 .area-content {
   flex: 1;
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  justify-content: flex-start;
   align-items: center;
-  margin-bottom: 20px;
+  margin: 0 0 2rem 0;
+  padding: 0;
+  width: 100%;
+  height: auto;
+  text-align: center;
 }
 
 /* Farm Scene Styles */
@@ -2215,9 +2225,45 @@ img.area-png-overlay {
   border-radius: 20px;
   overflow: visible;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  margin: 0 auto;
+}
+
+/* Map Scene Styles - matching farm page structure */
+.map-scene {
+  position: relative;
+  width: 100%;
+  max-width: 900px;
+  height: 600px;
+  border-radius: 20px;
+  overflow: visible;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  margin: 0 auto;
+}
+
+/* Responsive Map Scene Styles */
+@media (max-width: 768px) {
+  .map-scene {
+    max-width: 100%;
+    height: 400px;
+  }
+}
+
+@media (max-width: 480px) {
+  .map-scene {
+    height: 300px;
+  }
 }
 
 .area-background-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+.map-background-container {
   position: absolute;
   top: 0;
   left: 0;
@@ -2230,6 +2276,15 @@ img.area-png-overlay {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: center;
+  border-radius: 20px;
+}
+
+.map-background-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 20px;
 }
 
 /* Animal Overlay Styles */
@@ -2245,31 +2300,32 @@ img.area-png-overlay {
 /* Animal Info Panel */
 .animal-info-panel {
   position: absolute;
-  bottom: 20px;
+  bottom: clamp(10px, 3vh, 20px);
   left: 50%;
   transform: translateX(-50%);
   background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(10px);
-  border-radius: 15px;
-  padding: 20px;
+  border-radius: clamp(10px, 2vh, 15px);
+  padding: clamp(10px, 2vh, 20px);
   text-align: center;
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
   border: 1px solid rgba(255, 255, 255, 0.2);
   z-index: 20;
-  min-width: 300px;
+  min-width: clamp(250px, 80vw, 300px);
+  max-width: 90vw;
 }
 
 .animal-info-panel h3 {
-  font-size: 1.8rem;
+  font-size: clamp(1.2rem, 4vw, 1.8rem);
   color: #2C3E50;
-  margin-bottom: 10px;
+  margin-bottom: clamp(5px, 1.5vh, 10px);
   font-weight: bold;
 }
 
 .animal-info-panel p {
-  font-size: 1.1rem;
+  font-size: clamp(0.9rem, 3vw, 1.1rem);
   color: #34495E;
-  margin-bottom: 15px;
+  margin-bottom: clamp(10px, 2vh, 15px);
   line-height: 1.5;
 }
 
@@ -2277,41 +2333,42 @@ img.area-png-overlay {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 10px;
+  gap: clamp(5px, 1.5vw, 10px);
   background: linear-gradient(135deg, #3498DB, #2980B9);
   color: white;
-  padding: 10px 20px;
-  border-radius: 25px;
+  padding: clamp(8px, 1.5vh, 10px) clamp(15px, 3vw, 20px);
+  border-radius: clamp(15px, 3vh, 25px);
   font-weight: bold;
-  font-size: 1.1rem;
+  font-size: clamp(0.9rem, 3vw, 1.1rem);
 }
 
 .sound-icon {
-  font-size: 1.2rem;
+  font-size: clamp(1rem, 3.5vw, 1.2rem);
 }
 
 /* Coming Soon Styles */
 .coming-soon {
   text-align: center;
-  padding: 40px;
+  padding: clamp(20px, 5vh, 40px);
   background: rgba(255, 255, 255, 0.9);
-  border-radius: 20px;
+  border-radius: clamp(15px, 3vh, 20px);
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+  margin: clamp(10px, 2vh, 20px);
 }
 
 .coming-soon-icon {
-  font-size: 4rem;
-  margin-bottom: 20px;
+  font-size: clamp(2.5rem, 8vw, 4rem);
+  margin-bottom: clamp(15px, 3vh, 20px);
 }
 
 .coming-soon h2 {
-  font-size: 2rem;
+  font-size: clamp(1.5rem, 5vw, 2rem);
   color: #2C3E50;
-  margin-bottom: 15px;
+  margin-bottom: clamp(10px, 2vh, 15px);
 }
 
 .coming-soon p {
-  font-size: 1.2rem;
+  font-size: clamp(1rem, 3.5vw, 1.2rem);
   color: #34495E;
   line-height: 1.6;
 }
@@ -2419,19 +2476,20 @@ img.area-png-overlay {
   align-items: center;
   justify-content: center;
   height: 60vh;
-  gap: 20px;
+  gap: clamp(15px, 3vh, 20px);
+  padding: clamp(20px, 5vh, 40px);
 }
 
 .loading-spinner {
-  width: 50px;
-  height: 50px;
-  border: 4px solid rgba(52, 152, 219, 0.2);
-  border-top: 4px solid #3498DB;
+  width: clamp(40px, 8vw, 50px);
+  height: clamp(40px, 8vw, 50px);
+  border: clamp(3px, 1vw, 4px) solid rgba(52, 152, 219, 0.2);
+  border-top: clamp(3px, 1vw, 4px) solid #3498DB;
   border-radius: 50%;
 }
 
 .loading-container p {
-  font-size: 1.2rem;
+  font-size: clamp(1rem, 3.5vw, 1.2rem);
   color: #34495E;
   font-weight: 500;
 }
@@ -2439,33 +2497,39 @@ img.area-png-overlay {
 /* Error States */
 .error-container {
   text-align: center;
-  padding: 40px;
+  padding: clamp(20px, 5vh, 40px);
   background: rgba(231, 76, 60, 0.1);
-  border: 2px solid rgba(231, 76, 60, 0.3);
-  border-radius: 20px;
-  max-width: 500px;
-  margin: 0 auto;
+  border: clamp(1px, 0.5vw, 2px) solid rgba(231, 76, 60, 0.3);
+  border-radius: clamp(15px, 3vh, 20px);
+  max-width: clamp(300px, 90vw, 500px);
+  margin: clamp(10px, 2vh, 20px) auto;
 }
 
 .error-container h2 {
   color: #C0392B;
-  margin-bottom: 15px;
+  margin-bottom: clamp(10px, 2vh, 15px);
+  font-size: clamp(1.5rem, 4vw, 2rem);
 }
 
 .error-container p {
   color: #E74C3C;
-  margin-bottom: 20px;
+  margin-bottom: clamp(15px, 3vh, 20px);
+  font-size: clamp(1rem, 3vw, 1.2rem);
 }
 
 .error-container button {
   background: #E74C3C;
   color: white;
   border: none;
-  padding: 10px 20px;
-  border-radius: 15px;
+  padding: clamp(8px, 1.5vh, 10px) clamp(15px, 3vw, 20px);
+  border-radius: clamp(10px, 2vh, 15px);
   cursor: pointer;
   font-weight: 600;
   transition: all 0.3s ease;
+  font-size: clamp(0.9rem, 2.5vw, 1rem);
+  /* Ensure touch-friendly sizing */
+  min-width: 44px;
+  min-height: 44px;
 }
 
 .error-container button:hover {
@@ -2530,6 +2594,16 @@ img.area-png-overlay {
   display: flex;
   align-items: center;
   justify-content: center;
+  /* Let animals scale naturally based on their image sizes, but reduce to half size */
+  min-width: 20px;
+  min-height: 20px;
+  /* Scale down to 50% of natural size */
+  transform: scale(0.5);
+  transform-origin: center;
+  /* Ensure animals stay within background boundaries */
+  max-width: 90%;
+  max-height: 90%;
+  overflow: hidden;
 }
 
 .animal-container:hover {
@@ -2538,10 +2612,15 @@ img.area-png-overlay {
 }
 
 .animal-sprite {
-  width: 100%;
-  height: 100%;
+  /* Let sprite scale naturally based on image size */
+  width: auto;
+  height: auto;
   object-fit: contain;
   pointer-events: none;
+  /* Ensure sprite scales with container */
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .animal-sparkles {
@@ -2555,8 +2634,8 @@ img.area-png-overlay {
 
 .sparkle {
   position: absolute;
-  width: 8px;
-  height: 8px;
+  width: clamp(6px, 1.5vw, 12px);
+  height: clamp(6px, 1.5vw, 12px);
   background: #FFD700;
   border-radius: 50%;
   animation: sparkle 1s ease-out forwards;
@@ -2579,19 +2658,22 @@ img.area-png-overlay {
 
 .back-button {
   position: absolute;
-  top: 1rem;
-  left: 1rem;
+  top: clamp(0.5rem, 2vh, 1rem);
+  left: clamp(0.5rem, 2vw, 1rem);
   background: rgba(255, 255, 255, 0.9);
   border: none;
-  padding: 0.75rem 1rem;
-  border-radius: 0.5rem;
+  padding: clamp(0.5rem, 1.5vh, 0.75rem) clamp(0.5rem, 1.5vw, 1rem);
+  border-radius: clamp(0.25rem, 1vh, 0.5rem);
   cursor: pointer;
-  font-size: 1rem;
+  font-size: clamp(0.75rem, 2.5vw, 1rem);
   font-weight: 500;
   color: #333;
   z-index: 20;
   transition: all 0.3s ease;
   backdrop-filter: blur(10px);
+  /* Ensure touch-friendly sizing */
+  min-width: 44px;
+  min-height: 44px;
 }
 
 .back-button:hover {
@@ -2603,7 +2685,7 @@ img.area-png-overlay {
 /* Responsive Area Styles */
 @media (max-width: 768px) {
   .area-screen {
-    padding: 0.5rem;
+    padding: 0;
   }
   
   .area-title {
@@ -2662,6 +2744,118 @@ img.area-png-overlay {
     font-size: 1.5rem;
   }
 }
+
+/* Comprehensive Responsive Design for All Devices */
+/* Tablet Portrait */
+@media (min-width: 768px) and (max-width: 1024px) and (orientation: portrait) {
+  .area-scene {
+    width: 100%;
+    max-width: 800px;
+    height: 500px;
+  }
+  
+  .area-title {
+    font-size: 2rem;
+  }
+  
+  .area-description {
+    font-size: 1rem;
+  }
+}
+
+/* Prevent overflow and ensure smooth scaling */
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  overflow-x: hidden;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Ensure images scale smoothly */
+img {
+  max-width: 100%;
+  height: auto;
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
+}
+
+/* Smooth transitions for all responsive changes */
+.area-scene,
+.animal-container,
+.area-title,
+.area-description,
+.animal-info-panel,
+.back-button {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Tablet Landscape */
+@media (min-width: 768px) and (max-width: 1024px) and (orientation: landscape) {
+  .area-scene {
+    width: 100%;
+    max-width: 800px;
+    height: 500px;
+  }
+  
+  .area-title {
+    font-size: 1.75rem;
+  }
+  
+  .area-description {
+    font-size: 0.9rem;
+  }
+}
+
+/* Mobile Portrait */
+@media (max-width: 767px) and (orientation: portrait) {
+  .area-scene {
+    width: 100%;
+    max-width: 100%;
+    height: 400px;
+  }
+  
+  .area-title {
+    font-size: 1.5rem;
+  }
+  
+  .area-description {
+    font-size: 0.8rem;
+  }
+  
+  /* Ensure animals stay within boundaries on small screens */
+  .animal-container {
+    transform: scale(0.45) !important;
+  }
+}
+
+/* Mobile Landscape */
+@media (max-width: 767px) and (orientation: landscape) {
+  .area-scene {
+    width: 100%;
+    max-width: 100%;
+    height: 300px;
+  }
+  
+  .area-title {
+    font-size: 1.25rem;
+  }
+  
+  .area-description {
+    font-size: 0.75rem;
+  }
+  
+  /* Ensure animals stay within boundaries on small screens */
+  .animal-container {
+    transform: scale(0.4) !important;
+  }
+}
+
+
+
+
 
 /* Animal Card Styles */
 .animal-card {

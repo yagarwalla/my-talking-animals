@@ -161,14 +161,15 @@ const Animal = ({ animal, onAnimalClick, currentLanguage = 'en' }) => {
       const style = {
         left: x,
         top: y,
-        transform: 'translate(-50%, -50%) scale(0.5)', // Center and scale the animal
+        transform: 'translate(-50%, -50%) scale(0.5)', // Center and scale down to 50%
         position: 'absolute',
         zIndex: 10,
-        // Force size consistency
-        minWidth: 'auto',
-        minHeight: 'auto',
-        maxWidth: 'none',
-        maxHeight: 'none'
+        // Let animals scale naturally based on their image sizes, but reduce to half size
+        minWidth: '20px',
+        minHeight: '20px',
+        // No forced sizing - let images determine size
+        width: 'auto',
+        height: 'auto'
       };
       console.log(`Animal ${animal.id} style:`, style); // Debug log
       return style;
@@ -177,14 +178,15 @@ const Animal = ({ animal, onAnimalClick, currentLanguage = 'en' }) => {
       const style = {
         left: `${x}px`,
         top: `${y}px`,
-        transform: 'translate(-50%, -50%) scale(0.5)', // Center and scale the animal
+        transform: 'translate(-50%, -50%) scale(0.5)', // Center and scale down to 50%
         position: 'absolute',
         zIndex: 10,
-        // Force size consistency
-        minWidth: 'auto',
-        minHeight: 'auto',
-        maxWidth: 'none',
-        maxHeight: 'none'
+        // Let animals scale naturally based on their image sizes, but reduce to half size
+        minWidth: '20px',
+        minHeight: '20px',
+        // No forced sizing - let images determine size
+        width: 'auto',
+        height: 'auto'
       };
       console.log(`Animal ${animal.id} style:`, style); // Debug log
       return style;
@@ -224,8 +226,8 @@ const Animal = ({ animal, onAnimalClick, currentLanguage = 'en' }) => {
                   transform: 'translate(-50%, -50%)'
                 }}
                 animate={{
-                  x: Math.cos((i * 60) * Math.PI / 180) * 40,
-                  y: Math.sin((i * 60) * Math.PI / 180) * 40,
+                  x: Math.cos((i * 60) * Math.PI / 180) * 60,
+                  y: Math.sin((i * 60) * Math.PI / 180) * 60,
                   opacity: [0, 1, 0],
                   scale: [0, 1, 0]
                 }}
@@ -263,7 +265,7 @@ const Animal = ({ animal, onAnimalClick, currentLanguage = 'en' }) => {
             pointerEvents: 'none',
             filter: 'drop-shadow(0 4px 12px rgba(0, 0, 0, 0.3))',
             transition: 'all 0.3s ease',
-            // Force consistent sizing
+            // Let image scale naturally based on its original size
             width: 'auto',
             height: 'auto',
             maxWidth: 'none',

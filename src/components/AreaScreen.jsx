@@ -138,14 +138,9 @@ const AreaScreen = () => {
 
   return (
     <div className="area-screen">
-      <div className="area-header">
+      <div className="area-content">
         <h1 className="area-title">{areaInfo.name}</h1>
         <p className="area-description">{areaInfo.description}</p>
-        
-
-      </div>
-
-      <div className="area-content">
         {areaInfo.hasConfig && farmConfig ? (
           <div className="area-scene">
             {/* Background Image */}

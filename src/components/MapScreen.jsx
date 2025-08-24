@@ -4,6 +4,9 @@ import { motion } from 'framer-motion'; // Import motion for animations
 
 const MapScreen = () => {
   const [selectedArea, setSelectedArea] = useState(null);
+  const [mapConfig, setMapConfig] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const navigate = useNavigate();
 
   // Helper function to calculate positions based on map dimensions
@@ -11,6 +14,28 @@ const MapScreen = () => {
     left: `${xPercent}%`,
     top: `${yPercent}%`
   });
+
+  // Load map configuration from JSON file
+  useEffect(() => {
+    const loadMapConfig = async () => {
+      try {
+        setLoading(true);
+        const response = await fetch('/config/map.json');
+        if (!response.ok) {
+          throw new Error('Failed to load map configuration');
+        }
+        const config = await response.json();
+        setMapConfig(config);
+      } catch (err) {
+        console.error('Error loading map config:', err);
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadMapConfig();
+  }, []);
 
   // Map areas with flexible positioning (using percentages)
   // 
@@ -24,44 +49,14 @@ const MapScreen = () => {
   // 2. Refresh the page to see changes
   // 3. Fine-tune until overlays align with your map features
   //
-  const mapAreas = useMemo(() => [
-    {
-      id: 'farm',
-      name: 'Farm',
-      pngSrc: '/maps/farm-overlay.png',
-      // Position: Adjusted to ensure visibility
-      ...getPosition(15, 55),
-      color: 'rgba(255, 0, 0, 0.3)',
-      description: 'Visit the farm animals!'
-    },
-    {
-      id: 'forest',
-      name: 'Forest',
-      pngSrc: '/maps/forest-overlay.png',
-      // Position: 50% from left, 60% from top (adjusted for no centering)
-      ...getPosition(30, 37),
-      color: 'rgba(34, 139, 34, 0.3)',
-      description: 'Explore the forest!'
-    },
-    {
-      id: 'lake',
-      name: 'Lake',
-      pngSrc: '/maps/lake-overlay.png',
-      // Position: 80% from left, 65% from top (adjusted for no centering)
-      ...getPosition(70, 35),
-      color: 'rgba(70, 130, 180, 0.3)',
-      description: 'Swim with the fish!'
-    },
-    {
-      id: 'mountain',
-      name: 'Mountain',
-      pngSrc: '/maps/mountain-overlay.png',
-      // Position: 55% from left, 20% from top (adjusted for no centering)
-      ...getPosition(30, 1),
-      color: 'rgba(105, 105, 105, 0.3)',
-      description: 'Climb the mountain!'
-    }
-  ], []);
+  const mapAreas = useMemo(() => {
+    if (!mapConfig) return [];
+    
+    return mapConfig.areas.map(area => ({
+      ...area,
+      ...getPosition(parseFloat(area.position.x), parseFloat(area.position.y))
+    }));
+  }, [mapConfig]);
 
   // Debug: Log map areas data
   console.log('🗺️ Map areas data:', mapAreas);
@@ -93,6 +88,33 @@ const MapScreen = () => {
     }, 300);
   };
 
+  if (loading) {
+    return (
+      <div className="map-screen">
+        <div className="loading-container">
+          <motion.div
+            className="loading-spinner"
+            animate={{ rotate: 360 }}
+            transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+          />
+          <p>Loading map...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="map-screen">
+        <div className="error-container">
+          <h2>Error Loading Map</h2>
+          <p>{error}</p>
+          <button onClick={() => window.location.reload()}>Retry</button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="map-screen">
       <div className="map-header">
@@ -100,11 +122,11 @@ const MapScreen = () => {
         <p className="map-subtitle">Click on an area to explore!</p>
       </div>
 
-      <div className="map-container">
-        <div className="map-image-container">
+      <div className="map-scene">
+        <div className="map-background-container">
           {/* Background landscape image */}
           <img
-            src="/maps/landscape-map.jpg"
+            src={mapConfig?.background || "/maps/landscape-map.jpg"}
             alt="Landscape Map"
             className="map-background-image"
             onError={(e) => {
@@ -214,7 +236,7 @@ const MapScreen = () => {
                     backgroundColor: area.color,
                     border: '2px solid rgba(255, 255, 255, 0.3)',
                     borderRadius: '8px'
-                  }}
+                }}
                 >
                   {area.name}
                 </div>
