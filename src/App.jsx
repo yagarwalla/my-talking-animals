@@ -7,6 +7,9 @@ import LandscapeEnforcer from './components/LandscapeEnforcer';
 import MapScreen from './components/MapScreen';
 import AreaScreen from './components/AreaScreen';
 import AnimalDemo from './components/AnimalDemo';
+import TemplateDemo from './components/TemplateDemo';
+import { AnimalSessionProvider } from './contexts/AnimalSessionContext.jsx';
+import { ProgressionProvider } from './contexts/ProgressionContext.jsx';
 
 // Audio Player Component using Web Audio API
 const AudioPlayer = () => {
@@ -245,6 +248,14 @@ const DemoHome = () => {
           >
             Try Animal Speech Demo
           </a>
+          
+          <a
+            className="App-link scale-hover scale-active"
+            href="/template-demo"
+            style={{ marginTop: '1rem' }}
+          >
+            View Template System Demo
+          </a>
         </header>
       </div>
     </div>
@@ -254,17 +265,22 @@ const DemoHome = () => {
 // Main App Component with Router
 function App() {
   return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<ProfileSelector />} />
-        <Route path="/map" element={<MapScreen />} />
-        <Route path="/area/:areaId" element={<AreaScreen />} />
-        <Route path="/demo" element={<DemoHome />} />
-        <Route path="/animal-demo" element={<AnimalDemo />} />
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
-      <LandscapeEnforcer />
-    </Router>
+    <ProgressionProvider>
+      <AnimalSessionProvider>
+        <Router>
+          <Routes>
+            <Route path="/" element={<ProfileSelector />} />
+            <Route path="/map" element={<MapScreen />} />
+            <Route path="/area/:areaId" element={<AreaScreen />} />
+                    <Route path="/demo" element={<DemoHome />} />
+          <Route path="/animal-demo" element={<AnimalDemo />} />
+          <Route path="/template-demo" element={<TemplateDemo />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+          <LandscapeEnforcer />
+        </Router>
+      </AnimalSessionProvider>
+    </ProgressionProvider>
   );
 }
 

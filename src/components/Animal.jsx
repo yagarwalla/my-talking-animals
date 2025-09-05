@@ -1,19 +1,40 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Howl } from 'howler';
-import { generateAnimalVoice } from '../utils/generateAnimalSpeech';
-import { playAnimalVoice } from '../utils/audioEffects';
+import { useProgression } from '../contexts/ProgressionContext.jsx';
 
-const Animal = ({ animal, onAnimalClick, currentLanguage = 'en' }) => {
+const Animal = ({ animal, onAnimalClick, currentLanguage = 'en', index = 0, totalAnimals = 1 }) => {
   const [isTalking, setIsTalking] = useState(false);
   const [showSparkles, setShowSparkles] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
 
-  const [isGenerating, setIsGenerating] = useState(false);
-  
+  const [isPlaying, setIsPlaying] = useState(false);
   const soundRef = useRef(null);
   const voiceRef = useRef(null);
-
+  
+  // Use the progression context
+  const { 
+    getAnimalVoice, 
+    completeAnimal, 
+    isAnimalUnlocked, 
+    getAnimalProgress,
+    currentLevel 
+  } = useProgression();
+  
+  // Debug: Log the parent container information
+  useEffect(() => {
+    const parentContainer = document.querySelector('.area-scene');
+    if (parentContainer) {
+      console.log(`🔍 Parent container for ${animal.id}:`, {
+        element: parentContainer,
+        position: window.getComputedStyle(parentContainer).position,
+        width: parentContainer.offsetWidth,
+        height: parentContainer.offsetHeight,
+        rect: parentContainer.getBoundingClientRect()
+      });
+    }
+  }, [animal.id]);
+  
   // Load audio files when component mounts
   useEffect(() => {
     if (animal.sound) {
@@ -24,9 +45,11 @@ const Animal = ({ animal, onAnimalClick, currentLanguage = 'en' }) => {
       });
     }
 
-    if (animal.voice) {
+    // Get the voice file for current level and language
+    const voiceFile = getAnimalVoice(animal, currentLanguage);
+    if (voiceFile) {
       voiceRef.current = new Howl({
-        src: [`/${animal.voice}`],
+        src: [voiceFile],
         volume: 0.8,
         preload: true
       });
@@ -37,7 +60,7 @@ const Animal = ({ animal, onAnimalClick, currentLanguage = 'en' }) => {
       if (soundRef.current) soundRef.current.unload();
       if (voiceRef.current) voiceRef.current.unload();
     };
-  }, [animal.sound, animal.voice]);
+  }, [animal, currentLanguage, getAnimalVoice]);
 
   const handleAnimalClick = async (event) => {
     // Debug: Log click event details
@@ -46,8 +69,14 @@ const Animal = ({ animal, onAnimalClick, currentLanguage = 'en' }) => {
     console.log('🖱️ Click event currentTarget:', event?.currentTarget);
     console.log('🖱️ Animal container element:', document.querySelector(`[data-animal-id="${animal.id}"]`));
     
-    if (isAnimating || isGenerating) {
-      console.log('🚫 Click blocked - already animating or generating');
+    if (isAnimating || isPlaying) {
+      console.log('🚫 Click blocked - already animating or playing');
+      return;
+    }
+    
+    // Check if animal is unlocked for current level
+    if (!isAnimalUnlocked(animal.id)) {
+      console.log('🚫 Animal not unlocked for current level');
       return;
     }
     
@@ -55,7 +84,7 @@ const Animal = ({ animal, onAnimalClick, currentLanguage = 'en' }) => {
     setIsAnimating(true);
     setShowSparkles(true);
     setIsTalking(true);
-    setIsGenerating(true);
+    setIsPlaying(true);
 
     // 1. Play preloaded animal sound immediately
     if (soundRef.current) {
@@ -63,38 +92,39 @@ const Animal = ({ animal, onAnimalClick, currentLanguage = 'en' }) => {
     }
 
     try {
-      // Debug: Check environment variables
-              console.log('🔍 Environment variables check (updated):', {
-          azureKey: process.env.REACT_APP_AZURE_AI_FOUNDRY_KEY ? '***' : 'MISSING',
-          gptEndpoint: process.env.REACT_APP_GPT_ENDPOINT || 'MISSING',
-          ttsEndpoint: process.env.REACT_APP_TTS_ENDPOINT || 'MISSING'
-        });
-      
-      // 2. Call generateAnimalSpeech while sound plays
-      const result = await generateAnimalVoice(
-        animal.id,
-        currentLanguage,
-        process.env.REACT_APP_AZURE_AI_FOUNDRY_KEY,
-        process.env.REACT_APP_GPT_ENDPOINT,
-        process.env.REACT_APP_TTS_ENDPOINT
-      );
-      
-      // 3. When Promise resolves, play audio and start talking animation
-      
-      // Use new audio effects system instead of direct Audio playback
-      const audioResult = await playAnimalVoice(animal, result.text);
-      
-      // Start talking animation based on processed audio duration
-      const animationDuration = audioResult.duration * 1000;
-      startTalkingAnimation(animationDuration);
+      // 2. Play the voice file for current level
+      if (voiceRef.current) {
+        voiceRef.current.play();
+        
+        // Get audio duration for animation
+        const duration = voiceRef.current.duration() * 1000; // Convert to milliseconds
+        startTalkingAnimation(duration);
+        
+        // Mark animal as completed for this level
+        const result = completeAnimal(animal.id);
+        console.log('🎉 Animal completed:', result);
+        
+        // Show level up notification if applicable
+        if (result.levelUp) {
+          console.log('🎊 Level up! New level:', result.progress.currentLevel);
+        }
+        
+        // Show new stickers if any
+        if (result.newStickers.length > 0) {
+          console.log('🏆 New stickers earned:', result.newStickers);
+        }
+      } else {
+        console.warn('No voice file found for animal:', animal.id);
+        // Fallback: just play sound and short animation
+        startTalkingAnimation(2000);
+      }
       
     } catch (error) {
-      console.error('Error generating animal speech:', error);
-
+      console.error('Error playing animal voice:', error);
       // Stop talking animation on error
       setIsTalking(false);
     } finally {
-      setIsGenerating(false);
+      setIsPlaying(false);
     }
 
     // Hide sparkles after animation
@@ -152,53 +182,79 @@ const Animal = ({ animal, onAnimalClick, currentLanguage = 'en' }) => {
 
   // Handle both percentage and pixel positioning
   const getPositionStyle = () => {
-    const { x, y } = animal.position;
-    
-    // Check if position values are percentages or pixels
-    const isPercentage = typeof x === 'string' && x.includes('%');
-    
-    if (isPercentage) {
+    // Position animals relative to the farm scene container (like map page)
+    if (animal.position) {
+      const { x, y } = animal.position;
+      
+      // Debug: Check the raw values
+      console.log(`🔍 Raw values for ${animal.id}:`, { x, y, xType: typeof x, yType: typeof y });
+      
+      // Convert to percentages relative to the farm scene container
+      const left = `${x}%`;
+      const top = `${y}%`;
+      
+      // Responsive scaling based on screen size
+      let scale = 0.5; // Default desktop scale
+      
+      // Check if we're on a smaller screen
+      if (window.innerWidth <= 768) {
+        scale = 0.3; // Mobile: smaller scale
+      } else if (window.innerWidth <= 1024) {
+        scale = 0.4; // Tablet: medium scale
+      }
+      
+      // Debug logging
+      console.log(`🎯 Animal ${animal.id} positioning:`, {
+        x, y, left, top, scale,
+        animalPosition: animal.position,
+        xType: typeof x,
+        yType: typeof y,
+        xValue: x,
+        yValue: y
+      });
+      
       const style = {
-        left: x,
-        top: y,
-        transform: 'translate(-50%, -50%) scale(0.5)', // Center and scale down to 50%
+        left: left,
+        top: top,
+        transform: `translate(-50%, -50%) scale(${scale})`,
         position: 'absolute',
         zIndex: 10,
-        // Let animals scale naturally based on their image sizes, but reduce to half size
         minWidth: '20px',
         minHeight: '20px',
-        // No forced sizing - let images determine size
         width: 'auto',
         height: 'auto'
       };
-      console.log(`Animal ${animal.id} style:`, style); // Debug log
-      return style;
-    } else {
-      // Pixel positioning (fallback)
-      const style = {
-        left: `${x}px`,
-        top: `${y}px`,
-        transform: 'translate(-50%, -50%) scale(0.5)', // Center and scale down to 50%
-        position: 'absolute',
-        zIndex: 10,
-        // Let animals scale naturally based on their image sizes, but reduce to half size
-        minWidth: '20px',
-        minHeight: '20px',
-        // No forced sizing - let images determine size
-        width: 'auto',
-        height: 'auto'
-      };
-      console.log(`Animal ${animal.id} style:`, style); // Debug log
+      
+      // Debug: Log the computed style
+      console.log(`🎯 Animal ${animal.id} computed style:`, style);
+      
       return style;
     }
+    
+    // Fallback if no position config
+    return {
+      position: 'absolute',
+      left: '50%',
+      top: '50%',
+      transform: 'translate(-50%, -50%) scale(0.5)',
+      zIndex: 10,
+        minWidth: '20px',
+        minHeight: '20px',
+        width: 'auto',
+        height: 'auto'
+    };
   };
+
+  const positionStyle = useMemo(() => getPositionStyle(), [index, totalAnimals, animal.position]);
 
   return (
     <div 
       className="animal-container" 
-      style={getPositionStyle()}
+      style={positionStyle}
       data-animal-id={animal.id}
       data-debug="true"
+      data-position-x={animal.position?.x}
+      data-position-y={animal.position?.y}
       onClick={handleAnimalClick}
     >
       {/* Sparkle Effect */}
@@ -288,10 +344,10 @@ const Animal = ({ animal, onAnimalClick, currentLanguage = 'en' }) => {
 
 
 
-      {/* Loading Indicator */}
-      {isGenerating && (
+      {/* Playing Indicator */}
+      {isPlaying && (
         <motion.div
-          className="generating-indicator"
+          className="playing-indicator"
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: 10 }}
@@ -310,7 +366,7 @@ const Animal = ({ animal, onAnimalClick, currentLanguage = 'en' }) => {
             zIndex: 20
           }}
         >
-          Thinking...
+          Playing...
         </motion.div>
       )}
 

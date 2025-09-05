@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import Animal from './Animal';
+import ProgressionUI from './ProgressionUI';
 
 const AreaScreen = () => {
   const { areaId } = useParams();
@@ -138,6 +139,9 @@ const AreaScreen = () => {
 
   return (
     <div className="area-screen">
+      {/* Progression UI */}
+      {areaInfo.hasConfig && farmConfig && <ProgressionUI />}
+      
       <div className="area-content">
         <h1 className="area-title">{areaInfo.name}</h1>
         <p className="area-description">{areaInfo.description}</p>
@@ -156,13 +160,15 @@ const AreaScreen = () => {
               />
             </div>
 
-            {/* Animal Components */}
-            {farmConfig.animals.map((animal) => (
+            {/* Animal Components - Now positioned relative to the scene */}
+            {farmConfig.animals.map((animal, index) => (
               <Animal
                 key={animal.id}
                 animal={animal}
                 onAnimalClick={handleAnimalClick}
                 currentLanguage={currentLanguage}
+                index={index}
+                totalAnimals={farmConfig.animals.length}
               />
             ))}
 

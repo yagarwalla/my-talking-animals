@@ -1,6 +1,4 @@
 import React, { useState } from 'react';
-import { generateAnimalVoice } from '../utils/generateAnimalSpeech';
-import { playAnimalVoice } from '../utils/audioEffects';
 
 const AnimalCard = ({ animalName, onAnimalClick }) => {
   const [generatedText, setGeneratedText] = useState('');
@@ -24,34 +22,16 @@ const AnimalCard = ({ animalName, onAnimalClick }) => {
     
     setIsGenerating(true);
     
-    // 1. Play preloaded animal sound immediately from farm.json sound path
+    // Play preloaded animal sound immediately from farm.json sound path
     const animalSound = new Audio(`/${getAnimalSoundPath(animalName)}`);
     animalSound.play();
     
-    try {
-      // 2. Call generateAnimalSpeech while sound plays
-      const result = await generateAnimalVoice(
-        animalName,
-        'en', // hardcoded for now
-        process.env.REACT_APP_AZURE_AI_FOUNDRY_KEY,
-        process.env.REACT_APP_GPT_ENDPOINT,
-        process.env.REACT_APP_TTS_ENDPOINT
-      );
-      
-      // 3. When Promise resolves, display text and play audio
-      setGeneratedText(result.text);
-      
-      // Use new audio effects system
-      const audioResult = await playAnimalVoice({ id: animalName.toLowerCase() }, result.text);
-      
-      console.log('🎵 Audio with playback rate:', audioResult.playbackRate);
-      
-    } catch (error) {
-      console.error('Error generating animal speech:', error);
-      setGeneratedText('Sorry, I couldn\'t speak right now!');
-    } finally {
+    // Set a simple message since TTS is no longer used
+    setGeneratedText(`Hello! I'm a ${animalName}. Click me to hear my sound!`);
+    
+    setTimeout(() => {
       setIsGenerating(false);
-    }
+    }, 1000);
     
     // Call parent handler if provided
     if (onAnimalClick) {

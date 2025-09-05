@@ -7,8 +7,59 @@
       "spriteIdle": "animals/cow/cow_idle.png",
       "spriteTalking": "animals/cow/cow_openmouth.png",
       "sound": "animals/cow/moo.mp3",
-      "voice": "animals/cow/voice_en.mp3",
-      "position": { "x": "20%", "y": "50%" }
+      "position": { "x": 20, "y": 50 },
+      "levels": [
+        {
+          "id": 1,
+          "direction": "en-hi",
+          "voice": "/animals/cow/cow_level1_en_hi.mp3"
+        },
+        {
+          "id": 1,
+          "direction": "hi-en",
+          "voice": "/animals/cow/cow_level1_hi_en.mp3"
+        },
+        {
+          "id": 2,
+          "direction": "en-hi",
+          "voice": "/animals/cow/cow_level2_en_hi.mp3"
+        },
+        {
+          "id": 2,
+          "direction": "hi-en",
+          "voice": "/animals/cow/cow_level2_hi_en.mp3"
+        },
+        {
+          "id": 3,
+          "direction": "en-hi",
+          "voice": "/animals/cow/cow_level3_en_hi.mp3"
+        },
+        {
+          "id": 3,
+          "direction": "hi-en",
+          "voice": "/animals/cow/cow_level3_hi_en.mp3"
+        },
+        {
+          "id": 4,
+          "direction": "en-hi",
+          "voice": "/animals/cow/cow_level4_en_hi.mp3"
+        },
+        {
+          "id": 4,
+          "direction": "hi-en",
+          "voice": "/animals/cow/cow_level4_hi_en.mp3"
+        },
+        {
+          "id": 5,
+          "direction": "en-hi",
+          "voice": "/animals/cow/cow_level5_en_hi.mp3"
+        },
+        {
+          "id": 5,
+          "direction": "hi-en",
+          "voice": "/animals/cow/cow_level5_hi_en.mp3"
+        }
+      ]
     },
     {
       "id": "pig",
@@ -16,17 +67,119 @@
       "spriteIdle": "animals/pig/pig_idle.PNG",
       "spriteTalking": "animals/pig/pig_idle.PNG",
       "sound": "animals/pig/oink.mp3",
-      "voice": "animals/pig/voice_en.mp3",
-      "position": { "x": "15%", "y": "80%" }
+      "position": { "x": 15, "y": 80 },
+      "levels": [
+        {
+          "id": 1,
+          "direction": "en-hi",
+          "voice": "/animals/pig/pig_level1_en_hi.mp3"
+        },
+        {
+          "id": 1,
+          "direction": "hi-en",
+          "voice": "/animals/pig/pig_level1_hi_en.mp3"
+        },
+        {
+          "id": 2,
+          "direction": "en-hi",
+          "voice": "/animals/pig/pig_level2_en_hi.mp3"
+        },
+        {
+          "id": 2,
+          "direction": "hi-en",
+          "voice": "/animals/pig/pig_level2_hi_en.mp3"
+        },
+        {
+          "id": 3,
+          "direction": "en-hi",
+          "voice": "/animals/pig/pig_level3_en_hi.mp3"
+        },
+        {
+          "id": 3,
+          "direction": "hi-en",
+          "voice": "/animals/pig/pig_level3_hi_en.mp3"
+        },
+        {
+          "id": 4,
+          "direction": "en-hi",
+          "voice": "/animals/pig/pig_level4_en_hi.mp3"
+        },
+        {
+          "id": 4,
+          "direction": "hi-en",
+          "voice": "/animals/pig/pig_level4_hi_en.mp3"
+        },
+        {
+          "id": 5,
+          "direction": "en-hi",
+          "voice": "/animals/pig/pig_level5_en_hi.mp3"
+        },
+        {
+          "id": 5,
+          "direction": "hi-en",
+          "voice": "/animals/pig/pig_level5_hi_en.mp3"
+        }
+      ]
     },
     {
       "id": "goat",
       "name": { "en": "Goat", "hi": "बकरी" },
       "spriteIdle": "animals/goat/goat_idle.PNG",
-      "spriteTalking": "animals/goat/goat_idle.PNG",
+      "spriteTalking": "animals/goat/goat_openmouth.png",
       "sound": "animals/goat/baa.mp3",
-      "voice": "animals/goat/voice_en.mp3",
-      "position": { "x": "50%", "y": "60%" }
+      "position": { "x": 50, "y": 60 },
+      "levels": [
+        {
+          "id": 1,
+          "direction": "en-hi",
+          "voice": "/animals/goat/goat_level1_en_hi.mp3"
+        },
+        {
+          "id": 1,
+          "direction": "hi-en",
+          "voice": "/animals/goat/goat_level1_hi_en.mp3"
+        },
+        {
+          "id": 2,
+          "direction": "en-hi",
+          "voice": "/animals/goat/goat_level2_en_hi.mp3"
+        },
+        {
+          "id": 2,
+          "direction": "hi-en",
+          "voice": "/animals/goat/goat_level2_hi_en.mp3"
+        },
+        {
+          "id": 3,
+          "direction": "en-hi",
+          "voice": "/animals/goat/goat_level3_en_hi.mp3"
+        },
+        {
+          "id": 3,
+          "direction": "hi-en",
+          "voice": "/animals/goat/goat_level3_hi_en.mp3"
+        },
+        {
+          "id": 4,
+          "direction": "en-hi",
+          "voice": "/animals/goat/goat_level4_en_hi.mp3"
+        },
+        {
+          "id": 4,
+          "direction": "hi-en",
+          "voice": "/animals/goat/goat_level4_hi_en.mp3"
+        },
+        {
+          "id": 5,
+          "direction": "en-hi",
+          "voice": "/animals/goat/goat_level5_en_hi.mp3"
+        },
+        {
+          "id": 5,
+          "direction": "hi-en",
+          "voice": "/animals/goat/goat_level5_hi_en.mp3"
+        }
+      ]
     },
     {
       "id": "sheep",
@@ -34,8 +187,59 @@
       "spriteIdle": "animals/sheep/sheep_idle.PNG",
       "spriteTalking": "animals/sheep/sheep_idle.PNG",
       "sound": "animals/sheep/baa.mp3",
-      "voice": "animals/sheep/voice_en.mp3",
-      "position": { "x": "45%", "y": "80%" }
+      "position": { "x": 45, "y": 80 },
+      "levels": [
+        {
+          "id": 1,
+          "direction": "en-hi",
+          "voice": "/animals/sheep/sheep_level1_en_hi.mp3"
+        },
+        {
+          "id": 1,
+          "direction": "hi-en",
+          "voice": "/animals/sheep/sheep_level1_hi_en.mp3"
+        },
+        {
+          "id": 2,
+          "direction": "en-hi",
+          "voice": "/animals/sheep/sheep_level2_en_hi.mp3"
+        },
+        {
+          "id": 2,
+          "direction": "hi-en",
+          "voice": "/animals/sheep/sheep_level2_hi_en.mp3"
+        },
+        {
+          "id": 3,
+          "direction": "en-hi",
+          "voice": "/animals/sheep/sheep_level3_en_hi.mp3"
+        },
+        {
+          "id": 3,
+          "direction": "hi-en",
+          "voice": "/animals/sheep/sheep_level3_hi_en.mp3"
+        },
+        {
+          "id": 4,
+          "direction": "en-hi",
+          "voice": "/animals/sheep/sheep_level4_en_hi.mp3"
+        },
+        {
+          "id": 4,
+          "direction": "hi-en",
+          "voice": "/animals/sheep/sheep_level4_hi_en.mp3"
+        },
+        {
+          "id": 5,
+          "direction": "en-hi",
+          "voice": "/animals/sheep/sheep_level5_en_hi.mp3"
+        },
+        {
+          "id": 5,
+          "direction": "hi-en",
+          "voice": "/animals/sheep/sheep_level5_hi_en.mp3"
+        }
+      ]
     },
     {
       "id": "hen",
@@ -43,17 +247,119 @@
       "spriteIdle": "animals/hen/hen_idle.PNG",
       "spriteTalking": "animals/hen/hen_idle.PNG",
       "sound": "animals/hen/cluck.mp3",
-      "voice": "animals/hen/voice_en.mp3",
-      "position": { "x": "80%", "y": "80%" }
+      "position": { "x": 80, "y": 80 },
+      "levels": [
+        {
+          "id": 1,
+          "direction": "en-hi",
+          "voice": "/animals/hen/hen_level1_en_hi.mp3"
+        },
+        {
+          "id": 1,
+          "direction": "hi-en",
+          "voice": "/animals/hen/hen_level1_hi_en.mp3"
+        },
+        {
+          "id": 2,
+          "direction": "en-hi",
+          "voice": "/animals/hen/hen_level2_en_hi.mp3"
+        },
+        {
+          "id": 2,
+          "direction": "hi-en",
+          "voice": "/animals/hen/hen_level2_hi_en.mp3"
+        },
+        {
+          "id": 3,
+          "direction": "en-hi",
+          "voice": "/animals/hen/hen_level3_en_hi.mp3"
+        },
+        {
+          "id": 3,
+          "direction": "hi-en",
+          "voice": "/animals/hen/hen_level3_hi_en.mp3"
+        },
+        {
+          "id": 4,
+          "direction": "en-hi",
+          "voice": "/animals/hen/hen_level4_en_hi.mp3"
+        },
+        {
+          "id": 4,
+          "direction": "hi-en",
+          "voice": "/animals/hen/hen_level4_hi_en.mp3"
+        },
+        {
+          "id": 5,
+          "direction": "en-hi",
+          "voice": "/animals/hen/hen_level5_en_hi.mp3"
+        },
+        {
+          "id": 5,
+          "direction": "hi-en",
+          "voice": "/animals/hen/hen_level5_hi_en.mp3"
+        }
+      ]
     },
     {
       "id": "horse",
       "name": { "en": "Horse", "hi": "घोड़ा" },
-      "spriteIdle": "animals/horse/horse_idle.PNG",
-      "spriteTalking": "animals/horse/horse_idle.PNG",
+      "spriteIdle": "animals/horse/horse_idle.png",
+      "spriteTalking": "animals/horse/horse_openmouth.png",
       "sound": "animals/horse/neigh.mp3",
-      "voice": "animals/horse/voice_en.mp3",
-      "position": { "x": "75%", "y": "40%" }
+      "position": { "x": 75, "y": 40 },
+      "levels": [
+        {
+          "id": 1,
+          "direction": "en-hi",
+          "voice": "/animals/horse/horse_level1_en_hi.mp3"
+        },
+        {
+          "id": 1,
+          "direction": "hi-en",
+          "voice": "/animals/horse/horse_level1_hi_en.mp3"
+        },
+        {
+          "id": 2,
+          "direction": "en-hi",
+          "voice": "/animals/horse/horse_level2_en_hi.mp3"
+        },
+        {
+          "id": 2,
+          "direction": "hi-en",
+          "voice": "/animals/horse/horse_level2_hi_en.mp3"
+        },
+        {
+          "id": 3,
+          "direction": "en-hi",
+          "voice": "/animals/horse/horse_level3_en_hi.mp3"
+        },
+        {
+          "id": 3,
+          "direction": "hi-en",
+          "voice": "/animals/horse/horse_level3_hi_en.mp3"
+        },
+        {
+          "id": 4,
+          "direction": "en-hi",
+          "voice": "/animals/horse/horse_level4_en_hi.mp3"
+        },
+        {
+          "id": 4,
+          "direction": "hi-en",
+          "voice": "/animals/horse/horse_level4_hi_en.mp3"
+        },
+        {
+          "id": 5,
+          "direction": "en-hi",
+          "voice": "/animals/horse/horse_level5_en_hi.mp3"
+        },
+        {
+          "id": 5,
+          "direction": "hi-en",
+          "voice": "/animals/horse/horse_level5_hi_en.mp3"
+        }
+      ]
     }
   ]
 }

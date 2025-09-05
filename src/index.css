@@ -531,7 +531,6 @@ html {
   .animal-sprite {
     cursor: pointer !important;
     pointer-events: auto !important;
-    position: absolute !important;
     z-index: 10 !important;
   }
   
@@ -566,6 +565,20 @@ html {
   .area-container {
     height: calc(100vh - 120px);
     height: calc(100dvh - 120px);
+  }
+}
+
+/* Ensure animals stay within farm scene boundaries on smaller screens */
+@media (max-width: 1024px) {
+  .animal-container {
+    /* Animals will use their own positioning logic */
+    transform-origin: center;
+  }
+  
+  /* Adjust animal positions for smaller screens to prevent overflow */
+  .area-scene {
+    overflow: hidden;
+    position: relative;
   }
 }
 
@@ -2218,14 +2231,16 @@ img.area-png-overlay {
 
 /* Farm Scene Styles */
 .area-scene {
-  position: relative;
+  position: relative !important;
   width: 100%;
   max-width: 900px;
   height: 600px;
   border-radius: 20px;
-  overflow: visible;
+  overflow: visible !important;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
   margin: 0 auto;
+  /* Ensure proper positioning context for absolutely positioned children */
+  z-index: 1;
 }
 
 /* Map Scene Styles - matching farm page structure */
@@ -2430,20 +2445,22 @@ img.area-png-overlay {
 
 /* Animal Component Styles */
 .animal-container {
-  position: absolute;
+  position: absolute !important;
   z-index: 10;
-  /* Remove transform from here since it's handled in the component */
+  /* Ensure animals are positioned relative to their parent container */
+  pointer-events: auto;
   /* Force overflow behavior */
   overflow: visible !important;
   clip: auto !important;
   clip-path: none !important;
+  /* Ensure proper positioning */
+  transform-origin: center;
 }
 
 .animal-sprite {
   cursor: pointer;
   transition: all 0.3s ease;
-  /* Position the sprite absolutely to avoid flexbox scaling issues */
-  position: relative;
+  /* Let the parent container handle positioning */
 }
 
 /* Animal images are scaled to 50% and positioned with transform */
@@ -2586,42 +2603,16 @@ img.area-png-overlay {
   object-position: center;
 }
 
-.animal-container {
-  position: absolute;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  z-index: 5;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  /* Let animals scale naturally based on their image sizes, but reduce to half size */
-  min-width: 20px;
-  min-height: 20px;
-  /* Scale down to 50% of natural size */
-  transform: scale(0.5);
-  transform-origin: center;
-  /* Ensure animals stay within background boundaries */
-  max-width: 90%;
-  max-height: 90%;
-  overflow: hidden;
-}
+/* This rule was conflicting with the Animal component's inline styles - removed */
 
 .animal-container:hover {
   transform: scale(1.1);
   z-index: 10;
 }
 
-.animal-sprite {
-  /* Let sprite scale naturally based on image size */
-  width: auto;
-  height: auto;
-  object-fit: contain;
-  pointer-events: none;
-  /* Ensure sprite scales with container */
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
+
+
+/* Animal sprite styling is handled by the component */
 
 .animal-sparkles {
   position: absolute;
@@ -2825,10 +2816,7 @@ img {
     font-size: 0.8rem;
   }
   
-  /* Ensure animals stay within boundaries on small screens */
-  .animal-container {
-    transform: scale(0.45) !important;
-  }
+  /* Animals will use their own positioning logic */
 }
 
 /* Mobile Landscape */
@@ -2847,10 +2835,7 @@ img {
     font-size: 0.75rem;
   }
   
-  /* Ensure animals stay within boundaries on small screens */
-  .animal-container {
-    transform: scale(0.4) !important;
-  }
+  /* Animals will use their own positioning logic */
 }
 
 

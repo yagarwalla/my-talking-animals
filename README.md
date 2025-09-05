@@ -2,6 +2,25 @@
 
 A React Progressive Web App (PWA) that creates an interactive farm experience where children can learn animal names in multiple languages through AI-generated speech and animations.
 
+## ⚡ Quick Start
+
+```bash
+# Clone and setup
+git clone https://github.com/yagarwalla/my-talking-animals.git
+cd my-talking-animals
+
+# Install dependencies
+npm install
+
+# Start the server (using NVM if available)
+source ~/.nvm/nvm.sh && nvm use 18.20.8 && npm start
+
+# Or start directly if Node.js is in PATH
+npm start
+
+# Open http://localhost:3000 in your browser
+```
+
 ## 🌟 Features
 
 - **Interactive Farm Map**: Clickable areas with animated overlays
@@ -27,35 +46,167 @@ A React Progressive Web App (PWA) that creates an interactive farm experience wh
 
 ### Prerequisites
 
-- Node.js (v18 or higher)
+- Node.js (v18 or higher) - **Required**
 - npm or yarn
-- Azure OpenAI Service account
+- Azure OpenAI Service account (optional for basic functionality)
 
 ### Installation
 
-1. Clone the repository:
+1. **Clone the repository:**
 ```bash
 git clone https://github.com/yagarwalla/my-talking-animals.git
 cd my-talking-animals
 ```
 
-2. Install dependencies:
+2. **Install dependencies:**
 ```bash
 npm install
 ```
 
-3. Set up environment variables:
+3. **Set up environment variables (optional):**
 ```bash
 cp .env.example .env
 # Edit .env with your Azure OpenAI credentials
 ```
 
-4. Start the development server:
+### 🖥️ Running the Development Server
+
+#### Method 1: Using NVM (Recommended)
+If you have NVM installed (Node Version Manager):
+
 ```bash
+# Activate NVM and use Node.js v18
+source ~/.nvm/nvm.sh
+nvm use 18.20.8
+
+# Start the development server
 npm start
 ```
 
-5. Open [http://localhost:3000](http://localhost:3000) in your browser
+#### Method 2: Direct Node.js
+If Node.js is installed globally:
+
+```bash
+# Check Node.js version
+node --version
+
+# Start the development server
+npm start
+```
+
+#### Method 3: Using Yarn
+If you prefer Yarn:
+
+```bash
+# Install dependencies
+yarn install
+
+# Start the development server
+yarn start
+```
+
+### 🌐 Access the Application
+
+Once the server starts successfully:
+- Open your browser and go to [http://localhost:3000](http://localhost:3000)
+- The application should load with the profile selector screen
+
+### 🔧 Troubleshooting Server Issues
+
+#### Issue: "command not found: npm" or "command not found: node"
+**Solution:** Node.js is not installed or not in your PATH.
+
+**For macOS with Homebrew:**
+```bash
+# Install Node.js
+brew install node
+
+# Verify installation
+node --version
+npm --version
+```
+
+**For macOS with NVM:**
+```bash
+# Install NVM (if not already installed)
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
+
+# Restart terminal or source NVM
+source ~/.nvm/nvm.sh
+
+# Install and use Node.js v18
+nvm install 18.20.8
+nvm use 18.20.8
+
+# Verify installation
+node --version
+npm --version
+```
+
+#### Issue: "localhost refused to connect"
+**Solution:** The development server isn't running properly.
+
+1. **Check if the server is running:**
+```bash
+# Check for running processes
+ps aux | grep "npm start" | grep -v grep
+
+# Check if port 3000 is in use
+lsof -i :3000
+```
+
+2. **Kill any existing processes:**
+```bash
+# Kill processes on port 3000
+lsof -ti:3000 | xargs kill -9
+
+# Kill any npm processes
+pkill -f "npm start"
+```
+
+3. **Restart the server:**
+```bash
+# Clear npm cache
+npm cache clean --force
+
+# Reinstall dependencies
+rm -rf node_modules package-lock.json
+npm install
+
+# Start the server
+npm start
+```
+
+#### Issue: "Module not found" errors
+**Solution:** Dependencies are missing or corrupted.
+
+```bash
+# Clear everything and reinstall
+rm -rf node_modules package-lock.json
+npm install
+
+# If using Yarn
+rm -rf node_modules yarn.lock
+yarn install
+```
+
+#### Issue: "Permission denied" errors
+**Solution:** Fix npm permissions.
+
+```bash
+# Fix npm permissions (macOS/Linux)
+sudo chown -R $(whoami) ~/.npm
+sudo chown -R $(whoami) /usr/local/lib/node_modules
+
+# Or use a Node version manager like NVM
+```
+
+### 📱 Development Tips
+
+- **Hot Reload:** The server automatically reloads when you make changes
+- **Console Logs:** Check browser console for debugging information
+- **Network Tab:** Monitor API calls and responses
+- **Mobile Testing:** Use browser dev tools to test mobile responsiveness
 
 ## 📁 Project Structure
 
