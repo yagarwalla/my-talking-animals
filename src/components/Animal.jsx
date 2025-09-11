@@ -1,9 +1,8 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Howl } from 'howler';
-import { useProgression } from '../contexts/ProgressionContext.jsx';
 
-const Animal = ({ animal, onAnimalClick, currentLanguage = 'en', index = 0, totalAnimals = 1 }) => {
+const Animal = ({ animal, currentLanguage = 'en', index = 0, totalAnimals = 1 }) => {
   const [isTalking, setIsTalking] = useState(false);
   const [showSparkles, setShowSparkles] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
@@ -11,15 +10,6 @@ const Animal = ({ animal, onAnimalClick, currentLanguage = 'en', index = 0, tota
   const [isPlaying, setIsPlaying] = useState(false);
   const soundRef = useRef(null);
   const voiceRef = useRef(null);
-  
-  // Use the progression context
-  const { 
-    getAnimalVoice, 
-    completeAnimal, 
-    isAnimalUnlocked, 
-    getAnimalProgress,
-    currentLevel 
-  } = useProgression();
   
   // Debug: Log the parent container information
   useEffect(() => {
@@ -45,14 +35,22 @@ const Animal = ({ animal, onAnimalClick, currentLanguage = 'en', index = 0, tota
       });
     }
 
-    // Get the voice file for current level and language
-    const voiceFile = getAnimalVoice(animal, currentLanguage);
-    if (voiceFile) {
-      voiceRef.current = new Howl({
-        src: [voiceFile],
-        volume: 0.8,
-        preload: true
-      });
+    // Load level 1 voice file for current language
+    if (animal.levels && animal.levels.length > 0) {
+      // Find level 1 voice for current language direction
+      const level1Voice = animal.levels.find(level => 
+        level.id === 1 && 
+        level.direction === (currentLanguage === 'hi' ? 'en-hi' : 'hi-en')
+      );
+      
+      if (level1Voice && level1Voice.voice) {
+        voiceRef.current = new Howl({
+          src: [level1Voice.voice],
+          volume: 0.8,
+          preload: true
+        });
+        console.log(`🎵 Loaded voice for ${animal.id}:`, level1Voice.voice);
+      }
     }
 
     // Cleanup on unmount
@@ -60,7 +58,7 @@ const Animal = ({ animal, onAnimalClick, currentLanguage = 'en', index = 0, tota
       if (soundRef.current) soundRef.current.unload();
       if (voiceRef.current) voiceRef.current.unload();
     };
-  }, [animal, currentLanguage, getAnimalVoice]);
+  }, [animal, currentLanguage]);
 
   const handleAnimalClick = async (event) => {
     // Debug: Log click event details
@@ -74,69 +72,42 @@ const Animal = ({ animal, onAnimalClick, currentLanguage = 'en', index = 0, tota
       return;
     }
     
-    // Check if animal is unlocked for current level
-    if (!isAnimalUnlocked(animal.id)) {
-      console.log('🚫 Animal not unlocked for current level');
-      return;
-    }
-    
     console.log('🎬 Setting animation states...');
     setIsAnimating(true);
     setShowSparkles(true);
     setIsTalking(true);
     setIsPlaying(true);
 
-    // 1. Play preloaded animal sound immediately
+    // Play the animal sound first
     if (soundRef.current) {
       soundRef.current.play();
     }
 
-    try {
-      // 2. Play the voice file for current level
-      if (voiceRef.current) {
-        voiceRef.current.play();
-        
-        // Get audio duration for animation
-        const duration = voiceRef.current.duration() * 1000; // Convert to milliseconds
-        startTalkingAnimation(duration);
-        
-        // Mark animal as completed for this level
-        const result = completeAnimal(animal.id);
-        console.log('🎉 Animal completed:', result);
-        
-        // Show level up notification if applicable
-        if (result.levelUp) {
-          console.log('🎊 Level up! New level:', result.progress.currentLevel);
-        }
-        
-        // Show new stickers if any
-        if (result.newStickers.length > 0) {
-          console.log('🏆 New stickers earned:', result.newStickers);
-        }
-      } else {
-        console.warn('No voice file found for animal:', animal.id);
-        // Fallback: just play sound and short animation
-        startTalkingAnimation(2000);
-      }
+    // Then play the level 1 voice
+    if (voiceRef.current) {
+      voiceRef.current.play();
       
-    } catch (error) {
-      console.error('Error playing animal voice:', error);
-      // Stop talking animation on error
-      setIsTalking(false);
-    } finally {
-      setIsPlaying(false);
+      // Get audio duration for animation (use voice duration if available)
+      const duration = voiceRef.current.duration() * 1000; // Convert to milliseconds
+      startTalkingAnimation(duration);
+      console.log(`🎵 Playing level 1 voice for ${animal.id}`);
+    } else if (soundRef.current) {
+      // Fallback to basic sound duration
+      const duration = soundRef.current.duration() * 1000;
+      startTalkingAnimation(duration);
+    } else {
+      console.warn('No sound or voice file found for animal:', animal.id);
+      // Fallback: just show animation
+      startTalkingAnimation(2000); // 2 second fallback animation
     }
 
     // Hide sparkles after animation
     setTimeout(() => {
       setShowSparkles(false);
       setIsAnimating(false);
+      setIsPlaying(false);
     }, 3000);
 
-    // Call parent handler
-    if (onAnimalClick) {
-      onAnimalClick(animal);
-    }
   };
 
   // Function to cycle between idle and talking sprites
@@ -154,6 +125,7 @@ const Animal = ({ animal, onAnimalClick, currentLanguage = 'en', index = 0, tota
         console.log('🎬 Animation completed, clearing interval');
         clearInterval(animationInterval);
         setIsTalking(false);
+        setIsPlaying(false);
         return;
       }
       
@@ -173,6 +145,7 @@ const Animal = ({ animal, onAnimalClick, currentLanguage = 'en', index = 0, tota
       console.log('🎬 Animation cleanup timeout');
       clearInterval(animationInterval);
       setIsTalking(false);
+      setIsPlaying(false);
     }, duration);
   };
 
@@ -193,19 +166,23 @@ const Animal = ({ animal, onAnimalClick, currentLanguage = 'en', index = 0, tota
       const left = `${x}%`;
       const top = `${y}%`;
       
-      // Responsive scaling based on screen size
-      let scale = 0.5; // Default desktop scale
+      // Base scaling based on screen size
+      let baseScale = 0.5; // Default desktop scale
       
       // Check if we're on a smaller screen
       if (window.innerWidth <= 768) {
-        scale = 0.3; // Mobile: smaller scale
+        baseScale = 0.3; // Mobile: smaller scale
       } else if (window.innerWidth <= 1024) {
-        scale = 0.4; // Tablet: medium scale
+        baseScale = 0.4; // Tablet: medium scale
       }
+      
+      // Apply animal-specific size percentage
+      const animalSize = animal.size || 100; // Default to 100% if not specified
+      const scale = baseScale * (animalSize / 100);
       
       // Debug logging
       console.log(`🎯 Animal ${animal.id} positioning:`, {
-        x, y, left, top, scale,
+        x, y, left, top, baseScale, animalSize, scale,
         animalPosition: animal.position,
         xType: typeof x,
         yType: typeof y,
@@ -344,31 +321,6 @@ const Animal = ({ animal, onAnimalClick, currentLanguage = 'en', index = 0, tota
 
 
 
-      {/* Playing Indicator */}
-      {isPlaying && (
-        <motion.div
-          className="playing-indicator"
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: 10 }}
-          transition={{ duration: 0.3 }}
-          style={{
-            position: 'absolute',
-            top: '-80px',
-            left: '50%',
-            transform: 'translateX(-50%)',
-            background: 'rgba(52, 152, 219, 0.9)',
-            color: 'white',
-            padding: '6px 12px',
-            borderRadius: '12px',
-            fontSize: '12px',
-            fontWeight: 'bold',
-            zIndex: 20
-          }}
-        >
-          Playing...
-        </motion.div>
-      )}
 
     </div>
   );

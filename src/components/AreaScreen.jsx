@@ -7,7 +7,6 @@ import ProgressionUI from './ProgressionUI';
 const AreaScreen = () => {
   const { areaId } = useParams();
   const navigate = useNavigate();
-  const [selectedAnimal, setSelectedAnimal] = useState(null);
   const [farmConfig, setFarmConfig] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -50,14 +49,6 @@ const AreaScreen = () => {
     }
   }, []);
 
-  const handleAnimalClick = (animal) => {
-    setSelectedAnimal(animal);
-    
-    // Auto-hide info panel after 5 seconds
-    setTimeout(() => {
-      setSelectedAnimal(null);
-    }, 5000);
-  };
 
   const handleBackToMap = () => {
     navigate('/map');
@@ -165,31 +156,12 @@ const AreaScreen = () => {
               <Animal
                 key={animal.id}
                 animal={animal}
-                onAnimalClick={handleAnimalClick}
                 currentLanguage={currentLanguage}
                 index={index}
                 totalAnimals={farmConfig.animals.length}
               />
             ))}
 
-            {/* Animal Info Panel */}
-            {selectedAnimal && (
-              <motion.div
-                className="animal-info-panel"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: 20 }}
-                transition={{ duration: 0.3 }}
-              >
-                <h3>{selectedAnimal.name[currentLanguage] || selectedAnimal.name.en}</h3>
-                <div className="animal-sound">
-                  <span className="sound-icon">🔊</span>
-                  <span className="sound-text">
-                    {currentLanguage === 'hi' ? 'ध्वनि चल रही है!' : 'Playing sound!'}
-                  </span>
-                </div>
-              </motion.div>
-            )}
           </div>
         ) : (
           <div className="coming-soon">
