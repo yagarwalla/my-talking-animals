@@ -1,18 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { 
-  getProgress, 
-  saveProgress, 
-  getStickers, 
-  saveStickers,
-  completeAnimal,
-  getAnimalLevelsCompleted,
-  getAnimalVoiceFile,
-  isAnimalAvailable,
-  getLevelProgress,
-  resetProgress
-} from '../utils/progression';
 
-const ProgressionContext = createContext();
+const ProgressionContext = createContext(undefined);
 
 export const useProgression = () => {
   const context = useContext(ProgressionContext);
@@ -23,82 +11,150 @@ export const useProgression = () => {
 };
 
 export const ProgressionProvider = ({ children }) => {
-  const [progress, setProgress] = useState(() => getProgress());
-  const [stickers, setStickers] = useState(() => getStickers());
-  const [allAnimals, setAllAnimals] = useState([]);
+  const [currentLevel, setCurrentLevel] = useState(1);
+  const [completedAnimals, setCompletedAnimals] = useState(new Set());
+  const [stickers, setStickers] = useState([]);
+  const [allAnimals] = useState(['cow', 'pig', 'goat', 'sheep', 'hen', 'horse']);
 
-  // Load progress and stickers on mount
+  // Load progression data from localStorage on mount
   useEffect(() => {
-    setProgress(getProgress());
-    setStickers(getStickers());
+    try {
+      const savedLevel = localStorage.getItem('progression_level');
+      const savedCompleted = localStorage.getItem('progression_completed');
+      const savedStickers = localStorage.getItem('progression_stickers');
+
+      if (savedLevel) setCurrentLevel(parseInt(savedLevel));
+      if (savedCompleted) {
+        const parsed = JSON.parse(savedCompleted);
+        setCompletedAnimals(Array.isArray(parsed) ? new Set(parsed) : new Set());
+      }
+      if (savedStickers) {
+        const parsed = JSON.parse(savedStickers);
+        setStickers(Array.isArray(parsed) ? parsed : []);
+      }
+    } catch (error) {
+      console.error('Error loading progression data from localStorage:', error);
+      // Reset to defaults on error
+      setCurrentLevel(1);
+      setCompletedAnimals(new Set());
+      setStickers([]);
+    }
   }, []);
 
-  // Load farm config to get all animals
+  // Save progression data to localStorage whenever it changes
   useEffect(() => {
-    const loadFarmConfig = async () => {
-      try {
-        const response = await fetch('/config/farm.json');
-        const data = await response.json();
-        setAllAnimals(data.animals || []);
-      } catch (error) {
-        console.error('Error loading farm config:', error);
+    localStorage.setItem('progression_level', currentLevel.toString());
+    localStorage.setItem('progression_completed', JSON.stringify([...completedAnimals]));
+    localStorage.setItem('progression_stickers', JSON.stringify(stickers));
+  }, [currentLevel, completedAnimals, stickers]);
+
+  const completeAnimal = (animalId) => {
+    if (completedAnimals.has(animalId)) {
+      return { success: false, message: 'Animal already completed' };
+    }
+
+    const newCompleted = new Set(completedAnimals);
+    newCompleted.add(animalId);
+    setCompletedAnimals(newCompleted);
+
+    // Check if all animals are completed for current level
+    const isLevelComplete = allAnimals.every(animal => newCompleted.has(animal));
+    
+    let levelUp = false;
+    let newStickers = [];
+
+    if (isLevelComplete) {
+      // Level up
+      setCurrentLevel(prev => prev + 1);
+      levelUp = true;
+
+      // Award level completion sticker
+      const levelStickerId = `farm_level${currentLevel}_expert`;
+      const currentStickers = Array.isArray(stickers) ? stickers : [];
+      if (!currentStickers.includes(levelStickerId)) {
+        newStickers = [...currentStickers, levelStickerId];
+        setStickers(newStickers);
+      }
+
+      // Reset completed animals for next level
+      setCompletedAnimals(new Set());
+    }
+
+    // Award individual animal expert sticker if all 5 levels completed
+    const animalStickerId = `${animalId}_expert`;
+    const currentStickers = Array.isArray(stickers) ? stickers : [];
+    if (!currentStickers.includes(animalStickerId)) {
+      // For now, we'll award the sticker after completing the animal once
+      // In a full system, this would check if all 5 levels are completed
+      newStickers = [...newStickers, animalStickerId];
+      setStickers(newStickers);
+    }
+
+    return {
+      success: true,
+      levelUp,
+      newStickers,
+      progress: {
+        currentLevel,
+        completed: newCompleted.size,
+        total: allAnimals.length
       }
     };
-    
-    loadFarmConfig();
-  }, []);
-
-  const completeAnimalForLevel = (animalId) => {
-    const result = completeAnimal(animalId, allAnimals);
-    setProgress(result.progress);
-    
-    // Update stickers if new ones were earned
-    if (result.newStickers.length > 0) {
-      setStickers(getStickers());
-    }
-    
-    return result;
-  };
-
-  const getAnimalVoice = (animal, currentLanguage = 'en') => {
-    return getAnimalVoiceFile(animal, currentLanguage);
-  };
-
-  const isAnimalUnlocked = (animalId) => {
-    return isAnimalAvailable(animalId, allAnimals);
-  };
-
-  const getAnimalProgress = (animalId) => {
-    return getAnimalLevelsCompleted(animalId);
   };
 
   const getCurrentLevelProgress = () => {
-    return getLevelProgress(allAnimals);
+    const completed = completedAnimals.size;
+    const total = allAnimals.length;
+    const percentage = total > 0 ? Math.round((completed / total) * 100) : 0;
+
+    return {
+      completed,
+      total,
+      percentage
+    };
   };
 
-  const resetAllProgress = () => {
-    const newProgress = resetProgress();
-    setProgress(newProgress);
+  const isAnimalUnlocked = (animalId) => {
+    // For now, all animals are unlocked at level 1
+    return currentLevel >= 1;
+  };
+
+  const getAnimalVoice = (animal, language) => {
+    // Return the level 1 voice file for the current language
+    if (animal.levels && animal.levels.length > 0) {
+      const level1Voice = animal.levels.find(level => 
+        level.id === 1 && 
+        level.direction === (language === 'hi' ? 'en-hi' : 'hi-en')
+      );
+      return level1Voice ? level1Voice.voice : null;
+    }
+    return null;
+  };
+
+  const getAnimalProgress = (animalId) => {
+    return {
+      completed: completedAnimals.has(animalId),
+      level: currentLevel
+    };
+  };
+
+  const resetProgression = () => {
+    setCurrentLevel(1);
+    setCompletedAnimals(new Set());
     setStickers([]);
-    return newProgress;
   };
 
   const value = {
-    // Progress state
-    currentLevel: progress.currentLevel,
-    completedAnimals: progress.completedAnimals,
+    currentLevel,
+    completedAnimals,
     stickers,
-    
-    // Progress actions
-    completeAnimal: completeAnimalForLevel,
-    getAnimalVoice,
-    isAnimalUnlocked,
-    getAnimalProgress,
+    allAnimals,
+    completeAnimal,
     getCurrentLevelProgress,
-    resetAllProgress,
-    
-    // Utility
-    allAnimals
+    isAnimalUnlocked,
+    getAnimalVoice,
+    getAnimalProgress,
+    resetProgression
   };
 
   return (
@@ -107,3 +163,5 @@ export const ProgressionProvider = ({ children }) => {
     </ProgressionContext.Provider>
   );
 };
+
+export default ProgressionContext;

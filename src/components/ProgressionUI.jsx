@@ -5,14 +5,11 @@ import { useProgression } from '../contexts/ProgressionContext';
 const ProgressionUI = () => {
   const { 
     currentLevel, 
-    completedAnimals, 
     stickers, 
-    getCurrentLevelProgress,
-    allAnimals 
+    getCurrentLevelProgress
   } = useProgression();
   
   const [showStickers, setShowStickers] = useState(false);
-  const [showLevelUp, setShowLevelUp] = useState(false);
   
   const levelProgress = getCurrentLevelProgress();
   

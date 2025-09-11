@@ -1,6 +1,7 @@
-import React, { useState, useEffect, useRef, useMemo } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Howl } from 'howler';
+import { useProgression } from '../contexts/ProgressionContext.jsx';
 
 const Animal = ({ animal, currentLanguage = 'en', index = 0, totalAnimals = 1 }) => {
   const [isTalking, setIsTalking] = useState(false);
@@ -10,6 +11,11 @@ const Animal = ({ animal, currentLanguage = 'en', index = 0, totalAnimals = 1 })
   const [isPlaying, setIsPlaying] = useState(false);
   const soundRef = useRef(null);
   const voiceRef = useRef(null);
+  
+  // Use the progression context
+  const { 
+    completeAnimal
+  } = useProgression();
   
   // Debug: Log the parent container information
   useEffect(() => {
@@ -91,10 +97,32 @@ const Animal = ({ animal, currentLanguage = 'en', index = 0, totalAnimals = 1 })
       const duration = voiceRef.current.duration() * 1000; // Convert to milliseconds
       startTalkingAnimation(duration);
       console.log(`🎵 Playing level 1 voice for ${animal.id}`);
+      
+      // Track progression
+      try {
+        const result = completeAnimal(animal.id);
+        console.log('🎉 Animal completed:', result);
+        if (result && result.levelUp) {
+          console.log('🎊 Level up! New level:', result.progress.currentLevel);
+        }
+        if (result && result.newStickers && result.newStickers.length > 0) {
+          console.log('🏆 New stickers earned:', result.newStickers);
+        }
+      } catch (error) {
+        console.error('Error tracking progression:', error);
+      }
     } else if (soundRef.current) {
       // Fallback to basic sound duration
       const duration = soundRef.current.duration() * 1000;
       startTalkingAnimation(duration);
+      
+      // Track progression even for basic sound
+      try {
+        const result = completeAnimal(animal.id);
+        console.log('🎉 Animal completed (basic sound):', result);
+      } catch (error) {
+        console.error('Error tracking progression (basic sound):', error);
+      }
     } else {
       console.warn('No sound or voice file found for animal:', animal.id);
       // Fallback: just show animation
@@ -222,7 +250,7 @@ const Animal = ({ animal, currentLanguage = 'en', index = 0, totalAnimals = 1 })
     };
   };
 
-  const positionStyle = useMemo(() => getPositionStyle(), [index, totalAnimals, animal.position]);
+  const positionStyle = getPositionStyle();
 
   return (
     <div 
