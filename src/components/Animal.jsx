@@ -14,7 +14,8 @@ const Animal = ({ animal, currentLanguage = 'en', index = 0, totalAnimals = 1 })
   
   // Use the progression context
   const { 
-    completeAnimal
+    completeAnimal,
+    currentLevel
   } = useProgression();
   
   // Debug: Log the parent container information
@@ -41,21 +42,23 @@ const Animal = ({ animal, currentLanguage = 'en', index = 0, totalAnimals = 1 })
       });
     }
 
-    // Load level 1 voice file for current language
+    // Load voice file for current level and language
     if (animal.levels && animal.levels.length > 0) {
-      // Find level 1 voice for current language direction
-      const level1Voice = animal.levels.find(level => 
-        level.id === 1 && 
+      // Find voice for current level and language direction
+      const currentLevelVoice = animal.levels.find(level => 
+        level.id === currentLevel && 
         level.direction === (currentLanguage === 'hi' ? 'en-hi' : 'hi-en')
       );
       
-      if (level1Voice && level1Voice.voice) {
+      if (currentLevelVoice && currentLevelVoice.voice) {
         voiceRef.current = new Howl({
-          src: [level1Voice.voice],
+          src: [currentLevelVoice.voice],
           volume: 0.8,
           preload: true
         });
-        console.log(`🎵 Loaded voice for ${animal.id}:`, level1Voice.voice);
+        console.log(`🎵 Loaded Level ${currentLevel} voice for ${animal.id}:`, currentLevelVoice.voice);
+      } else {
+        console.warn(`No Level ${currentLevel} voice found for ${animal.id} in ${currentLanguage}`);
       }
     }
 
@@ -64,7 +67,7 @@ const Animal = ({ animal, currentLanguage = 'en', index = 0, totalAnimals = 1 })
       if (soundRef.current) soundRef.current.unload();
       if (voiceRef.current) voiceRef.current.unload();
     };
-  }, [animal, currentLanguage]);
+  }, [animal, currentLanguage, currentLevel]);
 
   const handleAnimalClick = async (event) => {
     // Debug: Log click event details
@@ -96,7 +99,7 @@ const Animal = ({ animal, currentLanguage = 'en', index = 0, totalAnimals = 1 })
       // Get audio duration for animation (use voice duration if available)
       const duration = voiceRef.current.duration() * 1000; // Convert to milliseconds
       startTalkingAnimation(duration);
-      console.log(`🎵 Playing level 1 voice for ${animal.id}`);
+      console.log(`🎵 Playing Level ${currentLevel} voice for ${animal.id}`);
       
       // Track progression
       try {
@@ -339,9 +342,17 @@ const Animal = ({ animal, currentLanguage = 'en', index = 0, totalAnimals = 1 })
           onError={(e) => {
             const currentSprite = isTalking ? animal.spriteTalking : animal.spriteIdle;
             console.error('❌ Image failed to load:', currentSprite, 'URL:', e.target.src);
-            // Fallback to idle sprite if talking sprite fails
-            if (isTalking) {
+            // Try alternative file extensions or fallback to idle sprite
+            if (isTalking && animal.spriteTalking !== animal.spriteIdle) {
+              console.log('🔄 Falling back to idle sprite for talking animation');
               e.target.src = `/${animal.spriteIdle}`;
+            } else {
+              // Try alternative case or extension
+              const altPath = currentSprite.replace(/\.(png|PNG)$/, '.PNG');
+              if (altPath !== currentSprite) {
+                console.log('🔄 Trying alternative path:', altPath);
+                e.target.src = `/${altPath}`;
+              }
             }
           }}
         />

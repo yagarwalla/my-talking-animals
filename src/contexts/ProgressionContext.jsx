@@ -68,7 +68,7 @@ export const ProgressionProvider = ({ children }) => {
       setCurrentLevel(prev => prev + 1);
       levelUp = true;
 
-      // Award level completion sticker
+      // Award level completion sticker (for the level that was just completed)
       const levelStickerId = `farm_level${currentLevel}_expert`;
       const currentStickers = Array.isArray(stickers) ? stickers : [];
       if (!currentStickers.includes(levelStickerId)) {

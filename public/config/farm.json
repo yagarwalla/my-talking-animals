@@ -126,7 +126,7 @@
     {
       "id": "goat",
       "name": { "en": "Goat", "hi": "बकरी" },
-      "spriteIdle": "animals/goat/goat_idle.PNG",
+      "spriteIdle": "animals/goat/goat_idle.png",
       "spriteTalking": "animals/goat/goat_openmouth.png",
       "sound": "animals/goat/baa.mp3",
       "position": { "x": 50, "y": 50 },
