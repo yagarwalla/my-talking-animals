@@ -124,7 +124,7 @@ export const ProgressionProvider = ({ children }) => {
     if (animal.levels && animal.levels.length > 0) {
       const level1Voice = animal.levels.find(level => 
         level.id === 1 && 
-        level.direction === (language === 'hi' ? 'en-hi' : 'hi-en')
+        level.direction === (language === 'en' ? 'en-hi' : 'hi-en')
       );
       return level1Voice ? level1Voice.voice : null;
     }

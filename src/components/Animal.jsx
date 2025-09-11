@@ -45,9 +45,11 @@ const Animal = ({ animal, currentLanguage = 'en', index = 0, totalAnimals = 1 })
     // Load voice file for current level and language
     if (animal.levels && animal.levels.length > 0) {
       // Find voice for current level and language direction
+      // If user's primary language is English, they want to learn Hindi (en-hi)
+      // If user's primary language is Hindi, they want to learn English (hi-en)
       const currentLevelVoice = animal.levels.find(level => 
         level.id === currentLevel && 
-        level.direction === (currentLanguage === 'hi' ? 'en-hi' : 'hi-en')
+        level.direction === (currentLanguage === 'en' ? 'en-hi' : 'hi-en')
       );
       
       if (currentLevelVoice && currentLevelVoice.voice) {
@@ -56,9 +58,10 @@ const Animal = ({ animal, currentLanguage = 'en', index = 0, totalAnimals = 1 })
           volume: 0.8,
           preload: true
         });
-        console.log(`🎵 Loaded Level ${currentLevel} voice for ${animal.id}:`, currentLevelVoice.voice);
+        console.log(`🎵 Loaded Level ${currentLevel} voice for ${animal.id} (${currentLevelVoice.direction}):`, currentLevelVoice.voice);
       } else {
-        console.warn(`No Level ${currentLevel} voice found for ${animal.id} in ${currentLanguage}`);
+        const expectedDirection = currentLanguage === 'en' ? 'en-hi' : 'hi-en';
+        console.warn(`No Level ${currentLevel} voice found for ${animal.id} with direction ${expectedDirection} (user's primary language: ${currentLanguage})`);
       }
     }
 
