@@ -16,6 +16,7 @@ export const ProgressionProvider = ({ children }) => {
   const [stickers, setStickers] = useState([]);
   const [allAnimals] = useState(['cow', 'pig', 'goat', 'sheep', 'hen', 'horse']);
   const [speakingAnimal, setSpeakingAnimal] = useState(null);
+  const [isInitialized, setIsInitialized] = useState(false);
 
   // Load progression data from localStorage on mount
   useEffect(() => {
@@ -24,30 +25,56 @@ export const ProgressionProvider = ({ children }) => {
       const savedCompleted = localStorage.getItem('progression_completed');
       const savedStickers = localStorage.getItem('progression_stickers');
 
-      if (savedLevel) setCurrentLevel(parseInt(savedLevel));
+      console.log('🔄 Loading progression data from localStorage:', {
+        savedLevel,
+        savedCompleted,
+        savedStickers
+      });
+
+      if (savedLevel) {
+        setCurrentLevel(parseInt(savedLevel));
+        console.log('✅ Loaded level:', savedLevel);
+      }
       if (savedCompleted) {
         const parsed = JSON.parse(savedCompleted);
         setCompletedAnimals(Array.isArray(parsed) ? new Set(parsed) : new Set());
+        console.log('✅ Loaded completed animals:', parsed);
       }
       if (savedStickers) {
         const parsed = JSON.parse(savedStickers);
         setStickers(Array.isArray(parsed) ? parsed : []);
+        console.log('✅ Loaded stickers:', parsed);
       }
+      
+      // Mark as initialized after loading is complete
+      setIsInitialized(true);
     } catch (error) {
-      console.error('Error loading progression data from localStorage:', error);
+      console.error('❌ Error loading progression data from localStorage:', error);
       // Reset to defaults on error
       setCurrentLevel(1);
       setCompletedAnimals(new Set());
       setStickers([]);
+      setIsInitialized(true);
     }
   }, []);
 
-  // Save progression data to localStorage whenever it changes
+  // Save progression data to localStorage whenever it changes (but only after initialization)
   useEffect(() => {
+    if (!isInitialized) {
+      console.log('⏳ Skipping save - not yet initialized');
+      return;
+    }
+    
+    console.log('💾 Saving progression data to localStorage:', {
+      currentLevel,
+      completedAnimals: [...completedAnimals],
+      stickers
+    });
+    
     localStorage.setItem('progression_level', currentLevel.toString());
     localStorage.setItem('progression_completed', JSON.stringify([...completedAnimals]));
     localStorage.setItem('progression_stickers', JSON.stringify(stickers));
-  }, [currentLevel, completedAnimals, stickers]);
+  }, [currentLevel, completedAnimals, stickers, isInitialized]);
 
   const completeAnimal = (animalId, onComplete = null) => {
     if (completedAnimals.has(animalId)) {
@@ -104,7 +131,11 @@ export const ProgressionProvider = ({ children }) => {
 
     // Call the completion callback if provided
     if (onComplete) {
-      onComplete(result);
+      try {
+        onComplete(result);
+      } catch (callbackError) {
+        console.error(`Error in onComplete callback for ${animalId}:`, callbackError);
+      }
     }
 
     return result;
