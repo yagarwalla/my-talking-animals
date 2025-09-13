@@ -1,5 +1,6 @@
 // generateAnimalVoicesAzureSpeech.js
 // Standalone script to generate MP3 files for all animals using Azure Speech Services
+// Each animal uses a unique Hindi neural voice without pitch/tempo alterations
 // Based on the phrases provided in phrases.py
 
 const fs = require("fs");
@@ -15,45 +16,15 @@ const speechConfig = sdk.SpeechConfig.fromSubscription(
     process.env.AZURE_SPEECH_REGION
 );
 
-// Voice mapping for each animal with unique characteristics
-// Using Azure Speech Services Indian neural voices
-const voiceMapping = {
-    "cow": { 
-        "voice_en": "en-IN-NeerjaNeural", 
-        "voice_hi": "hi-IN-SwaraNeural", 
-        "pitch": "+3%",
-        "rate": "slow"
-    },
-    "goat": { 
-        "voice_en": "en-IN-PrabhatNeural", 
-        "voice_hi": "hi-IN-MadhurNeural", 
-        "pitch": "+6%",
-        "rate": "slow"
-    },
-    "sheep": { 
-        "voice_en": "en-IN-NeerjaNeural", 
-        "voice_hi": "hi-IN-SwaraNeural", 
-        "pitch": "+2%",
-        "rate": "slow"
-    },
-    "pig": { 
-        "voice_en": "en-IN-PrabhatNeural", 
-        "voice_hi": "hi-IN-MadhurNeural", 
-        "pitch": "-3%",
-        "rate": "slow"
-    },
-    "hen": { 
-        "voice_en": "en-IN-NeerjaNeural", 
-        "voice_hi": "hi-IN-SwaraNeural", 
-        "pitch": "+5%",
-        "rate": "slow"
-    },
-    "horse": { 
-        "voice_en": "en-IN-PrabhatNeural", 
-        "voice_hi": "hi-IN-MadhurNeural", 
-        "pitch": "-4%",
-        "rate": "slow"
-    }
+// Voice mapping for each animal - unique Hindi voices only
+// Using Azure Speech Services Indian neural voices without pitch/tempo alterations
+const animal_voices = {
+    "cow": "hi-IN-SwaraNeural",      // Female, adult
+    "goat": "hi-IN-AaravNeural",     // Male, adult
+    "sheep": "hi-IN-MadhurNeural",   // Male, adult
+    "hen": "hi-IN-AnanyaNeural",     // Female, adult
+    "horse": "hi-IN-KunalNeural",    // Male, adult
+    "pig": "hi-IN-AartiNeural"       // Female, adult
 };
 
 // Animal phrases from phrases.py - converted to JavaScript format
@@ -107,9 +78,9 @@ const animals = {
             "en-hi": "Hi, I am a sheep. I am called भेड़ in Hindi. Can you say भेड़?",
             "hi-en": "नमस्ते, मैं भेड़ हूँ। अंग्रेज़ी में मुझे 'sheep' कहा जाता है। क्या आप 'sheep' बोल सकते हो?"
         },
-        "level2": {
-            "en-hi": "I love eating grass. In Hindi, grass is called घास. Can you say घास?",
-            "hi-en": "मुझे घास खाना बहुत पसंद है। अंग्रेज़ी में घास को 'grass' कहते हैं। क्या आप 'grass' बोल सकते हो?"
+       "level2": {
+            "en-hi": "I live together with my friends in a flock. In Hindi, flock is called झुंड. Can you say झुंड?",
+            "hi-en": "मैं अपने दोस्तों के साथ झुंड में रहती हूँ। अंग्रेज़ी में झुंड को 'flock' कहते हैं। क्या आप 'flock' बोल सकते हो?"
         },
         "level3": {
             "en-hi": "People use my wool to make warm clothes. In Hindi, wool is called ऊन. Can you say ऊन?",
@@ -213,9 +184,9 @@ async function generateAnimalVoice(animalName, level, languageDirection, text) {
                 return;
             }
 
-            const voiceConfig = voiceMapping[animalName];
-            if (!voiceConfig) {
-                console.error(`❌ Voice configuration not found for ${animalName}`);
+            const voice = animal_voices[animalName];
+            if (!voice) {
+                console.error(`❌ Voice not found for ${animalName}`);
                 resolve(false);
                 return;
             }
@@ -236,11 +207,8 @@ async function generateAnimalVoice(animalName, level, languageDirection, text) {
                 stats.replaced++;
             }
 
-            // Determine voice and language for SSML
-            // Use Hindi voice for en-hi content since it handles mixed languages better
-            const isEnglishFirst = languageDirection === 'en-hi';
-            const voice = isEnglishFirst ? voiceConfig.voice_hi : voiceConfig.voice_hi; // Use Hindi voice for both
-            const language = isEnglishFirst ? 'hi-IN' : 'hi-IN'; // Use Hindi language for both
+            // Use the unique Hindi voice for each animal
+            const language = 'hi-IN';
             
             // Create SSML with proper pronunciation for mixed language content
             let processedText = text;
@@ -261,19 +229,17 @@ async function generateAnimalVoice(animalName, level, languageDirection, text) {
                 });
             }
 
+            // Simple SSML without pitch/tempo alterations - using natural voice characteristics
             const ssml = `<speak version="1.0" xmlns="http://www.w3.org/2001/10/synthesis" xmlns:mstts="https://www.w3.org/2001/mstts" xml:lang="${language}">
   <voice name="${voice}">
     <mstts:express-as style="friendly">
-      <prosody rate="${voiceConfig.rate}" pitch="${voiceConfig.pitch}">
-        ${processedText}
-      </prosody>
+      ${processedText}
     </mstts:express-as>
   </voice>
 </speak>`;
 
             console.log(`🎙️ Generating ${languageDirection.toUpperCase()} voice for ${animalName} ${level}...`);
             console.log(`   Voice: ${voice}`);
-            console.log(`   Pitch: ${voiceConfig.pitch}, Rate: ${voiceConfig.rate}`);
             console.log(`   Text: "${text.substring(0, 50)}${text.length > 50 ? '...' : ''}"`);
 
             // Configure speech synthesis
@@ -349,16 +315,16 @@ async function main() {
     console.log(`📊 Levels per animal: 5`);
     console.log(`📊 Languages per level: 2 (en-hi, hi-en)`);
     console.log(`🎙️ Voice Mapping:`);
-    for (const [animal, config] of Object.entries(voiceMapping)) {
-        console.log(`   ${animal}: EN=${config.voice_en}, HI=${config.voice_hi}, Pitch=${config.pitch}`);
+    for (const [animal, voice] of Object.entries(animal_voices)) {
+        console.log(`   ${animal}: ${voice}`);
     }
     
     let currentFile = 0;
     
     for (const animalName of Object.keys(animals)) {
         const animal = animals[animalName];
-        const voiceConfig = voiceMapping[animalName];
-        console.log(`\n🐾 Generating voices for ${animalName} (EN: ${voiceConfig.voice_en}, HI: ${voiceConfig.voice_hi}, Pitch: ${voiceConfig.pitch})...`);
+        const voice = animal_voices[animalName];
+        console.log(`\n🐾 Generating voices for ${animalName} using ${voice}...`);
         
         for (const level of Object.keys(animal)) {
             const levelData = animal[level];
