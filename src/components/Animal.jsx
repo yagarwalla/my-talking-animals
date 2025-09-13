@@ -97,95 +97,80 @@ const Animal = ({ animal, currentLanguage = 'en', index = 0, totalAnimals = 1 })
     // Set this animal as speaking
     setAnimalSpeaking(animal.id);
 
-    // Play the animal sound first
-    if (soundRef.current) {
-      soundRef.current.play();
-    }
+    // Track progression after all audio finishes
+    const handleProgressionComplete = (result) => {
+      console.log('🎉 Animal completed:', result);
+      if (result && result.levelUp) {
+        console.log('🎊 Level up! New level:', result.progress.currentLevel);
+      }
+      if (result && result.newStickers && result.newStickers.length > 0) {
+        console.log('🏆 New stickers earned:', result.newStickers);
+      }
+      setAnimalFinishedSpeaking();
+    };
 
-    // Then play the voice
-    if (voiceRef.current) {
-      voiceRef.current.play();
+    const handleProgressionTimeout = () => {
+      console.log(`⏰ Progression timeout fired for ${animal.id}`);
+      try {
+        const result = completeAnimal(animal.id, handleProgressionComplete);
+        // If animal was already completed, still need to re-enable other animals
+        if (result && !result.success) {
+          console.log('Animal was already completed, re-enabling other animals');
+          setAnimalFinishedSpeaking();
+        }
+      } catch (error) {
+        console.error('Error tracking progression:', error);
+        setAnimalFinishedSpeaking();
+      }
+    };
+
+    // Play basic sound first, then level voice
+    if (soundRef.current && voiceRef.current) {
+      // Play basic sound first
+      soundRef.current.play();
+      const basicSoundDuration = soundRef.current.duration() * 1000;
       
-      // Get audio duration for animation (use voice duration if available)
-      const duration = voiceRef.current.duration() * 1000; // Convert to milliseconds
+      console.log(`🔊 Playing basic sound for ${animal.id}, duration: ${basicSoundDuration}ms`);
+      
+      // Start talking animation for the total duration (basic sound + voice)
+      const voiceDuration = voiceRef.current.duration() * 1000;
+      const totalDuration = basicSoundDuration + voiceDuration;
+      startTalkingAnimation(totalDuration);
+      
+      // Play level voice after basic sound finishes
+      setTimeout(() => {
+        voiceRef.current.play();
+        console.log(`🎵 Playing Level ${currentLevel} voice for ${animal.id}, duration: ${voiceDuration}ms`);
+        
+        // Set progression timeout for after voice finishes
+        console.log(`⏰ Setting progression timeout for ${animal.id} in ${totalDuration}ms`);
+        setTimeout(handleProgressionTimeout, voiceDuration);
+      }, basicSoundDuration);
+    } else if (voiceRef.current) {
+      // Only level voice available
+      voiceRef.current.play();
+      const duration = voiceRef.current.duration() * 1000;
       startTalkingAnimation(duration);
       console.log(`🎵 Playing Level ${currentLevel} voice for ${animal.id}, duration: ${duration}ms`);
       
-      // Track progression after voice finishes playing
-      const handleProgressionComplete = (result) => {
-        console.log('🎉 Animal completed:', result);
-        if (result && result.levelUp) {
-          console.log('🎊 Level up! New level:', result.progress.currentLevel);
-        }
-        if (result && result.newStickers && result.newStickers.length > 0) {
-          console.log('🏆 New stickers earned:', result.newStickers);
-        }
-        setAnimalFinishedSpeaking();
-      };
-
       console.log(`⏰ Setting progression timeout for ${animal.id} in ${duration}ms`);
-      setTimeout(() => {
-        console.log(`⏰ Progression timeout fired for ${animal.id}`);
-        try {
-          const result = completeAnimal(animal.id, handleProgressionComplete);
-          // If animal was already completed, still need to re-enable other animals
-          if (result && !result.success) {
-            console.log('Animal was already completed, re-enabling other animals');
-            setAnimalFinishedSpeaking();
-          }
-        } catch (error) {
-          console.error('Error tracking progression:', error);
-          setAnimalFinishedSpeaking();
-        }
-      }, duration);
+      setTimeout(handleProgressionTimeout, duration);
     } else if (soundRef.current) {
-      // Fallback to basic sound duration
+      // Only basic sound available
+      soundRef.current.play();
       const duration = soundRef.current.duration() * 1000;
       startTalkingAnimation(duration);
+      console.log(`🔊 Playing basic sound for ${animal.id}, duration: ${duration}ms`);
       
-      // Track progression after sound finishes playing
-      const handleProgressionComplete = (result) => {
-        console.log('🎉 Animal completed (basic sound):', result);
-        setAnimalFinishedSpeaking();
-      };
-
-      setTimeout(() => {
-        try {
-          const result = completeAnimal(animal.id, handleProgressionComplete);
-          // If animal was already completed, still need to re-enable other animals
-          if (result && !result.success) {
-            console.log('Animal was already completed (basic sound), re-enabling other animals');
-            setAnimalFinishedSpeaking();
-          }
-        } catch (error) {
-          console.error('Error tracking progression (basic sound):', error);
-          setAnimalFinishedSpeaking();
-        }
-      }, duration);
+      console.log(`⏰ Setting progression timeout for ${animal.id} in ${duration}ms`);
+      setTimeout(handleProgressionTimeout, duration);
     } else {
       console.warn('No sound or voice file found for animal:', animal.id);
       // Fallback: just show animation
       startTalkingAnimation(2000); // 2 second fallback animation
       
-      // Track progression after fallback animation
-      const handleProgressionComplete = (result) => {
-        console.log('🎉 Animal completed (no sound):', result);
-        setAnimalFinishedSpeaking();
-      };
-
-      setTimeout(() => {
-        try {
-          const result = completeAnimal(animal.id, handleProgressionComplete);
-          // If animal was already completed, still need to re-enable other animals
-          if (result && !result.success) {
-            console.log('Animal was already completed (no sound), re-enabling other animals');
-            setAnimalFinishedSpeaking();
-          }
-        } catch (error) {
-          console.error('Error tracking progression (no sound):', error);
-          setAnimalFinishedSpeaking();
-        }
-      }, 2000);
+      console.log(`⏰ Setting progression timeout for ${animal.id} in 2000ms`);
+      setTimeout(handleProgressionTimeout, 2000);
     }
 
     // Hide sparkles after animation
