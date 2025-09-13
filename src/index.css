@@ -2614,6 +2614,20 @@ img.area-png-overlay {
 
 /* Animal sprite styling is handled by the component */
 
+/* Animal speaking states */
+.animal-disabled {
+  opacity: 0.5;
+  pointer-events: none;
+  cursor: not-allowed;
+  filter: grayscale(50%);
+}
+
+.animal-speaking {
+  opacity: 1;
+  cursor: default;
+  /* No visual effect - just maintain normal appearance */
+}
+
 .animal-sparkles {
   position: absolute;
   top: 50%;

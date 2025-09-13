@@ -15,6 +15,7 @@ export const ProgressionProvider = ({ children }) => {
   const [completedAnimals, setCompletedAnimals] = useState(new Set());
   const [stickers, setStickers] = useState([]);
   const [allAnimals] = useState(['cow', 'pig', 'goat', 'sheep', 'hen', 'horse']);
+  const [speakingAnimal, setSpeakingAnimal] = useState(null);
 
   // Load progression data from localStorage on mount
   useEffect(() => {
@@ -48,7 +49,7 @@ export const ProgressionProvider = ({ children }) => {
     localStorage.setItem('progression_stickers', JSON.stringify(stickers));
   }, [currentLevel, completedAnimals, stickers]);
 
-  const completeAnimal = (animalId) => {
+  const completeAnimal = (animalId, onComplete = null) => {
     if (completedAnimals.has(animalId)) {
       return { success: false, message: 'Animal already completed' };
     }
@@ -90,7 +91,7 @@ export const ProgressionProvider = ({ children }) => {
       setStickers(newStickers);
     }
 
-    return {
+    const result = {
       success: true,
       levelUp,
       newStickers,
@@ -100,6 +101,13 @@ export const ProgressionProvider = ({ children }) => {
         total: allAnimals.length
       }
     };
+
+    // Call the completion callback if provided
+    if (onComplete) {
+      onComplete(result);
+    }
+
+    return result;
   };
 
   const getCurrentLevelProgress = () => {
@@ -144,6 +152,22 @@ export const ProgressionProvider = ({ children }) => {
     setStickers([]);
   };
 
+  const setAnimalSpeaking = (animalId) => {
+    setSpeakingAnimal(animalId);
+  };
+
+  const setAnimalFinishedSpeaking = () => {
+    setSpeakingAnimal(null);
+  };
+
+  const isAnimalSpeaking = (animalId) => {
+    return speakingAnimal === animalId;
+  };
+
+  const isAnyAnimalSpeaking = () => {
+    return speakingAnimal !== null;
+  };
+
   const value = {
     currentLevel,
     completedAnimals,
@@ -154,7 +178,11 @@ export const ProgressionProvider = ({ children }) => {
     isAnimalUnlocked,
     getAnimalVoice,
     getAnimalProgress,
-    resetProgression
+    resetProgression,
+    setAnimalSpeaking,
+    setAnimalFinishedSpeaking,
+    isAnimalSpeaking,
+    isAnyAnimalSpeaking
   };
 
   return (

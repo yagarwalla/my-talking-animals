@@ -15,7 +15,11 @@ const Animal = ({ animal, currentLanguage = 'en', index = 0, totalAnimals = 1 })
   // Use the progression context
   const { 
     completeAnimal,
-    currentLevel
+    currentLevel,
+    setAnimalSpeaking,
+    setAnimalFinishedSpeaking,
+    isAnimalSpeaking,
+    isAnyAnimalSpeaking
   } = useProgression();
   
   // Debug: Log the parent container information
@@ -79,8 +83,8 @@ const Animal = ({ animal, currentLanguage = 'en', index = 0, totalAnimals = 1 })
     console.log('🖱️ Click event currentTarget:', event?.currentTarget);
     console.log('🖱️ Animal container element:', document.querySelector(`[data-animal-id="${animal.id}"]`));
     
-    if (isAnimating || isPlaying) {
-      console.log('🚫 Click blocked - already animating or playing');
+    if (isAnimating || isPlaying || isAnyAnimalSpeaking()) {
+      console.log('🚫 Click blocked - already animating, playing, or another animal is speaking');
       return;
     }
     
@@ -89,13 +93,16 @@ const Animal = ({ animal, currentLanguage = 'en', index = 0, totalAnimals = 1 })
     setShowSparkles(true);
     setIsTalking(true);
     setIsPlaying(true);
+    
+    // Set this animal as speaking
+    setAnimalSpeaking(animal.id);
 
     // Play the animal sound first
     if (soundRef.current) {
       soundRef.current.play();
     }
 
-    // Then play the level 1 voice
+    // Then play the voice
     if (voiceRef.current) {
       voiceRef.current.play();
       
@@ -104,9 +111,8 @@ const Animal = ({ animal, currentLanguage = 'en', index = 0, totalAnimals = 1 })
       startTalkingAnimation(duration);
       console.log(`🎵 Playing Level ${currentLevel} voice for ${animal.id}`);
       
-      // Track progression
-      try {
-        const result = completeAnimal(animal.id);
+      // Track progression after voice finishes playing
+      const handleProgressionComplete = (result) => {
         console.log('🎉 Animal completed:', result);
         if (result && result.levelUp) {
           console.log('🎊 Level up! New level:', result.progress.currentLevel);
@@ -114,25 +120,55 @@ const Animal = ({ animal, currentLanguage = 'en', index = 0, totalAnimals = 1 })
         if (result && result.newStickers && result.newStickers.length > 0) {
           console.log('🏆 New stickers earned:', result.newStickers);
         }
-      } catch (error) {
-        console.error('Error tracking progression:', error);
-      }
+        setAnimalFinishedSpeaking();
+      };
+
+      setTimeout(() => {
+        try {
+          completeAnimal(animal.id, handleProgressionComplete);
+        } catch (error) {
+          console.error('Error tracking progression:', error);
+          setAnimalFinishedSpeaking();
+        }
+      }, duration);
     } else if (soundRef.current) {
       // Fallback to basic sound duration
       const duration = soundRef.current.duration() * 1000;
       startTalkingAnimation(duration);
       
-      // Track progression even for basic sound
-      try {
-        const result = completeAnimal(animal.id);
+      // Track progression after sound finishes playing
+      const handleProgressionComplete = (result) => {
         console.log('🎉 Animal completed (basic sound):', result);
-      } catch (error) {
-        console.error('Error tracking progression (basic sound):', error);
-      }
+        setAnimalFinishedSpeaking();
+      };
+
+      setTimeout(() => {
+        try {
+          completeAnimal(animal.id, handleProgressionComplete);
+        } catch (error) {
+          console.error('Error tracking progression (basic sound):', error);
+          setAnimalFinishedSpeaking();
+        }
+      }, duration);
     } else {
       console.warn('No sound or voice file found for animal:', animal.id);
       // Fallback: just show animation
       startTalkingAnimation(2000); // 2 second fallback animation
+      
+      // Track progression after fallback animation
+      const handleProgressionComplete = (result) => {
+        console.log('🎉 Animal completed (no sound):', result);
+        setAnimalFinishedSpeaking();
+      };
+
+      setTimeout(() => {
+        try {
+          completeAnimal(animal.id, handleProgressionComplete);
+        } catch (error) {
+          console.error('Error tracking progression (no sound):', error);
+          setAnimalFinishedSpeaking();
+        }
+      }, 2000);
     }
 
     // Hide sparkles after animation
@@ -258,9 +294,12 @@ const Animal = ({ animal, currentLanguage = 'en', index = 0, totalAnimals = 1 })
 
   const positionStyle = getPositionStyle();
 
+  const isDisabled = isAnyAnimalSpeaking() && !isAnimalSpeaking(animal.id);
+  const isCurrentlySpeaking = isAnimalSpeaking(animal.id);
+
   return (
     <div 
-      className="animal-container" 
+      className={`animal-container ${isDisabled ? 'animal-disabled' : ''} ${isCurrentlySpeaking ? 'animal-speaking' : ''}`}
       style={positionStyle}
       data-animal-id={animal.id}
       data-debug="true"
