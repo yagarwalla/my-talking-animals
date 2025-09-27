@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 
 const LandscapeEnforcer = () => {
   const [isPortrait, setIsPortrait] = useState(false);
+  const location = useLocation();
 
   useEffect(() => {
     const checkOrientation = () => {
@@ -23,8 +25,24 @@ const LandscapeEnforcer = () => {
     };
   }, []);
 
-  // Only show enforcer on mobile/tablet devices in portrait mode
-  if (!isPortrait || window.innerWidth > 1024) {
+  // Pages where portrait mode is allowed (profile selection and creation)
+  const portraitAllowedPages = ['/', '/profile', '/create-profile'];
+  
+  // Check if current page allows portrait mode (exact match only)
+  const isPortraitAllowed = portraitAllowedPages.includes(location.pathname);
+
+  // Debug logging
+  console.log('🔍 LandscapeEnforcer Debug:', {
+    currentPath: location.pathname,
+    isPortrait,
+    windowWidth: window.innerWidth,
+    isPortraitAllowed,
+    portraitAllowedPages,
+    shouldShowEnforcer: isPortrait && window.innerWidth <= 1024 && !isPortraitAllowed
+  });
+
+  // Only show enforcer on mobile/tablet devices in portrait mode AND when portrait is not allowed
+  if (!isPortrait || window.innerWidth > 1024 || isPortraitAllowed) {
     return null;
   }
 

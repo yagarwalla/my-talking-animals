@@ -149,18 +149,18 @@ const AreaScreen = () => {
                   e.target.style.display = 'none';
                 }}
               />
+              
+              {/* Animal Components - Now positioned relative to the background container */}
+              {farmConfig.animals.map((animal, index) => (
+                <Animal
+                  key={animal.id}
+                  animal={animal}
+                  currentLanguage={currentLanguage}
+                  index={index}
+                  totalAnimals={farmConfig.animals.length}
+                />
+              ))}
             </div>
-
-            {/* Animal Components - Now positioned relative to the scene */}
-            {farmConfig.animals.map((animal, index) => (
-              <Animal
-                key={animal.id}
-                animal={animal}
-                currentLanguage={currentLanguage}
-                index={index}
-                totalAnimals={farmConfig.animals.length}
-              />
-            ))}
 
           </div>
         ) : (

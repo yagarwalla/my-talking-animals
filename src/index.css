@@ -707,6 +707,64 @@ html {
   }
 }
 
+/* Phone and tablet scaling for better fit */
+@media (max-width: 1024px) {
+  /* Scale entire background containers instead of individual elements */
+  .map-background-container {
+    transform: scale(0.7);
+    transform-origin: top center;
+  }
+  
+  .area-background-container {
+    transform: scale(0.8);
+    transform-origin: top center;
+  }
+  
+  /* Adjust container heights to accommodate scaling */
+  .map-scene {
+    height: calc(600px * 0.7);
+  }
+  
+  .area-scene {
+    height: calc(600px * 0.8);
+  }
+  
+  .map-container {
+    height: calc((100vh - 120px) * 0.7);
+  }
+  
+  .area-container {
+    height: calc((100vh - 120px) * 0.8);
+  }
+  
+  /* Reduce spacing between title and map on scaled devices */
+  .map-screen .map-header {
+    margin-bottom: 0 !important;
+    padding: 0.5rem 1rem !important;
+  }
+  
+  .area-screen .area-header {
+    margin-bottom: 0 !important;
+    padding: 0.5rem 1rem !important;
+  }
+  
+  .map-screen .map-title {
+    margin-bottom: 0.25rem !important;
+  }
+  
+  .area-screen .area-title {
+    margin-bottom: 0.25rem !important;
+  }
+  
+  .map-screen .map-subtitle {
+    margin-bottom: 0 !important;
+  }
+  
+  .area-screen .area-subtitle {
+    margin-bottom: 0 !important;
+  }
+}
+
 /* Tablet Responsive */
 @media (min-width: 481px) and (max-width: 768px) {
   .container {
@@ -1668,14 +1726,14 @@ code {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  padding: 2rem;
+  justify-content: flex-start;
+  padding: 0;
   color: white;
 }
 
 .map-header {
   text-align: center;
-  margin-bottom: 2rem;
+  margin-bottom: 0;
 }
 
 .map-header h1 {
@@ -1877,14 +1935,18 @@ code {
 .map-screen {
   min-height: 100vh;
   background: linear-gradient(135deg, #87CEEB 0%, #98FB98 100%);
-  padding: 1rem;
+  padding: 0;
   position: relative;
   overflow: visible;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
 }
 
 .map-header {
   text-align: center;
-  margin-bottom: 1rem;
+  margin-bottom: 0;
   z-index: 10;
   position: relative;
 }
@@ -2235,10 +2297,11 @@ img.area-png-overlay {
   width: 100%;
   max-width: 900px;
   height: 600px;
-  border-radius: 20px;
+  border-radius: 0;
   overflow: visible !important;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  box-shadow: none;
   margin: 0 auto;
+  padding: 0;
   /* Ensure proper positioning context for absolutely positioned children */
   z-index: 1;
 }
@@ -2249,10 +2312,11 @@ img.area-png-overlay {
   width: 100%;
   max-width: 900px;
   height: 600px;
-  border-radius: 20px;
+  border-radius: 0;
   overflow: visible;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-  margin: 0 auto;
+  box-shadow: none;
+  margin: 0;
+  padding: 0;
 }
 
 /* Responsive Map Scene Styles */
@@ -2276,6 +2340,14 @@ img.area-png-overlay {
   width: 100%;
   height: 100%;
   z-index: 1;
+  margin: 0;
+  padding: 0;
+  border: none !important;
+  border-width: 0 !important;
+  border-style: none !important;
+  border-color: transparent !important;
+  box-shadow: none;
+  outline: none;
 }
 
 .map-background-container {
@@ -2285,6 +2357,14 @@ img.area-png-overlay {
   width: 100%;
   height: 100%;
   z-index: 1;
+  margin: 0;
+  padding: 0;
+  border: none !important;
+  border-width: 0 !important;
+  border-style: none !important;
+  border-color: transparent !important;
+  box-shadow: none;
+  outline: none;
 }
 
 .area-background-image {
@@ -2292,14 +2372,30 @@ img.area-png-overlay {
   height: 100%;
   object-fit: cover;
   object-position: center;
-  border-radius: 20px;
+  border-radius: 0;
+  margin: 0;
+  padding: 0;
+  border: none !important;
+  border-width: 0 !important;
+  border-style: none !important;
+  border-color: transparent !important;
+  box-shadow: none;
+  outline: none;
 }
 
 .map-background-image {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  border-radius: 20px;
+  border-radius: 0;
+  margin: 0;
+  padding: 0;
+  border: none !important;
+  border-width: 0 !important;
+  border-style: none !important;
+  border-color: transparent !important;
+  box-shadow: none;
+  outline: none;
 }
 
 /* Animal Overlay Styles */

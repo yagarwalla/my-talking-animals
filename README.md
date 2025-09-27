@@ -12,14 +12,13 @@ cd my-talking-animals
 # Install dependencies
 npm install
 
-# Start the server (using NVM if available)
+# Start the server (using NVM - recommended)
 source ~/.nvm/nvm.sh && nvm use 18.20.8 && npm start
-
-# Or start directly if Node.js is in PATH
-npm start
 
 # Open http://localhost:3000 in your browser
 ```
+
+**Note**: If you get "command not found: npm" error, see the [Troubleshooting](#-troubleshooting-server-issues) section below.
 
 ## 🌟 Features
 
@@ -72,32 +71,48 @@ cp .env.example .env
 ### 🖥️ Running the Development Server
 
 #### Method 1: Using NVM (Recommended)
-If you have NVM installed (Node Version Manager):
+**This is the recommended method** as it ensures you're using the correct Node.js version:
 
 ```bash
-# Activate NVM and use Node.js v18
+# 1. Activate NVM and check if it's working
 source ~/.nvm/nvm.sh
+nvm --version
+
+# 2. Install Node.js v18.20.8 (if not already installed)
+nvm install 18.20.8
+
+# 3. Use the correct Node.js version
 nvm use 18.20.8
 
-# Start the development server
+# 4. Verify Node.js and npm are working
+node --version  # Should show v18.20.8
+npm --version   # Should show v10.8.2
+
+# 5. Start the development server
 npm start
 ```
 
-#### Method 2: Direct Node.js
-If Node.js is installed globally:
+#### Method 2: Direct Node.js (If already installed)
+If Node.js is already installed globally and in your PATH:
 
 ```bash
-# Check Node.js version
+# Check Node.js version (should be v18 or higher)
 node --version
+
+# Check npm version
+npm --version
 
 # Start the development server
 npm start
 ```
 
 #### Method 3: Using Yarn
-If you prefer Yarn:
+If you prefer Yarn and have it installed:
 
 ```bash
+# Check Yarn version
+yarn --version
+
 # Install dependencies
 yarn install
 
@@ -116,19 +131,38 @@ Once the server starts successfully:
 #### Issue: "command not found: npm" or "command not found: node"
 **Solution:** Node.js is not installed or not in your PATH.
 
-**For macOS with Homebrew:**
+**Step 1: Check if NVM is installed**
 ```bash
-# Install Node.js
-brew install node
+# Check if NVM directory exists
+ls -la ~/.nvm
 
-# Verify installation
-node --version
-npm --version
+# If NVM exists, activate it
+source ~/.nvm/nvm.sh
+nvm --version
 ```
 
-**For macOS with NVM:**
+**Step 2A: If NVM is installed (Recommended)**
 ```bash
-# Install NVM (if not already installed)
+# Activate NVM
+source ~/.nvm/nvm.sh
+
+# Install Node.js v18.20.8
+nvm install 18.20.8
+
+# Use the installed version
+nvm use 18.20.8
+
+# Verify installation
+node --version  # Should show v18.20.8
+npm --version   # Should show v10.8.2
+
+# Now start the server
+npm start
+```
+
+**Step 2B: If NVM is not installed, install it first**
+```bash
+# Install NVM
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
 
 # Restart terminal or source NVM
@@ -137,6 +171,16 @@ source ~/.nvm/nvm.sh
 # Install and use Node.js v18
 nvm install 18.20.8
 nvm use 18.20.8
+
+# Verify installation
+node --version
+npm --version
+```
+
+**Step 2C: Alternative - Install Node.js directly (macOS with Homebrew)**
+```bash
+# Install Node.js
+brew install node
 
 # Verify installation
 node --version
@@ -173,8 +217,24 @@ npm cache clean --force
 rm -rf node_modules package-lock.json
 npm install
 
-# Start the server
-npm start
+# Start the server (using NVM)
+source ~/.nvm/nvm.sh && nvm use 18.20.8 && npm start
+```
+
+#### Issue: "NVM command not found" after installation
+**Solution:** NVM needs to be sourced in your shell profile.
+
+```bash
+# Add NVM to your shell profile
+echo 'export NVM_DIR="$HOME/.nvm"' >> ~/.zshrc
+echo '[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"' >> ~/.zshrc
+echo '[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"' >> ~/.zshrc
+
+# Reload your shell profile
+source ~/.zshrc
+
+# Now try again
+nvm --version
 ```
 
 #### Issue: "Module not found" errors
@@ -188,6 +248,37 @@ npm install
 # If using Yarn
 rm -rf node_modules yarn.lock
 yarn install
+```
+
+#### Issue: Server starts but shows "Compiled successfully!" but browser shows errors
+**Solution:** This usually means the server is running but there are JavaScript errors.
+
+1. **Check browser console for errors:**
+   - Open browser developer tools (F12)
+   - Go to Console tab
+   - Look for red error messages
+
+2. **Common fixes:**
+```bash
+# Clear browser cache and restart
+# In browser: Ctrl+Shift+R (hard refresh)
+
+# Or restart the server
+source ~/.nvm/nvm.sh && nvm use 18.20.8 && npm start
+```
+
+#### Issue: "Port 3000 is already in use"
+**Solution:** Another process is using port 3000.
+
+```bash
+# Find what's using port 3000
+lsof -i :3000
+
+# Kill the process (replace PID with actual process ID)
+kill -9 <PID>
+
+# Or use a different port
+PORT=3001 npm start
 ```
 
 #### Issue: "Permission denied" errors

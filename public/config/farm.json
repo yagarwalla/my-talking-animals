@@ -7,7 +7,7 @@
       "spriteIdle": "animals/cow/cow_idle.png",
       "spriteTalking": "animals/cow/cow_openmouth.png",
       "sound": "animals/cow/moo.mp3",
-      "position": { "x": 20, "y": 50 },
+      "position": { "x": 20, "y": 45 },
       "size": 100,
       "levels": [
         {
@@ -68,8 +68,8 @@
       "spriteIdle": "animals/pig/pig_idle.PNG",
       "spriteTalking": "animals/pig/pig_idle.PNG",
       "sound": "animals/pig/oink.mp3",
-      "position": { "x": 15, "y": 80 },
-      "size": 100,
+      "position": { "x": 50, "y": 50 },
+      "size": 30,
       "levels": [
         {
           "id": 1,
@@ -129,8 +129,8 @@
       "spriteIdle": "animals/goat/goat_idle.png",
       "spriteTalking": "animals/goat/goat_openmouth.png",
       "sound": "animals/goat/baa.mp3",
-      "position": { "x": 50, "y": 50 },
-      "size": 30,
+      "position": { "x": 15, "y": 80 },
+      "size": 35,
       "levels": [
         {
           "id": 1,
@@ -191,7 +191,7 @@
       "spriteTalking": "animals/sheep/sheep_idle.PNG",
       "sound": "animals/sheep/baa.mp3",
       "position": { "x": 45, "y": 80 },
-      "size": 100,
+      "size": 30,
       "levels": [
         {
           "id": 1,
@@ -252,7 +252,7 @@
       "spriteTalking": "animals/hen/hen_idle.PNG",
       "sound": "animals/hen/cluck.mp3",
       "position": { "x": 80, "y": 80 },
-      "size": 100,
+      "size": 30,
       "levels": [
         {
           "id": 1,
