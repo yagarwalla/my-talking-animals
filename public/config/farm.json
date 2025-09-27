@@ -65,8 +65,8 @@
     {
       "id": "pig",
       "name": { "en": "Pig", "hi": "सूअर" },
-      "spriteIdle": "animals/pig/pig_idle.PNG",
-      "spriteTalking": "animals/pig/pig_idle.PNG",
+      "spriteIdle": "animals/pig/pig_idle.png",
+      "spriteTalking": "animals/pig/pig_openmouth.png",
       "sound": "animals/pig/oink.mp3",
       "position": { "x": 50, "y": 50 },
       "size": 30,
@@ -187,8 +187,8 @@
     {
       "id": "sheep",
       "name": { "en": "Sheep", "hi": "भेड़" },
-      "spriteIdle": "animals/sheep/sheep_idle.PNG",
-      "spriteTalking": "animals/sheep/sheep_idle.PNG",
+      "spriteIdle": "animals/sheep/sheep_idle.png",
+      "spriteTalking": "animals/sheep/sheep_openmouth.png",
       "sound": "animals/sheep/baa.mp3",
       "position": { "x": 45, "y": 80 },
       "size": 30,
@@ -248,8 +248,8 @@
     {
       "id": "hen",
       "name": { "en": "Hen", "hi": "मुर्गी" },
-      "spriteIdle": "animals/hen/hen_idle.PNG",
-      "spriteTalking": "animals/hen/hen_idle.PNG",
+      "spriteIdle": "animals/hen/hen_idle.png",
+      "spriteTalking": "animals/hen/hen_openmouth.png",
       "sound": "animals/hen/cluck.mp3",
       "position": { "x": 80, "y": 80 },
       "size": 30,

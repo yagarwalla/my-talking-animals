@@ -333,10 +333,12 @@ const MapScreen = () => {
             // Debug: Log each overlay being rendered
             console.log(`🎯 Rendering overlay: ${area.name} at position:`, area.left, area.top);
             
+            const isLocked = area.id !== 'farm';
+            
             return (
               <motion.div
                 key={area.id}
-                className="map-area-overlay"
+                className={`map-area-overlay ${isLocked ? 'locked' : ''}`}
                 style={{
                   position: 'absolute',
                   left: area.left,
@@ -344,14 +346,14 @@ const MapScreen = () => {
                   width: '336px',
                   height: '252px',
                   zIndex: 10,
-                  cursor: 'pointer'
+                  cursor: isLocked ? 'not-allowed' : 'pointer'
                 }}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={() => handleAreaClick(area)}
-                tabIndex={0}
+                whileHover={{ scale: isLocked ? 1 : 1.05 }}
+                whileTap={{ scale: isLocked ? 1 : 0.95 }}
+                onClick={() => !isLocked && handleAreaClick(area)}
+                tabIndex={isLocked ? -1 : 0}
                 onKeyDown={(e) => {
-                  if (e.key === 'Enter' || e.key === ' ') {
+                  if (!isLocked && (e.key === 'Enter' || e.key === ' ')) {
                     handleAreaClick(area);
                   }
                 }}
@@ -417,6 +419,13 @@ const MapScreen = () => {
                 >
                   {area.name}
                 </div>
+                
+                {/* Lock icon for non-farm areas */}
+                {isLocked && (
+                  <div className="lock-icon">
+                    🔒
+                  </div>
+                )}
               </motion.div>
             );
           })}
