@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
 
 // Utility function moved outside component to avoid dependency issues
 const getRandomEmoji = (id, kidEmojis) => {
@@ -159,210 +160,235 @@ const ProfileSelector = () => {
   };
 
   return (
-    <div className="profile-selector">
-      <div className="profile-container">
-        <h1 className="profile-title">My Talking Animals</h1>
-        <p className="profile-subtitle">Choose your profile or create a new one!</p>
+    <div className="min-h-screen bg-gradient-to-br from-sky-200 via-blue-100 to-cyan-100">
+      <div className="container mx-auto px-4 py-8 max-w-4xl">
+        <div className="text-center mb-8">
+          <h1 className="text-3xl lg:text-4xl font-nunito font-bold text-transparent bg-clip-text bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 mb-6 drop-shadow-lg leading-tight">
+            🐾 My Talking Animals 🐾
+          </h1>
+          <p className="text-xl text-text-secondary font-nunito">
+            Choose your profile or create a new one!
+          </p>
+        </div>
         
         {!showNewProfileForm ? (
           // Profile Selection View
-          <div className="profile-selection">
+          <div className="space-y-8">
             {profiles.length > 0 ? (
-              <div className="existing-profiles">
-                <div className="profiles-header">
-                  <h2 className="section-title">Your Profiles</h2>
-                  <button
+              <div className="bg-white rounded-3xl shadow-large p-8">
+                <div className="flex justify-between items-center mb-6">
+                  <h2 className="text-3xl font-nunito font-bold text-text-primary">Your Profiles</h2>
+                  <motion.button
                     onClick={() => setShowDeleteMenu(!showDeleteMenu)}
-                    className="menu-button"
+                    className="p-3 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors duration-200"
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.9 }}
                   >
-                    {showDeleteMenu ? '✕' : (
+                    {showDeleteMenu ? (
+                      <span className="text-xl text-red-500">✕</span>
+                    ) : (
                       <svg 
-                        width="16" 
-                        height="16" 
+                        width="20" 
+                        height="20" 
                         viewBox="0 0 24 24" 
                         fill="currentColor"
-                        className="trash-icon"
+                        className="text-gray-600"
                       >
                         <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
                       </svg>
                     )}
-                  </button>
+                  </motion.button>
                 </div>
-                <div className="profiles-grid">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                   {profiles.map((profile) => (
-                    <div 
+                    <motion.div 
                       key={profile.id} 
-                      className={`profile-card ${showDeleteMenu ? 'delete-mode' : ''}`}
+                      className={`relative bg-gradient-to-br from-white to-gray-50 rounded-2xl p-6 cursor-pointer transition-all duration-200 ${
+                        showDeleteMenu ? 'border-2 border-red-300 hover:border-red-400' : 'hover:shadow-medium hover:scale-105'
+                      }`}
                       onClick={() => showDeleteMenu ? handleDeleteProfile(profile.id) : handleSelectProfile(profile)}
+                      whileHover={{ scale: showDeleteMenu ? 1 : 1.03 }}
+                      whileTap={{ scale: showDeleteMenu ? 0.95 : 0.98 }}
                     >
-                      <div className="profile-icon">
-                        <span className="profile-emoji">{profile.emoji}</span>
-                      </div>
-                      <div className="profile-info">
-                        <h3 className="profile-name">{profile.kidName}</h3>
-                        <p className="profile-languages">
+                      <div className="text-center">
+                        <div className="text-6xl mb-4">{profile.emoji}</div>
+                        <h3 className="text-xl font-semibold text-text-primary mb-2">{profile.kidName}</h3>
+                        <p className="text-sm text-text-secondary">
                           {profile.primaryLanguage} • {profile.secondaryLanguage}
                         </p>
                       </div>
                       {showDeleteMenu && (
-                        <div className="delete-overlay">
-                          <span className="delete-icon">🗑️</span>
-                          <span className="delete-text">Delete</span>
-                        </div>
+                        <motion.div
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          className="absolute inset-0 bg-red-500 bg-opacity-90 flex flex-col items-center justify-center rounded-2xl text-white font-bold"
+                        >
+                          <span className="text-4xl mb-2">🗑️</span>
+                          <span>Delete</span>
+                        </motion.div>
                       )}
-                    </div>
+                    </motion.div>
                   ))}
                 </div>
                 {showDeleteMenu && (
-                  <p className="delete-instruction">Tap any profile to delete it</p>
+                  <p className="text-center text-red-600 text-sm mt-4">Tap any profile to delete it</p>
                 )}
               </div>
             ) : (
-              <div className="no-profiles">
-                <div className="no-profiles-icon">👋</div>
-                <p>No profiles yet! Create your first profile to get started!</p>
+              <div className="text-center p-10 bg-white rounded-3xl shadow-soft">
+                <div className="text-6xl mb-4">👋</div>
+                <p className="text-lg text-text-secondary">No profiles yet! Create your first profile to get started!</p>
               </div>
             )}
             
-            <button
-              onClick={handleStartNewProfile}
-              className="new-profile-button"
-            >
-              <span className="new-profile-icon">➕</span>
-              Create New Profile
-            </button>
+            <div className="text-center">
+              <motion.button
+                onClick={handleStartNewProfile}
+                className="bg-gradient-to-r from-primary-500 to-primary-600 text-white px-8 py-4 rounded-2xl text-xl font-semibold shadow-large hover:shadow-xl transition-all duration-200 flex items-center gap-3 mx-auto"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <span className="text-2xl">➕</span>
+                Create New Profile
+              </motion.button>
+            </div>
           </div>
         ) : (
           // New Profile Form
-          <div className="profile-form">
-            <h2 className="section-title">Create New Profile</h2>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="bg-white rounded-3xl shadow-large p-8 max-w-2xl mx-auto"
+          >
+            <h2 className="text-3xl font-nunito font-bold text-text-primary text-center mb-8">Create New Profile</h2>
             
-            <div className="form-group">
-              <label htmlFor="kidName" className="form-label">
-                What's your child's name?
-              </label>
-              <input
-                type="text"
-                id="kidName"
-                value={kidName}
-                onChange={(e) => setKidName(e.target.value)}
-                placeholder="Enter your child's name"
-                className="form-input"
-                maxLength={50}
-              />
-            </div>
+            <div className="space-y-6">
+              {/* Name Input */}
+              <div>
+                <label htmlFor="kidName" className="block text-lg font-semibold text-text-primary mb-2">
+                  What's your child's name?
+                </label>
+                <input
+                  type="text"
+                  id="kidName"
+                  value={kidName}
+                  onChange={(e) => setKidName(e.target.value)}
+                  placeholder="Enter your child's name"
+                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-primary-500 focus:outline-none transition-colors duration-200 text-lg"
+                  maxLength={50}
+                />
+              </div>
 
-            <div className="form-group">
-              <label className="form-label">Choose an animal friend (optional)</label>
-              <p className="form-hint">Pick your favorite animal or we'll choose one for you!</p>
-              <div className="emoji-list-container">
-                <button 
-                  className="scroll-arrow scroll-arrow-left" 
-                  onClick={handleScrollLeft}
-                  type="button"
-                >
-                  ‹
-                </button>
-                <div className="emoji-list">
-                  {kidEmojis.map((emoji, index) => (
-                    <button
-                      key={index}
-                      className={`emoji-option ${selectedEmoji === emoji ? 'selected' : ''}`}
-                      onClick={() => handleEmojiSelect(emoji)}
-                      type="button"
-                    >
-                      <span className="emoji-option-icon">{emoji}</span>
-                    </button>
-                  ))}
+              {/* Animal Selection */}
+              <div>
+                <label className="block text-lg font-semibold text-text-primary mb-2">
+                  Choose an animal friend (optional)
+                </label>
+                <p className="text-sm text-text-muted mb-4">Pick your favorite animal or we'll choose one for you!</p>
+                
+                {/* Horizontal Scrollable Emoji List */}
+                <div className="relative">
+                  <div className="flex overflow-x-auto scrollbar-hide gap-3 py-2 px-1" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+                    {kidEmojis.map((emoji, index) => (
+                      <motion.button
+                        key={index}
+                        className={`flex-shrink-0 w-16 h-16 rounded-full flex items-center justify-center text-3xl border-2 transition-all duration-200 ${
+                          selectedEmoji === emoji 
+                            ? 'border-primary-500 bg-primary-100 shadow-md' 
+                            : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50'
+                        }`}
+                        onClick={() => handleEmojiSelect(emoji)}
+                        whileHover={{ scale: 1.1 }}
+                        whileTap={{ scale: 0.9 }}
+                      >
+                        {emoji}
+                      </motion.button>
+                    ))}
+                  </div>
+                  
+                  {/* Custom scrollbar styling */}
+                  <style jsx>{`
+                    .scrollbar-hide::-webkit-scrollbar {
+                      display: none;
+                    }
+                  `}</style>
                 </div>
-                <button 
-                  className="scroll-arrow scroll-arrow-right" 
-                  onClick={handleScrollRight}
-                  type="button"
+                
+                {selectedEmoji && (
+                  <p className="text-sm text-text-secondary mt-3">
+                    Selected: <span className="text-primary-600 font-semibold">{selectedEmoji}</span>
+                  </p>
+                )}
+              </div>
+
+              {/* Language Selection with Dropdowns */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* Primary Language */}
+                <div>
+                  <label htmlFor="primaryLanguage" className="block text-lg font-semibold text-text-primary mb-2">
+                    Primary Language
+                  </label>
+                  <select
+                    id="primaryLanguage"
+                    value={primaryLanguage}
+                    onChange={(e) => handlePrimaryLanguageChange(e.target.value)}
+                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-primary-500 focus:outline-none transition-colors duration-200 text-lg bg-white"
+                  >
+                    <option value="English">English</option>
+                    <option value="Hindi">Hindi</option>
+                  </select>
+                </div>
+
+                {/* Secondary Language */}
+                <div>
+                  <label htmlFor="secondaryLanguage" className="block text-lg font-semibold text-text-primary mb-2">
+                    Secondary Language
+                  </label>
+                  <select
+                    id="secondaryLanguage"
+                    value={secondaryLanguage}
+                    onChange={(e) => handleSecondaryLanguageChange(e.target.value)}
+                    className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none transition-colors duration-200 text-lg ${
+                      primaryLanguage === secondaryLanguage 
+                        ? 'border-red-300 bg-red-50' 
+                        : 'border-gray-200 focus:border-primary-500 bg-white'
+                    }`}
+                  >
+                    <option value="English" disabled={primaryLanguage === 'English'}>English</option>
+                    <option value="Hindi" disabled={primaryLanguage === 'Hindi'}>Hindi</option>
+                  </select>
+                  {primaryLanguage === secondaryLanguage && (
+                    <p className="text-red-500 text-sm mt-1">Secondary language must be different from primary language</p>
+                  )}
+                </div>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex flex-col sm:flex-row gap-4 pt-6">
+                <motion.button
+                  onClick={handleCancelNewProfile}
+                  className="flex-1 px-6 py-3 border-2 border-gray-300 text-gray-700 rounded-xl font-semibold hover:bg-gray-50 transition-colors duration-200"
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
                 >
-                  ›
-                </button>
-              </div>
-              {selectedEmoji && (
-                <p className="selected-emoji-text">
-                  Selected: <span className="selected-emoji">{selectedEmoji}</span>
-                </p>
-              )}
-            </div>
-
-            <div className="form-group">
-              <label className="form-label">Primary Language</label>
-              <div className="language-options">
-                <label className="language-option">
-                  <input
-                    type="radio"
-                    name="primaryLanguage"
-                    value="English"
-                    checked={primaryLanguage === 'English'}
-                    onChange={(e) => handlePrimaryLanguageChange(e.target.value)}
-                  />
-                  <span className="language-text">English</span>
-                </label>
-                <label className="language-option">
-                  <input
-                    type="radio"
-                    name="primaryLanguage"
-                    value="Hindi"
-                    checked={primaryLanguage === 'Hindi'}
-                    onChange={(e) => handlePrimaryLanguageChange(e.target.value)}
-                  />
-                  <span className="language-text">Hindi</span>
-                </label>
+                  Cancel
+                </motion.button>
+                <motion.button
+                  onClick={handleCreateNewProfile}
+                  disabled={!isFormValid()}
+                  className={`flex-1 px-6 py-3 rounded-xl font-semibold transition-all duration-200 ${
+                    isFormValid()
+                      ? 'bg-gradient-to-r from-primary-500 to-primary-600 text-white hover:shadow-lg'
+                      : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                  }`}
+                  whileHover={isFormValid() ? { scale: 1.02 } : {}}
+                  whileTap={isFormValid() ? { scale: 0.98 } : {}}
+                >
+                  Create Profile
+                </motion.button>
               </div>
             </div>
-
-            <div className="form-group">
-              <label className="form-label">Secondary Language</label>
-              <div className="language-options">
-                <label className={`language-option ${secondaryLanguage === primaryLanguage ? 'disabled' : ''}`}>
-                  <input
-                    type="radio"
-                    name="secondaryLanguage"
-                    value="English"
-                    checked={secondaryLanguage === 'English'}
-                    onChange={(e) => handleSecondaryLanguageChange(e.target.value)}
-                    disabled={primaryLanguage === 'English'}
-                  />
-                  <span className="language-text">English</span>
-                </label>
-                <label className={`language-option ${secondaryLanguage === primaryLanguage ? 'disabled' : ''}`}>
-                  <input
-                    type="radio"
-                    name="secondaryLanguage"
-                    value="Hindi"
-                    checked={secondaryLanguage === 'Hindi'}
-                    onChange={(e) => handleSecondaryLanguageChange(e.target.value)}
-                    disabled={primaryLanguage === 'Hindi'}
-                  />
-                  <span className="language-text">Hindi</span>
-                </label>
-              </div>
-              {primaryLanguage === secondaryLanguage && (
-                <p className="error-message">Secondary language must be different from primary language.</p>
-              )}
-            </div>
-
-            <div className="form-actions">
-              <button
-                onClick={handleCreateNewProfile}
-                className="start-button"
-                disabled={!isFormValid()}
-              >
-                Create Profile
-              </button>
-              <button
-                onClick={handleCancelNewProfile}
-                className="cancel-button"
-              >
-                Cancel
-              </button>
-            </div>
-          </div>
+          </motion.div>
         )}
       </div>
     </div>

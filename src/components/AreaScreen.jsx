@@ -177,14 +177,17 @@ const AreaScreen = () => {
         )}
       </div>
 
-      <motion.button
-        className="back-button"
-        onClick={handleBackToMap}
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
-      >
-        ← {currentLanguage === 'hi' ? 'मानचित्र पर वापस जाएं' : 'Back to Map'}
-      </motion.button>
+      <div className="text-center mt-6">
+        <motion.button
+          className="bg-gradient-to-r from-primary-500 to-primary-600 text-white px-8 py-4 rounded-2xl text-xl font-semibold shadow-large hover:shadow-xl transition-all duration-200 flex items-center gap-3 mx-auto"
+          onClick={handleBackToMap}
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+        >
+          <span className="text-2xl">←</span>
+          {currentLanguage === 'hi' ? 'मानचित्र पर वापस जाएं' : 'Back to Map'}
+        </motion.button>
+      </div>
     </div>
   );
 };

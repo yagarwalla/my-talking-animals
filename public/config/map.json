@@ -5,7 +5,7 @@
       "id": "farm",
       "name": "Farm",
       "pngSrc": "/maps/farm-overlay.png",
-      "position": { "x": "2%", "y": "35%" },
+      "position": { "x": "0%", "y": "35%" },
       "color": "rgba(255, 0, 0, 0.3)",
       "description": "Visit the farm animals!"
     },
@@ -13,7 +13,7 @@
       "id": "forest",
       "name": "Forest",
       "pngSrc": "/maps/forest-overlay.png",
-      "position": { "x": "30%", "y": "37%" },
+      "position": { "x": "30%", "y": "40%" },
       "color": "rgba(34, 139, 34, 0.3)",
       "description": "Explore the forest!"
     },
@@ -21,7 +21,7 @@
       "id": "lake",
       "name": "Lake",
       "pngSrc": "/maps/lake-overlay.png",
-      "position": { "x": "70%", "y": "35%" },
+      "position": { "x": "65%", "y": "35%" },
       "color": "rgba(70, 130, 180, 0.3)",
       "description": "Swim with the fish!"
     },
@@ -29,7 +29,7 @@
       "id": "mountain",
       "name": "Mountain",
       "pngSrc": "/maps/mountain-overlay.png",
-      "position": { "x": "30%", "y": "1%" },
+      "position": { "x": "30%", "y": "2%" },
       "color": "rgba(105, 105, 105, 0.3)",
       "description": "Climb the mountain!"
     }
