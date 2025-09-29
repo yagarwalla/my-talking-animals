@@ -147,10 +147,10 @@ const ProfileSelector = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-sky-200 via-blue-100 to-cyan-100">
+    <div className="min-h-screen bg-gradient-to-b from-teal-600 via-teal-400 to-emerald-300">
       <div className="container mx-auto px-4 py-8 max-w-4xl">
         <div className="text-center mb-8">
-          <h1 className="text-3xl lg:text-4xl font-nunito font-bold text-transparent bg-clip-text bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 mb-6 drop-shadow-lg leading-tight">
+          <h1 className="text-3xl lg:text-4xl font-nunito font-bold text-white mb-6 drop-shadow-lg leading-tight">
             🐾 My Talking Animals 🐾
           </h1>
           <p className="text-xl text-text-secondary font-nunito">

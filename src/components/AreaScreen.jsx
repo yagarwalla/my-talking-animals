@@ -151,41 +151,6 @@ const AreaScreen = () => {
       <div className="area-content">
         <h1 className="area-title">{areaInfo.name}</h1>
         <p className="area-description">{areaInfo.description}</p>
-        
-        {/* Debug buttons for testing - Remove in production */}
-        {areaInfo.hasConfig && farmConfig && (
-          <div className="text-center mb-4 space-x-2">
-            <motion.button
-              onClick={() => triggerStickerReward('/animals/stickers/level1/level1_sticker.png')}
-              className="bg-gradient-to-r from-green-400 to-blue-500 text-white px-4 py-2 rounded-lg text-sm font-semibold shadow-lg hover:shadow-xl transition-all duration-200"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              🎁 Test Level 1 Sticker
-            </motion.button>
-            <motion.button
-              onClick={() => triggerStickerReward('/animals/stickers/level2/level2_sticker.png')}
-              className="bg-gradient-to-r from-purple-400 to-pink-500 text-white px-4 py-2 rounded-lg text-sm font-semibold shadow-lg hover:shadow-xl transition-all duration-200"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              🎁 Test Level 2 Sticker
-            </motion.button>
-            <motion.button
-              onClick={() => {
-                if (window.clearStickers) {
-                  window.clearStickers();
-                  console.log('🗑️ Cleared all stickers');
-                }
-              }}
-              className="bg-gradient-to-r from-red-400 to-orange-500 text-white px-4 py-2 rounded-lg text-sm font-semibold shadow-lg hover:shadow-xl transition-all duration-200"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              🗑️ Clear Stickers
-            </motion.button>
-          </div>
-        )}
         {areaInfo.hasConfig && farmConfig ? (
           <div className="area-scene">
             {/* Background Image with Sticker Board */}
