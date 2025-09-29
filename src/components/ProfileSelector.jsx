@@ -141,19 +141,6 @@ const ProfileSelector = () => {
     setSelectedEmoji(emoji);
   };
 
-  const handleScrollLeft = () => {
-    const emojiList = document.querySelector('.emoji-list');
-    if (emojiList) {
-      emojiList.scrollBy({ left: -200, behavior: 'smooth' });
-    }
-  };
-
-  const handleScrollRight = () => {
-    const emojiList = document.querySelector('.emoji-list');
-    if (emojiList) {
-      emojiList.scrollBy({ left: 200, behavior: 'smooth' });
-    }
-  };
 
   const isFormValid = () => {
     return kidName.trim() && primaryLanguage !== secondaryLanguage;

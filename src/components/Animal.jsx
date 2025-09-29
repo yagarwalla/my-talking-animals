@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Howl } from 'howler';
 import { useProgression } from '../contexts/ProgressionContext.jsx';
 
-const Animal = ({ animal, currentLanguage = 'en', index = 0, totalAnimals = 1 }) => {
+const Animal = ({ animal, currentLanguage = 'en', index = 0, totalAnimals = 1, onStickerReward }) => {
   const [isTalking, setIsTalking] = useState(false);
   const [showSparkles, setShowSparkles] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
@@ -21,6 +21,18 @@ const Animal = ({ animal, currentLanguage = 'en', index = 0, totalAnimals = 1 })
     isAnimalSpeaking,
     isAnyAnimalSpeaking
   } = useProgression();
+
+  // Get sticker for specific level (1 sticker per level)
+  const getStickerForLevel = (level) => {
+    const stickerMap = {
+      1: `/animals/stickers/level1/level1_sticker.png`,
+      2: `/animals/stickers/level2/level2_sticker.png`,
+      3: `/animals/stickers/level3/level3_sticker.png`,
+      4: `/animals/stickers/level4/level4_sticker.png`,
+      5: `/animals/stickers/level5/level5_sticker.png`,
+    };
+    return stickerMap[level] || `/animals/stickers/level1/level1_sticker.png`;
+  };
   
   // Debug: Log the parent container information
   useEffect(() => {
@@ -102,6 +114,14 @@ const Animal = ({ animal, currentLanguage = 'en', index = 0, totalAnimals = 1 })
       console.log('🎉 Animal completed:', result);
       if (result && result.levelUp) {
         console.log('🎊 Level up! New level:', result.progress.currentLevel);
+        
+        // Trigger sticker reward for the new level
+        if (onStickerReward) {
+          const newLevel = result.progress.currentLevel;
+          const stickerSrc = getStickerForLevel(newLevel);
+          console.log('🎁 Triggering sticker reward:', stickerSrc);
+          onStickerReward(stickerSrc);
+        }
       }
       if (result && result.newStickers && result.newStickers.length > 0) {
         console.log('🏆 New stickers earned:', result.newStickers);

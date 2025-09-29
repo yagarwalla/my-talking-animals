@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import Animal from './Animal';
 import ProgressionUI from './ProgressionUI';
+import StickerReward from './StickerReward';
 
 const AreaScreen = () => {
   const { areaId } = useParams();
@@ -11,6 +12,8 @@ const AreaScreen = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [currentLanguage, setCurrentLanguage] = useState('en');
+  const [showStickerReward, setShowStickerReward] = useState(false);
+  const [currentStickerSrc, setCurrentStickerSrc] = useState('');
 
   // Load farm configuration from JSON
   useEffect(() => {
@@ -53,6 +56,18 @@ const AreaScreen = () => {
   const handleBackToMap = () => {
     navigate('/map');
   };
+
+  // Function to trigger sticker reward (can be called when level is completed)
+  const triggerStickerReward = (stickerSrc) => {
+    setCurrentStickerSrc(stickerSrc);
+    setShowStickerReward(true);
+  };
+
+  // Handle sticker animation completion
+  const handleStickerAnimationComplete = () => {
+    setShowStickerReward(false);
+  };
+
 
   const getAreaInfo = () => {
     switch (areaId) {
@@ -136,10 +151,45 @@ const AreaScreen = () => {
       <div className="area-content">
         <h1 className="area-title">{areaInfo.name}</h1>
         <p className="area-description">{areaInfo.description}</p>
+        
+        {/* Debug buttons for testing - Remove in production */}
+        {areaInfo.hasConfig && farmConfig && (
+          <div className="text-center mb-4 space-x-2">
+            <motion.button
+              onClick={() => triggerStickerReward('/animals/stickers/level1/level1_sticker.png')}
+              className="bg-gradient-to-r from-green-400 to-blue-500 text-white px-4 py-2 rounded-lg text-sm font-semibold shadow-lg hover:shadow-xl transition-all duration-200"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              🎁 Test Level 1 Sticker
+            </motion.button>
+            <motion.button
+              onClick={() => triggerStickerReward('/animals/stickers/level2/level2_sticker.png')}
+              className="bg-gradient-to-r from-purple-400 to-pink-500 text-white px-4 py-2 rounded-lg text-sm font-semibold shadow-lg hover:shadow-xl transition-all duration-200"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              🎁 Test Level 2 Sticker
+            </motion.button>
+            <motion.button
+              onClick={() => {
+                if (window.clearStickers) {
+                  window.clearStickers();
+                  console.log('🗑️ Cleared all stickers');
+                }
+              }}
+              className="bg-gradient-to-r from-red-400 to-orange-500 text-white px-4 py-2 rounded-lg text-sm font-semibold shadow-lg hover:shadow-xl transition-all duration-200"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              🗑️ Clear Stickers
+            </motion.button>
+          </div>
+        )}
         {areaInfo.hasConfig && farmConfig ? (
           <div className="area-scene">
-            {/* Background Image */}
-            <div className="area-background-container">
+            {/* Background Image with Sticker Board */}
+            <div className="area-background-container relative">
               <img
                 src={`/${farmConfig.background}`}
                 alt={`${areaInfo.name} Background`}
@@ -150,6 +200,13 @@ const AreaScreen = () => {
                 }}
               />
               
+              {/* Sticker Reward System */}
+              <StickerReward 
+                isVisible={showStickerReward}
+                stickerSrc={currentStickerSrc}
+                onAnimationComplete={handleStickerAnimationComplete}
+              />
+              
               {/* Animal Components - Now positioned relative to the background container */}
               {farmConfig.animals.map((animal, index) => (
                 <Animal
@@ -158,6 +215,7 @@ const AreaScreen = () => {
                   currentLanguage={currentLanguage}
                   index={index}
                   totalAnimals={farmConfig.animals.length}
+                  onStickerReward={triggerStickerReward}
                 />
               ))}
             </div>
