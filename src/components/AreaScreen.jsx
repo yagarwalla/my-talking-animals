@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import Animal from './Animal';
 import ProgressionUI from './ProgressionUI';
 import StickerReward from './StickerReward';
+import { useProgression } from '../contexts/ProgressionContext.jsx';
 
 const AreaScreen = () => {
   const { areaId } = useParams();
@@ -14,6 +15,9 @@ const AreaScreen = () => {
   const [currentLanguage, setCurrentLanguage] = useState('en');
   const [showStickerReward, setShowStickerReward] = useState(false);
   const [currentStickerSrc, setCurrentStickerSrc] = useState('');
+  
+  // Get current level from progression context
+  const { currentLevel } = useProgression();
 
   // Load farm configuration from JSON
   useEffect(() => {
@@ -170,6 +174,7 @@ const AreaScreen = () => {
                 isVisible={showStickerReward}
                 stickerSrc={currentStickerSrc}
                 onAnimationComplete={handleStickerAnimationComplete}
+                currentLevel={currentLevel}
               />
               
               {/* Animal Components - Now positioned relative to the background container */}

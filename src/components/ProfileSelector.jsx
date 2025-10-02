@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import { useProgression } from '../contexts/ProgressionContext';
 
 // Utility function moved outside component to avoid dependency issues
 const getRandomEmoji = (id, kidEmojis) => {
@@ -10,6 +11,7 @@ const getRandomEmoji = (id, kidEmojis) => {
 };
 
 const ProfileSelector = () => {
+  const { triggerProfileChange } = useProgression();
   const [profiles, setProfiles] = useState([]);
   const [showNewProfileForm, setShowNewProfileForm] = useState(false);
   const [showDeleteMenu, setShowDeleteMenu] = useState(false);
@@ -77,11 +79,13 @@ const ProfileSelector = () => {
 
     // Set as current profile and navigate
     localStorage.setItem('currentProfile', JSON.stringify(newProfile));
+    triggerProfileChange(); // Trigger progression system to load new profile data
     navigate('/map');
   };
 
   const handleSelectProfile = (profile) => {
     localStorage.setItem('currentProfile', JSON.stringify(profile));
+    triggerProfileChange(); // Trigger progression system to load profile data
     navigate('/map');
   };
 

@@ -17,45 +17,27 @@ export const ProgressionProvider = ({ children }) => {
   const [allAnimals] = useState(['cow', 'pig', 'goat', 'sheep', 'hen', 'horse']);
   const [speakingAnimal, setSpeakingAnimal] = useState(null);
   const [isInitialized, setIsInitialized] = useState(false);
+  const [currentProfileId, setCurrentProfileId] = useState(null);
+
+  // Get current profile ID
+  const getCurrentProfileId = () => {
+    try {
+      const currentProfile = localStorage.getItem('currentProfile');
+      if (currentProfile) {
+        const profile = JSON.parse(currentProfile);
+        return profile.id;
+      }
+    } catch (error) {
+      console.error('Error getting current profile:', error);
+    }
+    return null;
+  };
 
   // Load progression data from localStorage on mount
   useEffect(() => {
-    try {
-      const savedLevel = localStorage.getItem('progression_level');
-      const savedCompleted = localStorage.getItem('progression_completed');
-      const savedStickers = localStorage.getItem('progression_stickers');
-
-      console.log('🔄 Loading progression data from localStorage:', {
-        savedLevel,
-        savedCompleted,
-        savedStickers
-      });
-
-      if (savedLevel) {
-        setCurrentLevel(parseInt(savedLevel));
-        console.log('✅ Loaded level:', savedLevel);
-      }
-      if (savedCompleted) {
-        const parsed = JSON.parse(savedCompleted);
-        setCompletedAnimals(Array.isArray(parsed) ? new Set(parsed) : new Set());
-        console.log('✅ Loaded completed animals:', parsed);
-      }
-      if (savedStickers) {
-        const parsed = JSON.parse(savedStickers);
-        setStickers(Array.isArray(parsed) ? parsed : []);
-        console.log('✅ Loaded stickers:', parsed);
-      }
-      
-      // Mark as initialized after loading is complete
-      setIsInitialized(true);
-    } catch (error) {
-      console.error('❌ Error loading progression data from localStorage:', error);
-      // Reset to defaults on error
-      setCurrentLevel(1);
-      setCompletedAnimals(new Set());
-      setStickers([]);
-      setIsInitialized(true);
-    }
+    const profileId = getCurrentProfileId();
+    setCurrentProfileId(profileId);
+    loadProfileData(profileId);
   }, []);
 
   // Save progression data to localStorage whenever it changes (but only after initialization)
@@ -71,10 +53,12 @@ export const ProgressionProvider = ({ children }) => {
       stickers
     });
     
-    localStorage.setItem('progression_level', currentLevel.toString());
-    localStorage.setItem('progression_completed', JSON.stringify([...completedAnimals]));
-    localStorage.setItem('progression_stickers', JSON.stringify(stickers));
-  }, [currentLevel, completedAnimals, stickers, isInitialized]);
+    if (currentProfileId) {
+      localStorage.setItem(`progression_level_${currentProfileId}`, currentLevel.toString());
+      localStorage.setItem(`progression_completed_${currentProfileId}`, JSON.stringify([...completedAnimals]));
+      localStorage.setItem(`progression_stickers_${currentProfileId}`, JSON.stringify(stickers));
+    }
+  }, [currentLevel, completedAnimals, stickers, isInitialized, currentProfileId]);
 
   const completeAnimal = (animalId, onComplete = null) => {
     if (completedAnimals.has(animalId)) {
@@ -89,39 +73,21 @@ export const ProgressionProvider = ({ children }) => {
     const isLevelComplete = allAnimals.every(animal => newCompleted.has(animal));
     
     let levelUp = false;
-    let newStickers = [];
 
     if (isLevelComplete) {
-      // Level up
-      setCurrentLevel(prev => prev + 1);
+      // Level up (cap at level 5)
+      setCurrentLevel(prev => Math.min(prev + 1, 5));
       levelUp = true;
-
-      // Award level completion sticker (for the level that was just completed)
-      const levelStickerId = `farm_level${currentLevel}_expert`;
-      const currentStickers = Array.isArray(stickers) ? stickers : [];
-      if (!currentStickers.includes(levelStickerId)) {
-        newStickers = [...currentStickers, levelStickerId];
-        setStickers(newStickers);
-      }
 
       // Reset completed animals for next level
       setCompletedAnimals(new Set());
     }
 
-    // Award individual animal expert sticker if all 5 levels completed
-    const animalStickerId = `${animalId}_expert`;
-    const currentStickers = Array.isArray(stickers) ? stickers : [];
-    if (!currentStickers.includes(animalStickerId)) {
-      // For now, we'll award the sticker after completing the animal once
-      // In a full system, this would check if all 5 levels are completed
-      newStickers = [...newStickers, animalStickerId];
-      setStickers(newStickers);
-    }
+    // Note: Visual stickers are now handled by StickerReward component
 
     const result = {
       success: true,
       levelUp,
-      newStickers,
       progress: {
         currentLevel,
         completed: newCompleted.size,
@@ -183,6 +149,25 @@ export const ProgressionProvider = ({ children }) => {
     setStickers([]);
   };
 
+  // Reset progression when profile changes
+  const resetForNewProfile = () => {
+    setCurrentLevel(1);
+    setCompletedAnimals(new Set());
+    setStickers([]);
+    setIsInitialized(true);
+    console.log('🔄 Reset progression for new profile');
+  };
+
+  // Manual profile change trigger (for same-tab profile switches)
+  const triggerProfileChange = () => {
+    const newProfileId = getCurrentProfileId();
+    if (newProfileId !== currentProfileId) {
+      console.log('Manual profile change triggered from', currentProfileId, 'to', newProfileId);
+      setCurrentProfileId(newProfileId);
+      loadProfileData(newProfileId);
+    }
+  };
+
   const setAnimalSpeaking = (animalId) => {
     setSpeakingAnimal(animalId);
   };
@@ -199,6 +184,85 @@ export const ProgressionProvider = ({ children }) => {
     return speakingAnimal !== null;
   };
 
+  // Load progression data when profile changes
+  const loadProfileData = (profileId) => {
+    if (!profileId) {
+      console.log('No profile ID provided, using default progression');
+      setCurrentLevel(1);
+      setCompletedAnimals(new Set());
+      setStickers([]);
+      setIsInitialized(true);
+      return;
+    }
+
+    try {
+      const savedLevel = localStorage.getItem(`progression_level_${profileId}`);
+      const savedCompleted = localStorage.getItem(`progression_completed_${profileId}`);
+      const savedStickers = localStorage.getItem(`progression_stickers_${profileId}`);
+
+      console.log('🔄 Loading progression data for profile', profileId, ':', {
+        savedLevel,
+        savedCompleted,
+        savedStickers
+      });
+
+      if (savedLevel) {
+        const loadedLevel = parseInt(savedLevel);
+        setCurrentLevel(Math.min(loadedLevel, 5));
+        console.log('✅ Loaded level:', Math.min(loadedLevel, 5));
+      } else {
+        setCurrentLevel(1);
+      }
+
+      if (savedCompleted) {
+        const parsed = JSON.parse(savedCompleted);
+        setCompletedAnimals(Array.isArray(parsed) ? new Set(parsed) : new Set());
+        console.log('✅ Loaded completed animals:', parsed);
+      } else {
+        setCompletedAnimals(new Set());
+      }
+
+      if (savedStickers) {
+        const parsed = JSON.parse(savedStickers);
+        setStickers(Array.isArray(parsed) ? parsed : []);
+        console.log('✅ Loaded stickers:', parsed);
+      } else {
+        setStickers([]);
+      }
+      
+      setIsInitialized(true);
+    } catch (error) {
+      console.error('❌ Error loading progression data for profile', profileId, ':', error);
+      setCurrentLevel(1);
+      setCompletedAnimals(new Set());
+      setStickers([]);
+      setIsInitialized(true);
+    }
+  };
+
+  // Detect profile changes and load appropriate data
+  useEffect(() => {
+    const handleProfileChange = () => {
+      const newProfileId = getCurrentProfileId();
+      if (newProfileId !== currentProfileId) {
+        console.log('Profile changed from', currentProfileId, 'to', newProfileId);
+        setCurrentProfileId(newProfileId);
+        loadProfileData(newProfileId);
+      }
+    };
+
+    // Listen for storage changes (profile switches from other tabs)
+    window.addEventListener('storage', handleProfileChange);
+    
+    // Also check on focus (in case profile was changed in another tab)
+    window.addEventListener('focus', handleProfileChange);
+
+    return () => {
+      window.removeEventListener('storage', handleProfileChange);
+      window.removeEventListener('focus', handleProfileChange);
+    };
+  }, [currentProfileId]);
+
   const value = {
     currentLevel,
     completedAnimals,
@@ -210,6 +274,8 @@ export const ProgressionProvider = ({ children }) => {
     getAnimalVoice,
     getAnimalProgress,
     resetProgression,
+    resetForNewProfile,
+    triggerProfileChange,
     setAnimalSpeaking,
     setAnimalFinishedSpeaking,
     isAnimalSpeaking,

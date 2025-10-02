@@ -1,34 +1,31 @@
-# Animal Sound Files
+# Sound Effects
 
-**Note: This directory is no longer used. Animal sounds are now loaded from the `farm.json` configuration.**
+This directory contains sound effects used throughout the My Talking Animals app.
 
-## Current Sound Structure
+## Files
 
-Animal sounds are now loaded from the paths defined in `public/config/farm.json`:
-
-- **Cow**: `animals/cow/moo.mp3`
-- **Pig**: `animals/pig/oink.mp3`  
-- **Goat**: `animals/goat/baa.mp3`
-- **Sheep**: `animals/sheep/baa.mp3`
-- **Hen**: `animals/hen/cluck.mp3`
-- **Horse**: `animals/horse/neigh.mp3`
-
-## File Requirements
-
+### applause.mp3
+- **Purpose**: Played when a sticker reward is earned
 - **Format**: MP3
-- **Location**: Place in the respective animal folders under `/public/animals/<animal_name>/`
-- **Size**: Keep files small (under 1MB each) for fast loading
-- **Naming**: Use the exact filenames specified in `farm.json`
+- **Duration**: 2-3 seconds recommended
+- **Volume**: Set to 70% in code
+- **Usage**: Automatic playback when sticker animation starts
 
-## Example
+## Audio Requirements
 
-When you click on a "Cow" animal card, the system will look for `/public/animals/cow/moo.mp3` as defined in the `farm.json` configuration.
+- **Format**: MP3 (for best browser compatibility)
+- **Quality**: 128kbps or higher
+- **Duration**: Keep under 5 seconds for sound effects
+- **Volume**: Normalized audio (code will handle volume control)
 
-## Getting Sound Files
+## Adding New Sounds
 
-You can find free animal sound effects from:
-- FreeSound.org
-- Zapsplat.com
-- SoundBible.com
+1. Add your MP3 file to this directory
+2. Update the component to reference the new sound file
+3. Test in different browsers to ensure compatibility
 
-Or record your own animal sounds!
+## Browser Compatibility
+
+- Modern browsers support MP3 format
+- Some browsers may require user interaction before playing audio
+- Error handling is included in the code for graceful fallbacks

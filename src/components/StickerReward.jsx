@@ -1,51 +1,146 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const StickerReward = ({ 
   isVisible = false, 
   stickerSrc = '/animals/cow/cow_idle.png', 
-  onAnimationComplete = () => {} 
+  onAnimationComplete = () => {},
+  currentLevel = 1
 }) => {
   const [showBigSticker, setShowBigSticker] = useState(false);
   const [stickers, setStickers] = useState([]);
 
+  // Get current profile ID for profile-specific storage
+  const getCurrentProfileId = () => {
+    try {
+      const currentProfile = localStorage.getItem('currentProfile');
+      if (currentProfile) {
+        const profile = JSON.parse(currentProfile);
+        return profile.id;
+      }
+    } catch (error) {
+      console.error('Error getting current profile:', error);
+    }
+    return null;
+  };
+
   // Load stickers from localStorage on component mount
   useEffect(() => {
-    const savedStickers = localStorage.getItem('collectedStickers');
+    const profileId = getCurrentProfileId();
+    if (!profileId) {
+      console.log('🎁 No current profile found, no stickers loaded');
+      return;
+    }
+
+    const savedStickers = localStorage.getItem(`collectedStickers_${profileId}`);
     if (savedStickers) {
       try {
         const parsedStickers = JSON.parse(savedStickers);
         setStickers(parsedStickers);
-        console.log('🎁 Loaded stickers from localStorage:', parsedStickers.length, 'stickers');
+        console.log('🎁 Loaded stickers for profile', profileId, ':', parsedStickers.length, 'stickers');
       } catch (error) {
         console.error('Error loading stickers from localStorage:', error);
         setStickers([]);
       }
     } else {
-      console.log('🎁 No saved stickers found in localStorage');
+      console.log('🎁 No saved stickers found for profile', profileId);
     }
   }, []);
 
+  // Clean and backfill stickers based on actual progression (only run once when currentLevel changes)
+  useEffect(() => {
+    const profileId = getCurrentProfileId();
+    if (!profileId) return;
+
+    const savedStickers = localStorage.getItem(`collectedStickers_${profileId}`);
+    let existingStickers = [];
+    
+    if (savedStickers) {
+      try {
+        existingStickers = JSON.parse(savedStickers);
+      } catch (error) {
+        console.error('Error parsing saved stickers for cleanup:', error);
+        existingStickers = [];
+      }
+    }
+    
+    // Cap at level 5 (final level) - only allow stickers for levels 1-4
+    const maxAllowedLevel = Math.min(currentLevel - 1, 4);
+    
+    // Clean up existing stickers - remove any that shouldn't be there
+    const validStickers = existingStickers.filter(sticker => {
+      // Check if this is a level sticker
+      const levelMatch = sticker.src.match(/\/level(\d+)\/level\d+_sticker\.png$/);
+      if (levelMatch) {
+        const stickerLevel = parseInt(levelMatch[1]);
+        // Only keep stickers for levels that have been completed (1 to maxAllowedLevel)
+        return stickerLevel >= 1 && stickerLevel <= maxAllowedLevel;
+      }
+      // Keep non-level stickers (if any exist in the future)
+      return true;
+    });
+    
+    // Generate missing stickers for completed levels
+    const newStickers = [];
+    for (let level = 1; level <= maxAllowedLevel; level++) {
+      const stickerSrc = `/animals/stickers/level${level}/level${level}_sticker.png`;
+      
+      // Check if this level sticker already exists
+      const existingSticker = validStickers.find(sticker => sticker.src === stickerSrc);
+      if (!existingSticker) {
+        newStickers.push({
+          id: `backfill-${level}-${Date.now()}`,
+          src: stickerSrc,
+          ...getRandomPosition(),
+        });
+      }
+    }
+    
+    // Combine valid existing stickers with new ones
+    const finalStickers = [...validStickers, ...newStickers];
+    
+    // Only update if there are changes
+    if (finalStickers.length !== existingStickers.length || 
+        finalStickers.some((sticker, index) => !existingStickers[index] || sticker.id !== existingStickers[index].id)) {
+      setStickers(finalStickers);
+      
+      const removedCount = existingStickers.length - validStickers.length;
+      const addedCount = newStickers.length;
+      
+      console.log('🧹 Cleaned stickers for profile', profileId, ':', {
+        removed: removedCount,
+        added: addedCount,
+        total: finalStickers.length,
+        maxAllowedLevel
+      });
+    }
+  }, [currentLevel]); // Removed 'stickers' dependency to prevent infinite loop
+
   // Save stickers to localStorage whenever stickers change
   useEffect(() => {
-    if (stickers.length > 0) {
-      localStorage.setItem('collectedStickers', JSON.stringify(stickers));
-      console.log('💾 Saved stickers to localStorage:', stickers.length, 'stickers');
+    const profileId = getCurrentProfileId();
+    if (profileId && stickers.length > 0) {
+      localStorage.setItem(`collectedStickers_${profileId}`, JSON.stringify(stickers));
+      console.log('💾 Saved stickers for profile', profileId, ':', stickers.length, 'stickers');
     }
   }, [stickers]);
 
   // Function to clear all stickers (useful for testing or resetting)
-  const clearAllStickers = () => {
+  const clearAllStickers = useCallback(() => {
+    const profileId = getCurrentProfileId();
     setStickers([]);
-    localStorage.removeItem('collectedStickers');
-  };
+    if (profileId) {
+      localStorage.removeItem(`collectedStickers_${profileId}`);
+    }
+    console.log('🗑️ Cleared all stickers from state and localStorage for profile', profileId);
+  }, []);
 
   // Expose clear function to parent component if needed
   useEffect(() => {
     if (typeof window !== 'undefined') {
       window.clearStickers = clearAllStickers;
     }
-  }, []);
+  }, [clearAllStickers]);
 
   // Generate random position within top 20% of farm image bounds
   const getRandomPosition = () => ({
@@ -54,10 +149,26 @@ const StickerReward = ({
     rotation: (Math.random() - 0.5) * 10, // -5 to +5 degrees
   });
 
+  // Play applause sound
+  const playApplause = () => {
+    try {
+      const audio = new Audio("/sounds/applause.mp3");
+      audio.volume = 0.7; // Set volume to 70%
+      audio.play().catch(error => {
+        console.log('Could not play applause sound:', error);
+      });
+    } catch (error) {
+      console.log('Error creating applause audio:', error);
+    }
+  };
+
   // Show big sticker animation when isVisible becomes true
   useEffect(() => {
     if (isVisible) {
       setShowBigSticker(true);
+      
+      // Play applause sound immediately when sticker is awarded
+      playApplause();
       
       // After 1.5 seconds, hide big sticker and add to board
       const timer = setTimeout(() => {
