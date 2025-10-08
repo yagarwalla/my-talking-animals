@@ -29,7 +29,7 @@ const ProgressionUI = () => {
   };
   
   return (
-    <div className="progression-ui fixed top-4 right-4 z-50">
+    <div className="progression-ui fixed top-20 right-4 z-40">
       {/* Level Progress */}
       <motion.div 
         className="bg-white/90 backdrop-blur-sm rounded-lg p-4 shadow-lg mb-4"

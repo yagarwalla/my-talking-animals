@@ -10,6 +10,7 @@ const StickerReward = ({
   const [showBigSticker, setShowBigSticker] = useState(false);
   const [stickers, setStickers] = useState([]);
   const isAddingStickerRef = useRef(false);
+  const currentAnimatingStickerRef = useRef(null);
 
   // Get current profile ID for profile-specific storage
   const getCurrentProfileId = () => {
@@ -86,6 +87,12 @@ const StickerReward = ({
     for (let level = 1; level <= maxAllowedLevel; level++) {
       const stickerSrc = `/animals/stickers/level${level}/level${level}_sticker.png`;
       
+      // Skip if this is the sticker currently being animated
+      if (currentAnimatingStickerRef.current === stickerSrc) {
+        console.log('⏭️ Skipping backfill for currently animating sticker:', stickerSrc);
+        continue;
+      }
+      
       // Check if this level sticker already exists
       const existingSticker = validStickers.find(sticker => sticker.src === stickerSrc);
       if (!existingSticker) {
@@ -143,12 +150,18 @@ const StickerReward = ({
     }
   }, [clearAllStickers]);
 
-  // Generate random position within top 20% of farm image bounds
-  const getRandomPosition = () => ({
-    x: Math.random() * 70 + 15, // 15% to 85% of width
-    y: Math.random() * 20, // 0% to 20% of height (top 20% only)
-    rotation: (Math.random() - 0.5) * 10, // -5 to +5 degrees
-  });
+  // Generate random position within top area of farm image bounds
+  // Use top 10% for small screens, top 20% for larger screens
+  const getRandomPosition = () => {
+    const isSmallScreen = window.innerWidth <= 1024;
+    const maxYPercentage = isSmallScreen ? 10 : 20;
+    
+    return {
+      x: Math.random() * 70 + 15, // 15% to 85% of width
+      y: Math.random() * maxYPercentage, // 0% to 10% on small screens, 0% to 20% on larger screens
+      rotation: (Math.random() - 0.5) * 10, // -5 to +5 degrees
+    };
+  };
 
   // Play applause sound
   const playApplause = () => {
@@ -169,6 +182,10 @@ const StickerReward = ({
       // Prevent duplicate sticker additions (React 19 Strict Mode protection)
       isAddingStickerRef.current = true;
       
+      // Mark this sticker as currently animating to prevent backfill from adding it
+      currentAnimatingStickerRef.current = stickerSrc;
+      console.log('🎬 Starting animation for sticker:', stickerSrc);
+      
       setShowBigSticker(true);
       
       // Play applause sound immediately when sticker is awarded
@@ -188,20 +205,24 @@ const StickerReward = ({
         setStickers(prev => [...prev, newSticker]);
         onAnimationComplete();
         
-        // Reset the ref after a delay to allow future stickers
+        // Reset the refs after a delay to allow future stickers
         setTimeout(() => {
           isAddingStickerRef.current = false;
+          currentAnimatingStickerRef.current = null;
+          console.log('✅ Animation complete, refs reset');
         }, 100);
       }, 1500);
 
       return () => {
         clearTimeout(timer);
-        // Also reset ref on cleanup
+        // Also reset refs on cleanup
         isAddingStickerRef.current = false;
+        currentAnimatingStickerRef.current = null;
       };
     } else if (!isVisible) {
-      // Reset ref when sticker reward is hidden
+      // Reset refs when sticker reward is hidden
       isAddingStickerRef.current = false;
+      currentAnimatingStickerRef.current = null;
     }
   }, [isVisible, stickerSrc, onAnimationComplete]);
 
