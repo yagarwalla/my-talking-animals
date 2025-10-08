@@ -56,6 +56,146 @@ const AreaScreen = () => {
     }
   }, []);
 
+  // Debug: Log layout dimensions and spacing for AreaScreen
+  useEffect(() => {
+    const logAreaLayoutInfo = () => {
+      const areaScreen = document.querySelector('.area-screen');
+      const areaContent = document.querySelector('.area-content');
+      const areaScene = document.querySelector('.area-scene');
+      const backButtonContainer = document.querySelector('.area-screen .text-center');
+      const backButton = document.querySelector('.area-screen .text-center button');
+      
+      console.log('🔍 AREA SCREEN SPACING DEBUG:');
+      
+      if (areaScreen) {
+        const screenRect = areaScreen.getBoundingClientRect();
+        const screenStyles = window.getComputedStyle(areaScreen);
+        console.log('📐 Area Screen Container:', {
+          element: 'area-screen',
+          rect: screenRect,
+          padding: screenStyles.padding,
+          margin: screenStyles.margin,
+          width: screenStyles.width,
+          height: screenStyles.height,
+          maxWidth: screenStyles.maxWidth,
+          display: screenStyles.display,
+          flexDirection: screenStyles.flexDirection,
+          alignItems: screenStyles.alignItems,
+          justifyContent: screenStyles.justifyContent
+        });
+      }
+      
+      if (areaContent) {
+        const contentRect = areaContent.getBoundingClientRect();
+        const contentStyles = window.getComputedStyle(areaContent);
+        console.log('📐 Area Content:', {
+          element: 'area-content',
+          rect: contentRect,
+          padding: contentStyles.padding,
+          margin: contentStyles.margin,
+          marginTop: contentStyles.marginTop,
+          marginBottom: contentStyles.marginBottom,
+          width: contentStyles.width,
+          height: contentStyles.height,
+          display: contentStyles.display,
+          flexDirection: contentStyles.flexDirection,
+          alignItems: contentStyles.alignItems,
+          justifyContent: contentStyles.justifyContent
+        });
+      }
+      
+      if (areaScene) {
+        const sceneRect = areaScene.getBoundingClientRect();
+        const sceneStyles = window.getComputedStyle(areaScene);
+        console.log('📐 Area Scene:', {
+          element: 'area-scene',
+          rect: sceneRect,
+          padding: sceneStyles.padding,
+          margin: sceneStyles.margin,
+          width: sceneStyles.width,
+          height: sceneStyles.height,
+          maxWidth: sceneStyles.maxWidth
+        });
+      }
+      
+      if (backButtonContainer) {
+        const buttonContainerRect = backButtonContainer.getBoundingClientRect();
+        const buttonContainerStyles = window.getComputedStyle(backButtonContainer);
+        console.log('📐 Back Button Container:', {
+          element: 'back-button-container',
+          rect: buttonContainerRect,
+          padding: buttonContainerStyles.padding,
+          margin: buttonContainerStyles.margin,
+          marginTop: buttonContainerStyles.marginTop,
+          className: buttonContainerStyles.className
+        });
+      }
+      
+      if (backButton) {
+        const buttonRect = backButton.getBoundingClientRect();
+        const buttonStyles = window.getComputedStyle(backButton);
+        console.log('📐 Back Button:', {
+          element: 'back-button',
+          rect: buttonRect,
+          padding: buttonStyles.padding,
+          margin: buttonStyles.margin,
+          marginTop: buttonStyles.marginTop
+        });
+      }
+      
+      // Calculate spacing between elements
+      if (areaScene && backButtonContainer) {
+        const sceneRect = areaScene.getBoundingClientRect();
+        const buttonContainerRect = backButtonContainer.getBoundingClientRect();
+        const spacing = buttonContainerRect.top - sceneRect.bottom;
+        
+        console.log('📏 AREA SPACING ANALYSIS:', {
+          sceneBottom: sceneRect.bottom,
+          buttonContainerTop: buttonContainerRect.top,
+          spacingBetween: spacing,
+          viewportWidth: window.innerWidth,
+          viewportHeight: window.innerHeight,
+          sceneHeight: sceneRect.height,
+          buttonContainerHeight: buttonContainerRect.height
+        });
+        
+        // Check for any elements between scene and button
+        const allElements = document.querySelectorAll('*');
+        const elementsBetween = [];
+        
+        allElements.forEach(el => {
+          const elRect = el.getBoundingClientRect();
+          if (elRect.top > sceneRect.bottom && elRect.bottom < buttonContainerRect.top) {
+            const styles = window.getComputedStyle(el);
+            if (styles.height !== '0px' && styles.height !== 'auto' && 
+                (parseFloat(styles.height) > 0 || elRect.height > 0)) {
+              elementsBetween.push({
+                element: el.tagName,
+                className: el.className,
+                height: elRect.height,
+                marginTop: styles.marginTop,
+                marginBottom: styles.marginBottom,
+                paddingTop: styles.paddingTop,
+                paddingBottom: styles.paddingBottom
+              });
+            }
+          }
+        });
+        
+        console.log('📏 Elements between scene and button:', elementsBetween);
+      }
+    };
+    
+    // Only log if not loading and no error
+    if (!loading && !error) {
+      // Log immediately and on resize
+      logAreaLayoutInfo();
+      window.addEventListener('resize', logAreaLayoutInfo);
+      
+      return () => window.removeEventListener('resize', logAreaLayoutInfo);
+    }
+  }, [farmConfig, loading, error]);
+
 
   const handleBackToMap = () => {
     navigate('/map');

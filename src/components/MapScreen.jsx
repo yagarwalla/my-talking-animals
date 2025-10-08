@@ -85,163 +85,42 @@ const MapScreen = () => {
       const mapScreen = document.querySelector('.map-screen');
       const mapHeader = document.querySelector('.map-header');
       const mapScene = document.querySelector('.map-scene');
-      const mapBackgroundContainer = document.querySelector('.map-background-container');
-      const mapBackgroundImage = document.querySelector('.map-background-image');
+      const backButtonContainer = document.querySelector('.map-screen .text-center');
+      const backButton = document.querySelector('.map-screen .text-center button');
+      
+      console.log('🔍 MAP SCREEN SPACING DEBUG:');
       
       if (mapScreen) {
         const screenRect = mapScreen.getBoundingClientRect();
         const screenStyles = window.getComputedStyle(mapScreen);
-        console.log('📐 Map Screen Debug:', {
+        console.log('📐 Map Screen Container:', {
           element: 'map-screen',
           rect: screenRect,
           padding: screenStyles.padding,
           margin: screenStyles.margin,
           width: screenStyles.width,
           height: screenStyles.height,
-          maxWidth: screenStyles.maxWidth
+          display: screenStyles.display,
+          flexDirection: screenStyles.flexDirection,
+          alignItems: screenStyles.alignItems,
+          justifyContent: screenStyles.justifyContent
         });
       }
       
-      if (mapHeader) {
-        const headerRect = mapHeader.getBoundingClientRect();
-        const headerStyles = window.getComputedStyle(mapHeader);
-        console.log('📐 Map Header Debug:', {
-          element: 'map-header',
-          rect: headerRect,
-          padding: headerStyles.padding,
-          margin: headerStyles.margin,
-          marginBottom: headerStyles.marginBottom
-        });
-      }
-      
-      if (mapScene) {
+      if (mapScene && backButtonContainer) {
         const sceneRect = mapScene.getBoundingClientRect();
-        const sceneStyles = window.getComputedStyle(mapScene);
-        console.log('📐 Map Scene Debug:', {
-          element: 'map-scene',
-          rect: sceneRect,
-          padding: sceneStyles.padding,
-          margin: sceneStyles.margin,
-          width: sceneStyles.width,
-          height: sceneStyles.height,
-          maxWidth: sceneStyles.maxWidth
-        });
-      }
-      
-      if (mapBackgroundContainer) {
-        const containerRect = mapBackgroundContainer.getBoundingClientRect();
-        const containerStyles = window.getComputedStyle(mapBackgroundContainer);
-        console.log('📐 Map Background Container Debug:', {
-          element: 'map-background-container',
-          rect: containerRect,
-          padding: containerStyles.padding,
-          margin: containerStyles.margin,
-          width: containerStyles.width,
-          height: containerStyles.height
-        });
-      }
-      
-      if (mapBackgroundImage) {
-        const imageRect = mapBackgroundImage.getBoundingClientRect();
-        const imageStyles = window.getComputedStyle(mapBackgroundImage);
-        console.log('📐 Map Background Image Debug:', {
-          element: 'map-background-image',
-          rect: imageRect,
-          padding: imageStyles.padding,
-          margin: imageStyles.margin,
-          width: imageStyles.width,
-          height: imageStyles.height,
-          objectFit: imageStyles.objectFit
-        });
-      }
-      
-      // Calculate spacing between elements
-      if (mapHeader && mapScene) {
-        const headerRect = mapHeader.getBoundingClientRect();
-        const sceneRect = mapScene.getBoundingClientRect();
-        const spacing = sceneRect.top - headerRect.bottom;
+        const buttonContainerRect = backButtonContainer.getBoundingClientRect();
+        const spacing = buttonContainerRect.top - sceneRect.bottom;
         
-        // Check for any elements between header and scene
-        const allElements = document.querySelectorAll('*');
-        const elementsBetween = [];
-        
-        allElements.forEach(el => {
-          const elRect = el.getBoundingClientRect();
-          if (elRect.top > headerRect.bottom && elRect.bottom < sceneRect.top) {
-            const styles = window.getComputedStyle(el);
-            if (styles.height !== '0px' && styles.height !== 'auto' && 
-                (parseFloat(styles.height) > 0 || elRect.height > 0)) {
-              elementsBetween.push({
-                element: el.tagName,
-                className: el.className,
-                height: elRect.height,
-                marginTop: styles.marginTop,
-                marginBottom: styles.marginBottom,
-                paddingTop: styles.paddingTop,
-                paddingBottom: styles.paddingBottom
-              });
-            }
-          }
-        });
-        
-        console.log('📏 Spacing Analysis:', {
-          headerBottom: headerRect.bottom,
-          sceneTop: sceneRect.top,
+        console.log('📏 MAP SPACING ANALYSIS:', {
+          sceneBottom: sceneRect.bottom,
+          buttonContainerTop: buttonContainerRect.top,
           spacingBetween: spacing,
           viewportWidth: window.innerWidth,
           viewportHeight: window.innerHeight,
-          elementsBetween: elementsBetween
+          sceneHeight: sceneRect.height,
+          buttonContainerHeight: buttonContainerRect.height
         });
-        
-        // Check if there's a gap that's not from elements
-        if (elementsBetween.length === 0 && spacing > 0) {
-          console.log('🔍 No elements found between header and scene - gap is from CSS layout');
-          
-          // Check parent containers
-          let current = mapScene.parentElement;
-          while (current && current !== mapHeader) {
-            const currentRect = current.getBoundingClientRect();
-            const currentStyles = window.getComputedStyle(current);
-            console.log('🔍 Parent element:', {
-              tagName: current.tagName,
-              className: current.className,
-              top: currentRect.top,
-              height: currentRect.height,
-              marginTop: currentStyles.marginTop,
-              marginBottom: currentStyles.marginBottom,
-              paddingTop: currentStyles.paddingTop,
-              paddingBottom: currentStyles.paddingBottom,
-              display: currentStyles.display,
-              flexDirection: currentStyles.flexDirection,
-              justifyContent: currentStyles.justifyContent,
-              alignItems: currentStyles.alignItems,
-              gap: currentStyles.gap,
-              rowGap: currentStyles.rowGap,
-              columnGap: currentStyles.columnGap
-            });
-            current = current.parentElement;
-          }
-          
-          // Specifically check map-screen container
-          if (mapScreen) {
-            const screenRect = mapScreen.getBoundingClientRect();
-            const screenStyles = window.getComputedStyle(mapScreen);
-            console.log('🔍 Map Screen Container Analysis:', {
-              height: screenRect.height,
-              display: screenStyles.display,
-              flexDirection: screenStyles.flexDirection,
-              justifyContent: screenStyles.justifyContent,
-              alignItems: screenStyles.alignItems,
-              gap: screenStyles.gap,
-              rowGap: screenStyles.rowGap,
-              columnGap: screenStyles.columnGap,
-              paddingTop: screenStyles.paddingTop,
-              paddingBottom: screenStyles.paddingBottom,
-              marginTop: screenStyles.marginTop,
-              marginBottom: screenStyles.marginBottom
-            });
-          }
-        }
       }
     };
     

@@ -711,30 +711,41 @@ html {
 @media (max-width: 1024px) {
   /* Scale entire background containers instead of individual elements */
   .map-background-container {
-    transform: scale(0.7);
+    transform: scale(0.95);
     transform-origin: top center;
   }
   
   .area-background-container {
-    transform: scale(0.8);
+    transform: scale(1);
     transform-origin: top center;
   }
   
-  /* Adjust container heights to accommodate scaling */
+  /* Adjust container heights to accommodate scaled content properly */
   .map-scene {
-    height: calc(600px * 0.7);
+    height: calc(600px * 0.95);
   }
   
   .area-scene {
-    height: calc(600px * 0.8);
+    height: calc(600px * 0.9);
   }
   
   .map-container {
-    height: calc((100vh - 120px) * 0.7);
+    height: calc((100vh - 120px) * 0.95);
   }
   
   .area-container {
-    height: calc((100vh - 120px) * 0.8);
+    height: calc((100vh - 120px) * 0.9);
+  }
+  
+  /* Scale map overlays to match background scaling */
+  .map-area-overlay {
+    transform: scale(0.95);
+    transform-origin: top center;
+  }
+  
+  .lock-icon {
+    font-size: 1.2rem !important;
+    transform: translate(-50%, -50%) scale(0.95) !important;
   }
   
   /* Reduce spacing between title and map on scaled devices */
@@ -762,6 +773,42 @@ html {
   
   .area-screen .area-subtitle {
     margin-bottom: 0 !important;
+  }
+}
+
+/* Extra aggressive scaling for very short screens */
+@media (max-width: 1024px) and (max-height: 500px) {
+  .map-scene {
+    height: calc(600px * 0.85) !important;
+  }
+  
+  .area-scene {
+    height: calc(600px * 0.8) !important;
+  }
+  
+  .map-container {
+    height: calc((100vh - 80px) * 0.85) !important;
+  }
+  
+  .area-container {
+    height: calc((100vh - 80px) * 0.8) !important;
+  }
+  
+  /* Reduce header padding even more on very short screens */
+  .map-screen .map-header,
+  .area-screen .area-header {
+    padding: 0.25rem 0.5rem !important;
+  }
+  
+  .map-screen .map-title,
+  .area-screen .area-title {
+    font-size: 1.5rem !important;
+    margin-bottom: 0.125rem !important;
+  }
+  
+  .map-screen .map-subtitle,
+  .area-screen .area-subtitle {
+    font-size: 0.875rem !important;
   }
 }
 
@@ -2277,6 +2324,8 @@ img.area-png-overlay {
   position: relative;
   display: flex;
   flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
   overflow: hidden;
 }
 
@@ -2298,12 +2347,11 @@ img.area-png-overlay {
 }
 
 .area-content {
-  flex: 1;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
   align-items: center;
-  margin: 0 0 2rem 0;
+  margin: 0;
   padding: 0;
   width: 100%;
   height: auto;
@@ -2669,14 +2717,6 @@ img.area-png-overlay {
   transform: translateY(-2px);
 }
 
-/* Area Screen Styles */
-.area-screen {
-  min-height: 100vh;
-  background: linear-gradient(135deg, #87CEEB 0%, #98FB98 100%);
-  padding: 1rem;
-  position: relative;
-  overflow: hidden;
-}
 
 .area-header {
   text-align: center;
