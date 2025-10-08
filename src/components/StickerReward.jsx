@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const StickerReward = ({ 
@@ -9,6 +9,7 @@ const StickerReward = ({
 }) => {
   const [showBigSticker, setShowBigSticker] = useState(false);
   const [stickers, setStickers] = useState([]);
+  const isAddingStickerRef = useRef(false);
 
   // Get current profile ID for profile-specific storage
   const getCurrentProfileId = () => {
@@ -164,7 +165,10 @@ const StickerReward = ({
 
   // Show big sticker animation when isVisible becomes true
   useEffect(() => {
-    if (isVisible) {
+    if (isVisible && !isAddingStickerRef.current) {
+      // Prevent duplicate sticker additions (React 19 Strict Mode protection)
+      isAddingStickerRef.current = true;
+      
       setShowBigSticker(true);
       
       // Play applause sound immediately when sticker is awarded
@@ -183,9 +187,21 @@ const StickerReward = ({
         
         setStickers(prev => [...prev, newSticker]);
         onAnimationComplete();
+        
+        // Reset the ref after a delay to allow future stickers
+        setTimeout(() => {
+          isAddingStickerRef.current = false;
+        }, 100);
       }, 1500);
 
-      return () => clearTimeout(timer);
+      return () => {
+        clearTimeout(timer);
+        // Also reset ref on cleanup
+        isAddingStickerRef.current = false;
+      };
+    } else if (!isVisible) {
+      // Reset ref when sticker reward is hidden
+      isAddingStickerRef.current = false;
     }
   }, [isVisible, stickerSrc, onAnimationComplete]);
 
