@@ -5,6 +5,7 @@ import Animal from './Animal';
 import ProgressionUI from './ProgressionUI';
 import StickerReward from './StickerReward';
 import { useProgression } from '../contexts/ProgressionContext.jsx';
+import NavBar from './NavBar';
 
 const AreaScreen = () => {
   const { areaId } = useParams();
@@ -289,6 +290,9 @@ const AreaScreen = () => {
 
   return (
     <div className="area-screen">
+      {/* Navigation Bar */}
+      <NavBar />
+      
       {/* Progression UI */}
       {areaInfo.hasConfig && farmConfig && <ProgressionUI />}
       

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import NavBar from './NavBar';
 
 const Landing = () => {
   const [email, setEmail] = useState('');
@@ -36,6 +37,9 @@ const Landing = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-orange-50 via-blue-50 to-green-50">
+      {/* Navigation Bar */}
+      <NavBar />
+      
       {/* Hero Section */}
       <section className="relative overflow-hidden min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8">
         {/* Background Pattern */}
@@ -286,6 +290,86 @@ const Landing = () => {
               </motion.div>
             </motion.div>
           </motion.div>
+        </div>
+      </section>
+
+      {/* About Section */}
+      <section id="about" className="py-24 px-4 sm:px-6 lg:px-8 bg-white">
+        <div className="max-w-7xl mx-auto">
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-100px" }}
+            variants={fadeInUp}
+            transition={{ duration: 0.6 }}
+            className="text-center mb-16"
+          >
+            <h2 className="text-4xl sm:text-5xl font-bold text-gray-900 mb-6 font-['Quicksand']">
+              About My Talking Animals
+            </h2>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+              We're on a mission to make language learning fun, natural, and accessible for children everywhere.
+            </p>
+          </motion.div>
+
+          <div className="grid md:grid-cols-2 gap-12 items-center">
+            <motion.div
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, margin: "-100px" }}
+              variants={fadeInUp}
+              transition={{ duration: 0.6, delay: 0.2 }}
+            >
+              <h3 className="text-3xl font-bold text-gray-900 mb-6 font-['Quicksand']">
+                Our Story
+              </h3>
+              <p className="text-lg text-gray-600 mb-4 leading-relaxed">
+                My Talking Animals was born from a simple idea: what if learning a new language felt like playing with your favorite animals?
+              </p>
+              <p className="text-lg text-gray-600 mb-4 leading-relaxed">
+                We combine interactive gameplay, AI-powered conversations, and adorable animal characters to create an immersive learning experience that kids actually enjoy.
+              </p>
+              <p className="text-lg text-gray-600 leading-relaxed">
+                Every interaction is designed to build confidence, improve pronunciation, and make language learning feel like an adventure rather than a chore.
+              </p>
+            </motion.div>
+
+            <motion.div
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, margin: "-100px" }}
+              variants={scaleIn}
+              transition={{ duration: 0.6, delay: 0.4 }}
+              className="bg-gradient-to-br from-purple-100 to-pink-100 rounded-3xl p-8"
+            >
+              <h3 className="text-2xl font-bold text-gray-900 mb-6 font-['Quicksand']">
+                Perfect For
+              </h3>
+              <ul className="space-y-4">
+                <li className="flex items-start">
+                  <span className="text-2xl mr-3">👶</span>
+                  <div>
+                    <p className="font-semibold text-gray-900">Young Learners (Ages 3-8)</p>
+                    <p className="text-gray-600">Building foundational language skills through play</p>
+                  </div>
+                </li>
+                <li className="flex items-start">
+                  <span className="text-2xl mr-3">🌍</span>
+                  <div>
+                    <p className="font-semibold text-gray-900">Bilingual Families</p>
+                    <p className="text-gray-600">Keeping heritage languages alive at home</p>
+                  </div>
+                </li>
+                <li className="flex items-start">
+                  <span className="text-2xl mr-3">🎓</span>
+                  <div>
+                    <p className="font-semibold text-gray-900">Early Educators</p>
+                    <p className="text-gray-600">Engaging classroom activities for language learning</p>
+                  </div>
+                </li>
+              </ul>
+            </motion.div>
+          </div>
         </div>
       </section>
 

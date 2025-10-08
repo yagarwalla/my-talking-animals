@@ -2,6 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useProgression } from '../contexts/ProgressionContext';
+import NavBar from './NavBar';
 
 // Utility function moved outside component to avoid dependency issues
 const getRandomEmoji = (id, kidEmojis) => {
@@ -152,16 +153,10 @@ const ProfileSelector = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-teal-600 via-teal-400 to-emerald-300">
+      {/* Navigation Bar */}
+      <NavBar />
+      
       <div className="container mx-auto px-4 py-8 max-w-4xl">
-        <div className="text-center mb-8">
-          <h1 className="text-3xl lg:text-5xl font-['Quicksand'] font-bold text-white mb-6 drop-shadow-lg leading-tight">
-            🐾 My Talking Animals 🐾
-          </h1>
-          <p className="text-xl text-white font-nunito">
-            Choose your profile or create a new one!
-          </p>
-        </div>
-        
         {!showNewProfileForm ? (
           // Profile Selection View
           <div className="space-y-8">

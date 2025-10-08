@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion'; // Import motion for animations
+import NavBar from './NavBar';
 
 const MapScreen = () => {
   const [selectedArea, setSelectedArea] = useState(null);
@@ -171,6 +172,9 @@ const MapScreen = () => {
 
   return (
     <div className="map-screen">
+      {/* Navigation Bar */}
+      <NavBar />
+      
       <div className="map-header">
         <h1 className="map-title font-['Quicksand'] font-bold text-white">
           My Talking Animals World
@@ -337,7 +341,7 @@ const MapScreen = () => {
       <div className="text-center mt-6">
         <motion.button
           className="bg-gradient-to-r from-primary-500 to-primary-600 text-white px-8 py-4 rounded-2xl text-xl font-semibold shadow-large hover:shadow-xl transition-all duration-200 flex items-center gap-3 mx-auto"
-          onClick={() => navigate('/')}
+          onClick={() => navigate('/play')}
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
         >
