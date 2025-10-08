@@ -293,7 +293,9 @@ const AreaScreen = () => {
       {areaInfo.hasConfig && farmConfig && <ProgressionUI />}
       
       <div className="area-content">
-        <h1 className="area-title">{areaInfo.name}</h1>
+        <h1 className="area-title font-['Quicksand'] font-bold text-white">
+          {areaInfo.name}
+        </h1>
         <p className="area-description">{areaInfo.description}</p>
         {areaInfo.hasConfig && farmConfig ? (
           <div className="area-scene">

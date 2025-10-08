@@ -1,6 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import logo from './logo.svg';
+import Landing from './components/Landing';
 import ProfileSelector from './components/ProfileSelector';
 import LandscapeEnforcer from './components/LandscapeEnforcer';
 
@@ -269,13 +270,14 @@ function App() {
       <AnimalSessionProvider>
         <Router>
           <Routes>
-            <Route path="/" element={<ProfileSelector />} />
+            <Route path="/" element={<Landing />} />
+            <Route path="/play" element={<ProfileSelector />} />
             <Route path="/map" element={<MapScreen />} />
             <Route path="/area/:areaId" element={<AreaScreen />} />
-                    <Route path="/demo" element={<DemoHome />} />
-          <Route path="/animal-demo" element={<AnimalDemo />} />
-          <Route path="/template-demo" element={<TemplateDemo />} />
-          <Route path="*" element={<Navigate to="/" replace />} />
+            <Route path="/demo" element={<DemoHome />} />
+            <Route path="/animal-demo" element={<AnimalDemo />} />
+            <Route path="/template-demo" element={<TemplateDemo />} />
+            <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
           <LandscapeEnforcer />
         </Router>

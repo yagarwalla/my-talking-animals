@@ -172,7 +172,9 @@ const MapScreen = () => {
   return (
     <div className="map-screen">
       <div className="map-header">
-        <h1 className="map-title">My Talking Animals World</h1>
+        <h1 className="map-title font-['Quicksand'] font-bold text-white">
+          My Talking Animals World
+        </h1>
         <p className="map-subtitle">Click on an area to explore!</p>
       </div>
 

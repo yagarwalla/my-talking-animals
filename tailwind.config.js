@@ -43,6 +43,7 @@ module.exports = {
       },
       fontFamily: {
         'nunito': ['Nunito', 'sans-serif'],
+        'quicksand': ['Quicksand', 'sans-serif'],
         'fredoka': ['Fredoka One', 'cursive'],
         'poppins': ['Poppins', 'sans-serif'],
       },

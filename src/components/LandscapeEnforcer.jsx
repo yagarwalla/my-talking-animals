@@ -25,8 +25,8 @@ const LandscapeEnforcer = () => {
     };
   }, []);
 
-  // Pages where portrait mode is allowed (profile selection and creation)
-  const portraitAllowedPages = ['/', '/profile', '/create-profile'];
+  // Pages where portrait mode is allowed (landing page and profile selection)
+  const portraitAllowedPages = ['/', '/play', '/demo', '/animal-demo', '/template-demo'];
   
   // Check if current page allows portrait mode (exact match only)
   const isPortraitAllowed = portraitAllowedPages.includes(location.pathname);

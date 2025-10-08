@@ -154,10 +154,10 @@ const ProfileSelector = () => {
     <div className="min-h-screen bg-gradient-to-b from-teal-600 via-teal-400 to-emerald-300">
       <div className="container mx-auto px-4 py-8 max-w-4xl">
         <div className="text-center mb-8">
-          <h1 className="text-3xl lg:text-4xl font-nunito font-bold text-white mb-6 drop-shadow-lg leading-tight">
+          <h1 className="text-3xl lg:text-5xl font-['Quicksand'] font-bold text-white mb-6 drop-shadow-lg leading-tight">
             🐾 My Talking Animals 🐾
           </h1>
-          <p className="text-xl text-text-secondary font-nunito">
+          <p className="text-xl text-white font-nunito">
             Choose your profile or create a new one!
           </p>
         </div>
