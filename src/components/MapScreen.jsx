@@ -83,10 +83,8 @@ const MapScreen = () => {
   useEffect(() => {
     const logLayoutInfo = () => {
       const mapScreen = document.querySelector('.map-screen');
-      const mapHeader = document.querySelector('.map-header');
       const mapScene = document.querySelector('.map-scene');
       const backButtonContainer = document.querySelector('.map-screen .text-center');
-      const backButton = document.querySelector('.map-screen .text-center button');
       
       console.log('🔍 MAP SCREEN SPACING DEBUG:');
       
