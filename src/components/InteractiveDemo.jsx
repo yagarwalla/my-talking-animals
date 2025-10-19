@@ -24,16 +24,22 @@ const InteractiveDemo = () => {
 
   // Fallback to base64 if images don't load
   const getFallbackImage = (isPlaying) => {
-    // Simple SVG fallback for horse
+    // Simple SVG fallback for horse without emoji characters
     const horseSvg = isPlaying ? 
       `<svg width="128" height="128" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg">
         <circle cx="64" cy="64" r="60" fill="#fbbf24" stroke="#f59e0b" stroke-width="4"/>
-        <text x="64" y="80" text-anchor="middle" font-size="60">🐴</text>
-        <text x="64" y="100" text-anchor="middle" font-size="20" fill="#92400e">🗣️</text>
+        <circle cx="50" cy="50" r="8" fill="#8b5cf6"/>
+        <circle cx="78" cy="50" r="8" fill="#8b5cf6"/>
+        <path d="M40 80 Q64 100 88 80" stroke="#8b5cf6" stroke-width="4" fill="none"/>
+        <circle cx="64" cy="90" r="3" fill="#8b5cf6"/>
+        <text x="64" y="110" text-anchor="middle" font-size="12" fill="#92400e">Speaking</text>
       </svg>` :
       `<svg width="128" height="128" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg">
         <circle cx="64" cy="64" r="60" fill="#fbbf24" stroke="#f59e0b" stroke-width="4"/>
-        <text x="64" y="80" text-anchor="middle" font-size="60">🐴</text>
+        <circle cx="50" cy="50" r="8" fill="#8b5cf6"/>
+        <circle cx="78" cy="50" r="8" fill="#8b5cf6"/>
+        <path d="M40 80 Q64 100 88 80" stroke="#8b5cf6" stroke-width="4" fill="none"/>
+        <circle cx="64" cy="90" r="3" fill="#8b5cf6"/>
       </svg>`;
     
     return `data:image/svg+xml;base64,${btoa(horseSvg)}`;
