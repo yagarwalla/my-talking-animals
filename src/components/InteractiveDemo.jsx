@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const InteractiveDemo = () => {
@@ -6,6 +6,44 @@ const InteractiveDemo = () => {
   const [showSticker, setShowSticker] = useState(false);
   const [hasPlayed, setHasPlayed] = useState(false);
   const [imageError, setImageError] = useState(false);
+  const [imageSrc, setImageSrc] = useState('');
+
+  // Try different image paths
+  const getImageSrc = (isPlaying) => {
+    const basePaths = [
+      '/animals/horse/',
+      './animals/horse/',
+      'animals/horse/',
+      '/public/animals/horse/'
+    ];
+    
+    const fileName = isPlaying ? 'horse_openmouth.png' : 'horse_idle.png';
+    
+    // For now, let's try the first path and see what happens
+    return basePaths[0] + fileName;
+  };
+
+  // Fallback to base64 if images don't load
+  const getFallbackImage = (isPlaying) => {
+    // Simple SVG fallback for horse
+    const horseSvg = isPlaying ? 
+      `<svg width="128" height="128" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="64" cy="64" r="60" fill="#fbbf24" stroke="#f59e0b" stroke-width="4"/>
+        <text x="64" y="80" text-anchor="middle" font-size="60">🐴</text>
+        <text x="64" y="100" text-anchor="middle" font-size="20" fill="#92400e">🗣️</text>
+      </svg>` :
+      `<svg width="128" height="128" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="64" cy="64" r="60" fill="#fbbf24" stroke="#f59e0b" stroke-width="4"/>
+        <text x="64" y="80" text-anchor="middle" font-size="60">🐴</text>
+      </svg>`;
+    
+    return `data:image/svg+xml;base64,${btoa(horseSvg)}`;
+  };
+
+  // Reset image error when playing state changes
+  useEffect(() => {
+    setImageError(false);
+  }, [isPlaying]);
 
   const playHorseSound = () => {
     if (isPlaying) return;
@@ -77,24 +115,23 @@ const InteractiveDemo = () => {
           >
             {/* Horse Image */}
             <div className="relative">
-              {!imageError ? (
-                <img
-                  src={isPlaying ? "/animals/horse/horse_openmouth.png" : "/animals/horse/horse_idle.png"}
-                  alt="Horse - Tap to hear it talk!"
-                  className="w-32 h-32 object-contain drop-shadow-lg transition-all duration-300"
-                  onError={(e) => {
-                    console.log('Image failed to load:', e.target.src);
-                    setImageError(true);
-                  }}
-                  onLoad={() => {
-                    console.log('Image loaded successfully:', isPlaying ? 'horse_openmouth.png' : 'horse_idle.png');
-                  }}
-                />
-              ) : (
-                <div className="w-32 h-32 flex items-center justify-center text-8xl bg-gradient-to-br from-yellow-100 to-orange-100 rounded-full border-4 border-orange-200">
-                  {isPlaying ? '🗣️' : '🐴'}
-                </div>
-              )}
+              <img
+                src={imageError ? getFallbackImage(isPlaying) : getImageSrc(isPlaying)}
+                alt="Horse - Tap to hear it talk!"
+                className="w-32 h-32 object-contain drop-shadow-lg transition-all duration-300"
+                onError={(e) => {
+                  console.log('❌ Image failed to load:', e.target.src);
+                  console.log('🔍 Trying SVG fallback...');
+                  setImageError(true);
+                }}
+                onLoad={() => {
+                  if (!imageError) {
+                    console.log('✅ Image loaded successfully:', getImageSrc(isPlaying));
+                  } else {
+                    console.log('✅ SVG fallback loaded successfully');
+                  }
+                }}
+              />
               
               {/* Speaking indicator */}
               <AnimatePresence>
