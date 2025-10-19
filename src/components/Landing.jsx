@@ -7,6 +7,7 @@ import InteractiveDemo from './InteractiveDemo';
 const Landing = () => {
   const [email, setEmail] = useState('');
   const [submitted, setSubmitted] = useState(false);
+  const [isVideoMuted, setIsVideoMuted] = useState(true);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -18,6 +19,17 @@ const Landing = () => {
       setEmail('');
       setSubmitted(false);
     }, 3000);
+  };
+
+  const toggleVideoSound = () => {
+    const video = document.querySelector('video');
+    if (video) {
+      video.muted = !video.muted;
+      setIsVideoMuted(video.muted);
+      if (!video.muted) {
+        video.play();
+      }
+    }
   };
 
   // Animation variants
@@ -314,7 +326,7 @@ const Landing = () => {
               See It In Action
             </h2>
             <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              Watch how children learn languages through play
+              Watch how children learn languages through play — click anywhere on the video to hear the magic!
             </p>
           </motion.div>
 
@@ -331,43 +343,53 @@ const Landing = () => {
               transition={{ duration: 0.3 }}
               className="relative rounded-3xl overflow-hidden shadow-2xl bg-gradient-to-br from-purple-100 to-pink-100"
             >
-              {/* App Screenshot Placeholder */}
-              <div className="aspect-video flex items-center justify-center p-12 bg-white/30 backdrop-blur-sm">
-                <div className="text-center">
-                  <div className="text-8xl mb-6">📱</div>
-                  <h3 className="text-3xl font-bold text-gray-800 mb-3">App Preview</h3>
-                  <p className="text-xl text-gray-600 mb-6">
-                    Experience the magic of learning through interactive gameplay
-                  </p>
-                  <Link to="/play">
-                    <motion.button
-                      className="px-8 py-4 bg-gradient-to-r from-purple-500 to-pink-500 text-white text-lg font-bold rounded-full shadow-lg"
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                    >
-                      Try It Now →
-                    </motion.button>
-                  </Link>
+              {/* Video Player */}
+              <div className="relative bg-black rounded-3xl overflow-hidden">
+                <video
+                  className="w-full h-auto cursor-pointer"
+                  autoPlay
+                  loop
+                  muted
+                  playsInline
+                  poster="/video-poster.jpg"
+                  onClick={toggleVideoSound}
+                >
+                  <source src="/demo-video.mp4" type="video/mp4" />
+                  <source src="/demo-video.webm" type="video/webm" />
+                  {/* Fallback for browsers that don't support video */}
+                  <div className="flex items-center justify-center h-96 bg-gradient-to-br from-purple-100 to-pink-100">
+                    <div className="text-center">
+                      <div className="text-8xl mb-6">📱</div>
+                      <h3 className="text-3xl font-bold text-gray-800 mb-3">App Preview</h3>
+                      <p className="text-xl text-gray-600 mb-6">
+                        Experience the magic of learning through interactive gameplay
+                      </p>
+                    </div>
+                  </div>
+                </video>
+                
+                {/* Video Controls Overlay */}
+                <div className="absolute bottom-4 right-4">
+                  <motion.button
+                    className="w-16 h-16 bg-gradient-to-r from-purple-600 to-pink-600 backdrop-blur-sm text-white rounded-full shadow-2xl flex items-center justify-center hover:from-purple-700 hover:to-pink-700 transition-all duration-300 border-2 border-white/20"
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={toggleVideoSound}
+                    title={isVideoMuted ? 'Play with Sound' : 'Mute'}
+                  >
+                    {isVideoMuted ? (
+                      <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
+                      </svg>
+                    ) : (
+                      <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/>
+                      </svg>
+                    )}
+                  </motion.button>
                 </div>
-                {/* You can replace this with an actual screenshot */}
-                {/* <img src="/app-screenshot.png" alt="App Preview" className="w-full h-full object-cover" /> */}
               </div>
 
-              {/* Floating elements */}
-              <motion.div
-                className="absolute top-10 left-10 text-5xl"
-                animate={{ rotate: 360 }}
-                transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-              >
-                🎨
-              </motion.div>
-              <motion.div
-                className="absolute bottom-10 right-10 text-5xl"
-                animate={{ rotate: -360 }}
-                transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
-              >
-                🎵
-              </motion.div>
             </motion.div>
           </motion.div>
         </div>

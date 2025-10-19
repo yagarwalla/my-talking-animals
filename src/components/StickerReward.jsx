@@ -54,74 +54,79 @@ const StickerReward = ({
     const profileId = getCurrentProfileId();
     if (!profileId) return;
 
-    const savedStickers = localStorage.getItem(`collectedStickers_${profileId}`);
-    let existingStickers = [];
-    
-    if (savedStickers) {
-      try {
-        existingStickers = JSON.parse(savedStickers);
-      } catch (error) {
-        console.error('Error parsing saved stickers for cleanup:', error);
-        existingStickers = [];
-      }
-    }
-    
-    // Cap at level 5 (final level) - only allow stickers for levels 1-4
-    const maxAllowedLevel = Math.min(currentLevel - 1, 4);
-    
-    // Clean up existing stickers - remove any that shouldn't be there
-    const validStickers = existingStickers.filter(sticker => {
-      // Check if this is a level sticker
-      const levelMatch = sticker.src.match(/\/level(\d+)\/level\d+_sticker\.png$/);
-      if (levelMatch) {
-        const stickerLevel = parseInt(levelMatch[1]);
-        // Only keep stickers for levels that have been completed (1 to maxAllowedLevel)
-        return stickerLevel >= 1 && stickerLevel <= maxAllowedLevel;
-      }
-      // Keep non-level stickers (if any exist in the future)
-      return true;
-    });
-    
-    // Generate missing stickers for completed levels
-    const newStickers = [];
-    for (let level = 1; level <= maxAllowedLevel; level++) {
-      const stickerSrc = `/animals/stickers/level${level}/level${level}_sticker.png`;
+    // Add a delay to allow any current sticker animation to complete first
+    const backfillTimer = setTimeout(() => {
+      const savedStickers = localStorage.getItem(`collectedStickers_${profileId}`);
+      let existingStickers = [];
       
-      // Skip if this is the sticker currently being animated
-      if (currentAnimatingStickerRef.current === stickerSrc) {
-        console.log('⏭️ Skipping backfill for currently animating sticker:', stickerSrc);
-        continue;
+      if (savedStickers) {
+        try {
+          existingStickers = JSON.parse(savedStickers);
+        } catch (error) {
+          console.error('Error parsing saved stickers for cleanup:', error);
+          existingStickers = [];
+        }
       }
       
-      // Check if this level sticker already exists
-      const existingSticker = validStickers.find(sticker => sticker.src === stickerSrc);
-      if (!existingSticker) {
-        newStickers.push({
-          id: `backfill-${level}-${Date.now()}`,
-          src: stickerSrc,
-          ...getRandomPosition(),
+      // Cap at level 5 (final level) - only allow stickers for levels 1-4
+      const maxAllowedLevel = Math.min(currentLevel - 1, 4);
+      
+      // Clean up existing stickers - remove any that shouldn't be there
+      const validStickers = existingStickers.filter(sticker => {
+        // Check if this is a level sticker
+        const levelMatch = sticker.src.match(/\/level(\d+)\/level\d+_sticker\.png$/);
+        if (levelMatch) {
+          const stickerLevel = parseInt(levelMatch[1]);
+          // Only keep stickers for levels that have been completed (1 to maxAllowedLevel)
+          return stickerLevel >= 1 && stickerLevel <= maxAllowedLevel;
+        }
+        // Keep non-level stickers (if any exist in the future)
+        return true;
+      });
+      
+      // Generate missing stickers for completed levels
+      const newStickers = [];
+      for (let level = 1; level <= maxAllowedLevel; level++) {
+        const stickerSrc = `/animals/stickers/level${level}/level${level}_sticker.png`;
+        
+        // Skip if this is the sticker currently being animated
+        if (currentAnimatingStickerRef.current === stickerSrc) {
+          console.log('⏭️ Skipping backfill for currently animating sticker:', stickerSrc);
+          continue;
+        }
+        
+        // Check if this level sticker already exists
+        const existingSticker = validStickers.find(sticker => sticker.src === stickerSrc);
+        if (!existingSticker) {
+          newStickers.push({
+            id: `backfill-${level}-${Date.now()}`,
+            src: stickerSrc,
+            ...getRandomPosition(),
+          });
+        }
+      }
+      
+      // Combine valid existing stickers with new ones
+      const finalStickers = [...validStickers, ...newStickers];
+      
+      // Only update if there are changes
+      if (finalStickers.length !== existingStickers.length || 
+          finalStickers.some((sticker, index) => !existingStickers[index] || sticker.id !== existingStickers[index].id)) {
+        setStickers(finalStickers);
+        
+        const removedCount = existingStickers.length - validStickers.length;
+        const addedCount = newStickers.length;
+        
+        console.log('🧹 Cleaned stickers for profile', profileId, ':', {
+          removed: removedCount,
+          added: addedCount,
+          total: finalStickers.length,
+          maxAllowedLevel
         });
       }
-    }
-    
-    // Combine valid existing stickers with new ones
-    const finalStickers = [...validStickers, ...newStickers];
-    
-    // Only update if there are changes
-    if (finalStickers.length !== existingStickers.length || 
-        finalStickers.some((sticker, index) => !existingStickers[index] || sticker.id !== existingStickers[index].id)) {
-      setStickers(finalStickers);
-      
-      const removedCount = existingStickers.length - validStickers.length;
-      const addedCount = newStickers.length;
-      
-      console.log('🧹 Cleaned stickers for profile', profileId, ':', {
-        removed: removedCount,
-        added: addedCount,
-        total: finalStickers.length,
-        maxAllowedLevel
-      });
-    }
+    }, 5000); // 5 second delay to allow sticker animation to complete
+
+    return () => clearTimeout(backfillTimer);
   }, [currentLevel]); // Removed 'stickers' dependency to prevent infinite loop
 
   // Save stickers to localStorage whenever stickers change
