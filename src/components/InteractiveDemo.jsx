@@ -5,6 +5,7 @@ const InteractiveDemo = () => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [showSticker, setShowSticker] = useState(false);
   const [hasPlayed, setHasPlayed] = useState(false);
+  const [imageError, setImageError] = useState(false);
 
   const playHorseSound = () => {
     if (isPlaying) return;
@@ -76,20 +77,24 @@ const InteractiveDemo = () => {
           >
             {/* Horse Image */}
             <div className="relative">
-              <img
-                src={isPlaying ? "/animals/horse/horse_openmouth.png" : "/animals/horse/horse_idle.png"}
-                alt="Horse - Tap to hear it talk!"
-                className="w-32 h-32 object-contain drop-shadow-lg transition-all duration-300"
-                onError={(e) => {
-                  // Fallback to emoji if image not found
-                  e.target.style.display = 'none';
-                  e.target.nextSibling.style.display = 'block';
-                }}
-              />
-              {/* Fallback emoji */}
-              <div className="w-32 h-32 flex items-center justify-center text-8xl" style={{ display: 'none' }}>
-                {isPlaying ? '🗣️' : '🐴'}
-              </div>
+              {!imageError ? (
+                <img
+                  src={isPlaying ? "/animals/horse/horse_openmouth.png" : "/animals/horse/horse_idle.png"}
+                  alt="Horse - Tap to hear it talk!"
+                  className="w-32 h-32 object-contain drop-shadow-lg transition-all duration-300"
+                  onError={(e) => {
+                    console.log('Image failed to load:', e.target.src);
+                    setImageError(true);
+                  }}
+                  onLoad={() => {
+                    console.log('Image loaded successfully:', isPlaying ? 'horse_openmouth.png' : 'horse_idle.png');
+                  }}
+                />
+              ) : (
+                <div className="w-32 h-32 flex items-center justify-center text-8xl bg-gradient-to-br from-yellow-100 to-orange-100 rounded-full border-4 border-orange-200">
+                  {isPlaying ? '🗣️' : '🐴'}
+                </div>
+              )}
               
               {/* Speaking indicator */}
               <AnimatePresence>
