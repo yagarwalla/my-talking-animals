@@ -7,18 +7,72 @@ import InteractiveDemo from './InteractiveDemo';
 const Landing = () => {
   const [email, setEmail] = useState('');
   const [submitted, setSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [isVideoMuted, setIsVideoMuted] = useState(true);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // For now, just show a success message
-    // Later, you can integrate with a real email service
-    console.log('Email submitted:', email);
-    setSubmitted(true);
-    setTimeout(() => {
-      setEmail('');
-      setSubmitted(false);
-    }, 3000);
+    
+    // Set loading state immediately
+    setIsSubmitting(true);
+    
+    try {
+      // Use JSONP approach with a script tag to avoid CORS
+      const script = document.createElement('script');
+      const callbackName = 'jsonp_callback_' + Math.round(100000 * Math.random());
+      
+      // Create a global callback function
+      window[callbackName] = function(data) {
+        console.log('✅ Google Apps Script response:', data);
+        console.log('Email submitted successfully:', email);
+        
+        // Show additional info if available
+        if (data.spreadsheetUrl) {
+          console.log('📊 Data added to spreadsheet:', data.spreadsheetUrl);
+        }
+        
+        setIsSubmitting(false);
+        setSubmitted(true);
+        setTimeout(() => {
+          setEmail('');
+          setSubmitted(false);
+        }, 3000);
+        // Clean up
+        document.head.removeChild(script);
+        delete window[callbackName];
+      };
+      
+      // Add error handling
+      script.onerror = function() {
+        console.log('❌ Script failed to load, but email might still be submitted:', email);
+        setIsSubmitting(false);
+        setSubmitted(true);
+        setTimeout(() => {
+          setEmail('');
+          setSubmitted(false);
+        }, 3000);
+        // Clean up
+        document.head.removeChild(script);
+        delete window[callbackName];
+      };
+      
+      // Set up the script source
+      const scriptUrl = `https://script.google.com/macros/s/AKfycbxVmptTYKhl_ZIp7TcEZAQ9wwMe02Ag_hIaivS5VXlhxNJPtk3srPrXhf629yqfy7apAQ/exec?email=${encodeURIComponent(email)}&callback=${callbackName}`;
+      console.log('📧 Email being sent:', email);
+      console.log('🔗 Calling Google Apps Script URL:', scriptUrl);
+      script.src = scriptUrl;
+      document.head.appendChild(script);
+      
+    } catch (error) {
+      console.error('Error submitting email:', error);
+      setIsSubmitting(false);
+      // Still show success message for better UX
+      setSubmitted(true);
+      setTimeout(() => {
+        setEmail('');
+        setSubmitted(false);
+      }, 3000);
+    }
   };
 
   const toggleVideoSound = () => {
@@ -525,11 +579,25 @@ const Landing = () => {
                 />
                 <motion.button
                   type="submit"
-                  className="px-8 py-4 bg-white text-orange-600 font-bold text-lg rounded-full shadow-lg hover:shadow-xl transition-all"
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
+                  disabled={isSubmitting}
+                  className={`px-8 py-4 font-bold text-lg rounded-full shadow-lg transition-all flex items-center gap-3 ${
+                    isSubmitting 
+                      ? 'bg-gray-300 text-gray-500 cursor-not-allowed' 
+                      : 'bg-white text-orange-600 hover:shadow-xl'
+                  }`}
+                  whileHover={!isSubmitting ? { scale: 1.05 } : {}}
+                  whileTap={!isSubmitting ? { scale: 0.95 } : {}}
                 >
-                  Notify Me 🔔
+                  {isSubmitting ? (
+                    <>
+                      <div className="w-5 h-5 border-2 border-gray-500 border-t-transparent rounded-full animate-spin"></div>
+                      Processing...
+                    </>
+                  ) : (
+                    <>
+                      Notify Me 🔔
+                    </>
+                  )}
                 </motion.button>
               </div>
 
