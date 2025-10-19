@@ -9,49 +9,76 @@ const InteractiveDemo = () => {
 
   // Try different image paths
   const getImageSrc = (isPlaying) => {
-    const basePaths = [
-      '/animals/horse/',
-      './animals/horse/',
-      'animals/horse/',
-      '/public/animals/horse/'
-    ];
-    
     const fileName = isPlaying ? 'horse_openmouth.png' : 'horse_idle.png';
     
-    // For now, let's try the first path and see what happens
-    return basePaths[0] + fileName;
+    // Try the standard public path first
+    return `/animals/horse/${fileName}`;
   };
 
   // Fallback to base64 if images don't load
   const getFallbackImage = (isPlaying) => {
-    // Simple SVG fallback for horse without emoji characters
+    // Better horse SVG design
     const horseSvg = isPlaying ? 
       `<svg width="128" height="128" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg">
+        <!-- Background circle -->
         <circle cx="64" cy="64" r="60" fill="#fbbf24" stroke="#f59e0b" stroke-width="4"/>
-        <circle cx="50" cy="50" r="8" fill="#8b5cf6"/>
-        <circle cx="78" cy="50" r="8" fill="#8b5cf6"/>
-        <path d="M40 80 Q64 100 88 80" stroke="#8b5cf6" stroke-width="4" fill="none"/>
-        <circle cx="64" cy="90" r="3" fill="#8b5cf6"/>
-        <text x="64" y="110" text-anchor="middle" font-size="12" fill="#92400e">Speaking</text>
+        
+        <!-- Horse head shape -->
+        <ellipse cx="64" cy="55" rx="25" ry="20" fill="#8b5cf6" stroke="#7c3aed" stroke-width="2"/>
+        
+        <!-- Ears -->
+        <ellipse cx="50" cy="40" rx="6" ry="12" fill="#8b5cf6" transform="rotate(-20 50 40)"/>
+        <ellipse cx="78" cy="40" rx="6" ry="12" fill="#8b5cf6" transform="rotate(20 78 40)"/>
+        
+        <!-- Eyes -->
+        <circle cx="55" cy="50" r="4" fill="white"/>
+        <circle cx="73" cy="50" r="4" fill="white"/>
+        <circle cx="55" cy="50" r="2" fill="black"/>
+        <circle cx="73" cy="50" r="2" fill="black"/>
+        
+        <!-- Nostrils -->
+        <ellipse cx="60" cy="65" rx="2" ry="3" fill="black"/>
+        <ellipse cx="68" cy="65" rx="2" ry="3" fill="black"/>
+        
+        <!-- Mouth - open for speaking -->
+        <ellipse cx="64" cy="75" rx="8" ry="6" fill="black"/>
+        <ellipse cx="64" cy="75" rx="6" ry="4" fill="#ff6b6b"/>
+        
+        <!-- Speaking indicator -->
+        <text x="64" y="100" text-anchor="middle" font-size="10" fill="#92400e" font-weight="bold">Speaking</text>
       </svg>` :
       `<svg width="128" height="128" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg">
+        <!-- Background circle -->
         <circle cx="64" cy="64" r="60" fill="#fbbf24" stroke="#f59e0b" stroke-width="4"/>
-        <circle cx="50" cy="50" r="8" fill="#8b5cf6"/>
-        <circle cx="78" cy="50" r="8" fill="#8b5cf6"/>
-        <path d="M40 80 Q64 100 88 80" stroke="#8b5cf6" stroke-width="4" fill="none"/>
-        <circle cx="64" cy="90" r="3" fill="#8b5cf6"/>
+        
+        <!-- Horse head shape -->
+        <ellipse cx="64" cy="55" rx="25" ry="20" fill="#8b5cf6" stroke="#7c3aed" stroke-width="2"/>
+        
+        <!-- Ears -->
+        <ellipse cx="50" cy="40" rx="6" ry="12" fill="#8b5cf6" transform="rotate(-20 50 40)"/>
+        <ellipse cx="78" cy="40" rx="6" ry="12" fill="#8b5cf6" transform="rotate(20 78 40)"/>
+        
+        <!-- Eyes -->
+        <circle cx="55" cy="50" r="4" fill="white"/>
+        <circle cx="73" cy="50" r="4" fill="white"/>
+        <circle cx="55" cy="50" r="2" fill="black"/>
+        <circle cx="73" cy="50" r="2" fill="black"/>
+        
+        <!-- Nostrils -->
+        <ellipse cx="60" cy="65" rx="2" ry="3" fill="black"/>
+        <ellipse cx="68" cy="65" rx="2" ry="3" fill="black"/>
+        
+        <!-- Mouth - closed for idle -->
+        <path d="M55 70 Q64 75 73 70" stroke="black" stroke-width="2" fill="none"/>
       </svg>`;
     
     return `data:image/svg+xml;base64,${btoa(horseSvg)}`;
   };
 
-  // Initialize with fallback if we know images will fail
+  // Try to load images first, fallback to SVG only if they fail
   useEffect(() => {
-    // Check if we're in production and images are likely to fail
-    if (window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
-      console.log('🌐 Production detected, using SVG fallback');
-      setImageError(true);
-    }
+    // Let's try to load the images first and see what happens
+    console.log('🔍 Attempting to load horse images...');
   }, []);
 
   // Don't reset image error in production - we want to use SVG fallback consistently
@@ -132,12 +159,14 @@ const InteractiveDemo = () => {
                 className="w-32 h-32 object-contain drop-shadow-lg transition-all duration-300"
                 onError={(e) => {
                   console.log('❌ Image failed to load:', e.target.src);
+                  console.log('🔍 Full URL:', window.location.origin + e.target.src);
                   console.log('🔍 Trying SVG fallback...');
                   setImageError(true);
                 }}
                 onLoad={() => {
                   if (!imageError) {
                     console.log('✅ Image loaded successfully:', getImageSrc(isPlaying));
+                    console.log('✅ Full URL:', window.location.origin + getImageSrc(isPlaying));
                   } else {
                     console.log('✅ SVG fallback loaded successfully');
                   }

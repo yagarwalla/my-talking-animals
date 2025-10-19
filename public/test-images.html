@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Image Test</title>
+</head>
+<body>
+    <h1>Testing Horse Images</h1>
+    
+    <h2>Horse Idle</h2>
+    <img src="/animals/horse/horse_idle.png" alt="Horse Idle" style="width: 200px; height: 200px; border: 2px solid red;">
+    
+    <h2>Horse Open Mouth</h2>
+    <img src="/animals/horse/horse_openmouth.png" alt="Horse Open Mouth" style="width: 200px; height: 200px; border: 2px solid blue;">
+    
+    <h2>Test URLs</h2>
+    <p>Idle: <a href="/animals/horse/horse_idle.png" target="_blank">/animals/horse/horse_idle.png</a></p>
+    <p>Open Mouth: <a href="/animals/horse/horse_openmouth.png" target="_blank">/animals/horse/horse_openmouth.png</a></p>
+    
+    <script>
+        // Test image loading
+        const testImage = (src, name) => {
+            const img = new Image();
+            img.onload = () => console.log(`✅ ${name} loaded successfully:`, src);
+            img.onerror = () => console.log(`❌ ${name} failed to load:`, src);
+            img.src = src;
+        };
+        
+        testImage('/animals/horse/horse_idle.png', 'Horse Idle');
+        testImage('/animals/horse/horse_openmouth.png', 'Horse Open Mouth');
+    </script>
+</body>
+</html>

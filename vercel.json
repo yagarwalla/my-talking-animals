@@ -1,0 +1,19 @@
+{
+  "rewrites": [
+    {
+      "source": "/animals/(.*)",
+      "destination": "/animals/$1"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/animals/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
+    }
+  ]
+}
