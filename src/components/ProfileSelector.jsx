@@ -2,7 +2,9 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useProgression } from '../contexts/ProgressionContext';
+import { useOnboarding } from '../contexts/OnboardingContext';
 import NavBar from './NavBar';
+import OnboardingTooltip from './OnboardingTooltip';
 
 // Utility function moved outside component to avoid dependency issues
 const getRandomEmoji = (id, kidEmojis) => {
@@ -13,6 +15,7 @@ const getRandomEmoji = (id, kidEmojis) => {
 
 const ProfileSelector = () => {
   const { triggerProfileChange } = useProgression();
+  const { hasSeenOnboarding, startOnboarding, isOnboardingActive, currentStep, nextStep } = useOnboarding();
   const [profiles, setProfiles] = useState([]);
   const [showNewProfileForm, setShowNewProfileForm] = useState(false);
   const [showDeleteMenu, setShowDeleteMenu] = useState(false);
@@ -47,6 +50,16 @@ const ProfileSelector = () => {
     
     loadProfiles();
   }, [kidEmojis]);
+
+  // Start onboarding for first-time users
+  useEffect(() => {
+    if (!hasSeenOnboarding && profiles.length === 0) {
+      const timer = setTimeout(() => {
+        startOnboarding();
+      }, 1000); // Small delay to let the page load
+      return () => clearTimeout(timer);
+    }
+  }, [hasSeenOnboarding, profiles.length, startOnboarding]);
 
 
 
@@ -228,15 +241,30 @@ const ProfileSelector = () => {
             )}
             
             <div className="text-center">
-              <motion.button
-                onClick={handleStartNewProfile}
-                className="bg-gradient-to-r from-primary-500 to-primary-600 text-white px-8 py-4 rounded-2xl text-xl font-semibold shadow-large hover:shadow-xl transition-all duration-200 flex items-center gap-3 mx-auto"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
+              <OnboardingTooltip
+                message="Tap here to create your first profile and start the adventure!"
+                position="top"
+                show={isOnboardingActive && currentStep === 0}
+                onComplete={() => {
+                  nextStep();
+                  setShowNewProfileForm(true);
+                }}
               >
-                <span className="text-2xl">➕</span>
-                Create New Profile
-              </motion.button>
+                <motion.button
+                  onClick={() => {
+                    handleStartNewProfile();
+                    if (isOnboardingActive && currentStep === 0) {
+                      nextStep();
+                    }
+                  }}
+                  className="bg-gradient-to-r from-primary-500 to-primary-600 text-white px-8 py-4 rounded-2xl text-xl font-semibold shadow-large hover:shadow-xl transition-all duration-200 flex items-center gap-3 mx-auto"
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  <span className="text-2xl">➕</span>
+                  Create New Profile
+                </motion.button>
+              </OnboardingTooltip>
             </div>
           </div>
         ) : (

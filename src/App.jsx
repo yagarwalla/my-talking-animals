@@ -11,6 +11,7 @@ import AnimalDemo from './components/AnimalDemo';
 import TemplateDemo from './components/TemplateDemo';
 import { AnimalSessionProvider } from './contexts/AnimalSessionContext.jsx';
 import { ProgressionProvider } from './contexts/ProgressionContext.jsx';
+import { OnboardingProvider } from './contexts/OnboardingContext.jsx';
 
 // Audio Player Component using Web Audio API
 const AudioPlayer = () => {
@@ -266,23 +267,25 @@ const DemoHome = () => {
 // Main App Component with Router
 function App() {
   return (
-    <ProgressionProvider>
-      <AnimalSessionProvider>
-        <Router>
-          <Routes>
-            <Route path="/" element={<Landing />} />
-            <Route path="/play" element={<ProfileSelector />} />
-            <Route path="/map" element={<MapScreen />} />
-            <Route path="/area/:areaId" element={<AreaScreen />} />
-            <Route path="/demo" element={<DemoHome />} />
-            <Route path="/animal-demo" element={<AnimalDemo />} />
-            <Route path="/template-demo" element={<TemplateDemo />} />
-            <Route path="*" element={<Navigate to="/" replace />} />
-          </Routes>
-          <LandscapeEnforcer />
-        </Router>
-      </AnimalSessionProvider>
-    </ProgressionProvider>
+    <OnboardingProvider>
+      <ProgressionProvider>
+        <AnimalSessionProvider>
+          <Router>
+            <Routes>
+              <Route path="/" element={<Landing />} />
+              <Route path="/play" element={<ProfileSelector />} />
+              <Route path="/map" element={<MapScreen />} />
+              <Route path="/area/:areaId" element={<AreaScreen />} />
+              <Route path="/demo" element={<DemoHome />} />
+              <Route path="/animal-demo" element={<AnimalDemo />} />
+              <Route path="/template-demo" element={<TemplateDemo />} />
+              <Route path="*" element={<Navigate to="/" replace />} />
+            </Routes>
+            <LandscapeEnforcer />
+          </Router>
+        </AnimalSessionProvider>
+      </ProgressionProvider>
+    </OnboardingProvider>
   );
 }
 
