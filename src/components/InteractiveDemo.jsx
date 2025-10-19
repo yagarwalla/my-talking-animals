@@ -6,6 +6,7 @@ const InteractiveDemo = () => {
   const [showSticker, setShowSticker] = useState(false);
   const [hasPlayed, setHasPlayed] = useState(false);
   const [imageError, setImageError] = useState(false);
+  const [useFallbackPath, setUseFallbackPath] = useState(false);
 
   // Try different image paths
   const getImageSrc = (isPlaying) => {
@@ -15,65 +16,14 @@ const InteractiveDemo = () => {
     return `/animals/horse/${fileName}`;
   };
 
-  // Fallback to base64 if images don't load
-  const getFallbackImage = (isPlaying) => {
-    // Better horse SVG design
-    const horseSvg = isPlaying ? 
-      `<svg width="128" height="128" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg">
-        <!-- Background circle -->
-        <circle cx="64" cy="64" r="60" fill="#fbbf24" stroke="#f59e0b" stroke-width="4"/>
-        
-        <!-- Horse head shape -->
-        <ellipse cx="64" cy="55" rx="25" ry="20" fill="#8b5cf6" stroke="#7c3aed" stroke-width="2"/>
-        
-        <!-- Ears -->
-        <ellipse cx="50" cy="40" rx="6" ry="12" fill="#8b5cf6" transform="rotate(-20 50 40)"/>
-        <ellipse cx="78" cy="40" rx="6" ry="12" fill="#8b5cf6" transform="rotate(20 78 40)"/>
-        
-        <!-- Eyes -->
-        <circle cx="55" cy="50" r="4" fill="white"/>
-        <circle cx="73" cy="50" r="4" fill="white"/>
-        <circle cx="55" cy="50" r="2" fill="black"/>
-        <circle cx="73" cy="50" r="2" fill="black"/>
-        
-        <!-- Nostrils -->
-        <ellipse cx="60" cy="65" rx="2" ry="3" fill="black"/>
-        <ellipse cx="68" cy="65" rx="2" ry="3" fill="black"/>
-        
-        <!-- Mouth - open for speaking -->
-        <ellipse cx="64" cy="75" rx="8" ry="6" fill="black"/>
-        <ellipse cx="64" cy="75" rx="6" ry="4" fill="#ff6b6b"/>
-        
-        <!-- Speaking indicator -->
-        <text x="64" y="100" text-anchor="middle" font-size="10" fill="#92400e" font-weight="bold">Speaking</text>
-      </svg>` :
-      `<svg width="128" height="128" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg">
-        <!-- Background circle -->
-        <circle cx="64" cy="64" r="60" fill="#fbbf24" stroke="#f59e0b" stroke-width="4"/>
-        
-        <!-- Horse head shape -->
-        <ellipse cx="64" cy="55" rx="25" ry="20" fill="#8b5cf6" stroke="#7c3aed" stroke-width="2"/>
-        
-        <!-- Ears -->
-        <ellipse cx="50" cy="40" rx="6" ry="12" fill="#8b5cf6" transform="rotate(-20 50 40)"/>
-        <ellipse cx="78" cy="40" rx="6" ry="12" fill="#8b5cf6" transform="rotate(20 78 40)"/>
-        
-        <!-- Eyes -->
-        <circle cx="55" cy="50" r="4" fill="white"/>
-        <circle cx="73" cy="50" r="4" fill="white"/>
-        <circle cx="55" cy="50" r="2" fill="black"/>
-        <circle cx="73" cy="50" r="2" fill="black"/>
-        
-        <!-- Nostrils -->
-        <ellipse cx="60" cy="65" rx="2" ry="3" fill="black"/>
-        <ellipse cx="68" cy="65" rx="2" ry="3" fill="black"/>
-        
-        <!-- Mouth - closed for idle -->
-        <path d="M55 70 Q64 75 73 70" stroke="black" stroke-width="2" fill="none"/>
-      </svg>`;
+  // Fallback image paths for Azure Static Web Apps
+  const getFallbackImageSrc = (isPlaying) => {
+    const fileName = isPlaying ? 'horse_openmouth.png' : 'horse_idle.png';
     
-    return `data:image/svg+xml;base64,${btoa(horseSvg)}`;
+    // Try root-level images as fallback
+    return `/${fileName}`;
   };
+
 
   // Try to load images first, fallback to SVG only if they fail
   useEffect(() => {
@@ -153,25 +103,39 @@ const InteractiveDemo = () => {
           >
             {/* Horse Image */}
             <div className="relative">
-              <img
-                src={imageError ? getFallbackImage(isPlaying) : getImageSrc(isPlaying)}
-                alt="Horse - Tap to hear it talk!"
-                className="w-32 h-32 object-contain drop-shadow-lg transition-all duration-300"
-                onError={(e) => {
-                  console.log('❌ Image failed to load:', e.target.src);
-                  console.log('🔍 Full URL:', window.location.origin + e.target.src);
-                  console.log('🔍 Trying SVG fallback...');
-                  setImageError(true);
-                }}
-                onLoad={() => {
-                  if (!imageError) {
-                    console.log('✅ Image loaded successfully:', getImageSrc(isPlaying));
-                    console.log('✅ Full URL:', window.location.origin + getImageSrc(isPlaying));
-                  } else {
-                    console.log('✅ SVG fallback loaded successfully');
+              {imageError ? (
+                <div className="w-32 h-32 flex items-center justify-center text-8xl bg-gradient-to-br from-yellow-100 to-orange-100 rounded-full border-4 border-orange-200">
+                  {isPlaying ? '🗣️' : '🐴'}
+                </div>
+              ) : (
+                <img
+                  src={
+                    useFallbackPath 
+                      ? getFallbackImageSrc(isPlaying)
+                      : getImageSrc(isPlaying)
                   }
-                }}
-              />
+                  alt="Horse - Tap to hear it talk!"
+                  className="w-32 h-32 object-contain drop-shadow-lg transition-all duration-300"
+                  onError={(e) => {
+                    console.log('❌ Image failed to load:', e.target.src);
+                    
+                    if (!useFallbackPath) {
+                      console.log('🔍 Trying fallback path...');
+                      setUseFallbackPath(true);
+                    } else {
+                      console.log('🔍 Trying emoji fallback...');
+                      setImageError(true);
+                    }
+                  }}
+                  onLoad={() => {
+                    if (!useFallbackPath) {
+                      console.log('✅ Image loaded successfully:', getImageSrc(isPlaying));
+                    } else {
+                      console.log('✅ Fallback image loaded successfully:', getFallbackImageSrc(isPlaying));
+                    }
+                  }}
+                />
+              )}
               
               {/* Speaking indicator */}
               <AnimatePresence>
