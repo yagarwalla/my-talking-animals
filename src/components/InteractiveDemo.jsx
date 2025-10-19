@@ -6,7 +6,6 @@ const InteractiveDemo = () => {
   const [showSticker, setShowSticker] = useState(false);
   const [hasPlayed, setHasPlayed] = useState(false);
   const [imageError, setImageError] = useState(false);
-  const [imageSrc, setImageSrc] = useState('');
 
   // Try different image paths
   const getImageSrc = (isPlaying) => {
