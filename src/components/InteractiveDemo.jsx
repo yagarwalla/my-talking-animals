@@ -54,10 +54,7 @@ const InteractiveDemo = () => {
     }
   }, []);
 
-  // Reset image error when playing state changes
-  useEffect(() => {
-    setImageError(false);
-  }, [isPlaying]);
+  // Don't reset image error in production - we want to use SVG fallback consistently
 
   const playHorseSound = () => {
     if (isPlaying) return;
