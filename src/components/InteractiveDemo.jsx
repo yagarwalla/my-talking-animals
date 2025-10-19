@@ -40,6 +40,15 @@ const InteractiveDemo = () => {
     return `data:image/svg+xml;base64,${btoa(horseSvg)}`;
   };
 
+  // Initialize with fallback if we know images will fail
+  useEffect(() => {
+    // Check if we're in production and images are likely to fail
+    if (window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
+      console.log('🌐 Production detected, using SVG fallback');
+      setImageError(true);
+    }
+  }, []);
+
   // Reset image error when playing state changes
   useEffect(() => {
     setImageError(false);
